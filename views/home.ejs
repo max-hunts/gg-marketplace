@@ -12,54 +12,101 @@
 </head>
 
 <body>
-	<div class="page">
-		<div class="navbar">
-			<div class="logon-crumbs">
-				<input id="fuid" type="text" placeholder="Username">
-				<input id="fpwd" type="password" placeholder="Password">
-				<button id="blogin" class="btn-login">&#x27a4;</button>
-				<button id="blogin_g" class="btn-g-login"><img src="media/g_logon.png" class="img-g-login" alt="img"></button>
-			</div>
-			<div class="user-info">
-				<div class="notifications">
-					&#x1F514; | <%= 0%>
+	<main>
+		<div class="page">
+			<div class="navbar">
+				<div class="logon-crumbs">
+					<input id="fuid" type="text" placeholder="Username">
+					<input id="fpwd" type="password" placeholder="Password">
+					<button id="blogin" class="btn-login">&#x27a4;</button>
+					<button id="blogin_g" class="btn-g-login"><img src="media/g_logon.png" class="img-g-login" alt="img"></button>
 				</div>
-				<div class="cart">
-					&#x1F6d2; | <%= 0%>
+				<div class="user-info">
+					<div class="notifications">
+						&#x1F514; | <%= 0%>
+					</div>
+					<div class="cart">
+						&#x1F6d2; | <%= 0%>
+					</div>
 				</div>
 			</div>
-		</div>
-		<div class="sbar">
-			<img src="media/gg_logo.png" alt="img">
-			<input id="sfield" type="text" placeholder="I Want...">
-			<button id="sbutton">Go!</button>
-			<a href="#">Extras</a>
-		</div>
-		<div class="space"/>
-		<div class="sponsored">
-			
-		</div>
-		<div class="space"/>
-		<div class="products">
-			<p>Popular</p>
-			<div class="product-container">
-				<img src="" alt="img">
-				<p><%= "Item name"%></p>
-				<p>£<%= "20.99"%></p>
+			<div class="sbar">
+				<img src="media/gg_logo.png" alt="img">
+				<input id="sfield" type="text" placeholder="I Want...">
+				<button id="sbutton">Go!</button>
+				<a href="#">Extras</a>
 			</div>
+			<div class="space"></div>
+			<div class="welcome">
+				<img src="media/welcome.png">
+			</div>
+			<div class="space"></div>
+			<div class="products">
+				<p>Popular:</p>
+				<div class="product-container">
+					<img src="media/var.png" alt="img">
+					<p class="l"><%= "Item name"%></p>
+					<p class="r">£<%= "20.99"%></p>
+				</div>
+			</div>
+
+
+			<div class="products">
+				<p>Personalised 1:</p>
+				<div class="product-container">
+					<img src="media/var.png" alt="img">
+					<p class="l"><%= "Item name"%></p>
+					<p class="r">£<%= "20.99"%></p>
+				</div>
+			</div>
+			<div class="products">
+				<p>Personalised 2:</p>
+				<div class="product-container">
+					<img src="media/var.png" alt="img">
+					<p class="l"><%= "Item name"%></p>
+					<p class="r">£<%= "20.99"%></p>
+				</div>
+			</div>
+			<div class="products">
+				<p>Personalised 3:</p>
+				<div class="product-container">
+					<img src="media/var.png" alt="img">
+					<p class="l"><%= "Item name"%></p>
+					<p class="r">£<%= "20.99"%></p>
+				</div>
+			</div>
+			<div class="products">
+				<p>Recent:</p>
+				<div class="product-container">
+					<img src="media/var.png" alt="img">
+					<p class="l"><%= "Item name"%></p>
+					<p class="r">£<%= "20.99"%></p>
+				</div>
+			</div>
+
+
+			<div class="space"></div>
 		</div>
-		<div class="space"/>
-	</div>
+
+	</main>
+
+	<footer>
+		<div class="links">
+			<a href="#">Help</a>
+			<a href="#">Contact</a>
+			<a href="#">Legal</a>
+		</div>
+		<div class="legal">
+			<a>© GG Sales 2019-2020. All Rights Reserved. </a>
+			<a class="link" href="#">User Agreement</a>
+			<a> ,</a> 
+			<a class="link" href="#">Privacy</a>
+			<a> ,</a> 
+			<a class="link" href="#">Cookies</a>
+		</div>
+		<div class="location">
+			GG Sales US 🇺🇸
+		</div>
+	</footer>
 </body>
-<footer>
-	<div class="links">
-		
-	</div>
-	<div class="legal">
-		
-	</div>
-	<div class="location">
-		
-	</div>
-</footer>
 </html>
