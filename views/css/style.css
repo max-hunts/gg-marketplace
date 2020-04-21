@@ -27,7 +27,7 @@ body {
 }
 
 .page {
-	background-color: red;
+	background-color: white;
 }
 
 .navbar {
@@ -96,5 +96,61 @@ body {
 
 .cart {
 	color: #898989;
+
+}
+
+.sbar {
+	height: 55px;
+	padding-top: 10px;
+	padding-bottom: 10px;
+}
+
+.sbar img {
+	position: relative;
+	height: 35px;
+	float: left;
+	padding-left: 7%;
+	padding-right: 20px;
+	/*left: 5%;*/
+}
+
+.sbar input {
+	border: 0.5px solid black;
+	display: inline-flex;
+	position: relative;
+	float: left;
+	height: 34px;
+	width: 400px;
+	padding-left: 10px;
+	font-family: osl;
+	font-size: 17px;
+	box-shadow: 0px 3px 4px #A5A5A5;
+
+	/*position: absolute;
+	left: 50%;
+	transform: translate(-50%, 0);*/
+}
+
+.sbar button {
+	position: relative;
+	float: left;
+	background-color: #5359FF;
+	border: none;
+	box-shadow: 0px 2px 3px #A5A5A5;
+	color: #C4C4C4;
+	height: 35px;
+	width: 100px;
+	margin-left: 20px;
+	font-size: 20px;
+	font-family: osl;
+}
+
+.sbar p {
+	position: relative;
+	float: left;
+	color: #7F7F7F;
+	font-family: osl;
+	font-size: 15px
+	margin-left: 50px;
 
 }
