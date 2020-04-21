@@ -144,6 +144,25 @@ footer a {
 	font-family: osl
 }
 
+.add-item a {
+	color: #ff6619;
+	font-family: osl;
+	font-size: 30px;
+	padding-left: 10px;
+	position: relative;
+	bottom: 23%;
+}
+
+.add-item a:hover {
+	color: #c41000;
+	transition: 0.3s;
+}
+
+.add-item a:active {
+	color: #BBBBBB;
+	transition: 0.1s;
+}
+
 .notifications {
 	padding-right: 15px;
 	color: #898989;
