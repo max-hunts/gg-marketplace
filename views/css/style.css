@@ -37,7 +37,7 @@ body {
 
 .logon-crumbs {
 	padding-top: 10px;
-	padding-bottom: : 10px;
+	padding-bottom: 10px;
 }
 
 .logon-crumbs input {
@@ -79,4 +79,22 @@ body {
 .img-g-login {
 	height: 35px;
 	width: 35px;
+}
+
+.user-info {
+	float: right;
+	position: relative;
+	display: inline-flex;
+	bottom: 10%;
+	font-family: osl
+}
+
+.notifications {
+	padding-right: 15px;
+	color: #898989;
+}
+
+.cart {
+	color: #898989;
+
 }
