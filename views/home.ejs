@@ -9,6 +9,27 @@
   <meta name="author" content="Max">
 
   <link rel="stylesheet" href="css/style.css">
+
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-auth.js"></script>
+  <script>
+  // Your web app's Firebase configuration
+  var firebaseConfig = {
+    apiKey: "AIzaSyCrhgibbVUCOu3Vz3pw9iutGwTXen724eU",
+    authDomain: "project-gg-3b754.firebaseapp.com",
+    databaseURL: "https://project-gg-3b754.firebaseio.com",
+    projectId: "project-gg-3b754",
+    storageBucket: "project-gg-3b754.appspot.com",
+    messagingSenderId: "338558477178",
+    appId: "1:338558477178:web:f1b9069d1da04749a26cc3",
+    measurementId: "G-Y42R9NNJXS"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  firebase.analytics();
+</script>
+
 </head>
 
 <body>
@@ -16,10 +37,18 @@
 		<div class="page">
 			<div class="navbar">
 				<div class="logon-crumbs">
-					<input id="fuid" type="text" placeholder="Username">
-					<input id="fpwd" type="password" placeholder="Password">
-					<button id="blogin" class="btn-login">&#x27a4;</button>
-					<button id="blogin_g" class="btn-g-login"><img src="media/g_logon.png" class="img-g-login" alt="img"></button>
+					<div id="uname-field" style="display: none;">
+						<a id="uname-dom" class="user-name" href="#">Unregistered user</a>
+						<div class="user-logout">
+							<a onclick={signout()}>Log out</a>
+						</div>
+					</div>
+						<div id="login-field" style="display: block;">
+						<input id="fuid" type="text" placeholder="Username">
+						<input id="fpwd" type="password" placeholder="Password">
+						<button id="blogin" onclick={signinwithemail()} class="btn-login">&#x27a4;</button>
+						<button id="blogin_g" onclick={signinwithgoogle()} class="btn-g-login"><img src="media/g_logon.png" class="img-g-login" alt="img"></button>
+					</div>
 				</div>
 				<div class="user-info">
 					<div class="notifications">
@@ -108,5 +137,6 @@
 			GG Sales US 🇺🇸
 		</div>
 	</footer>
+	<script src="js/fAuth.js"></script>
 </body>
 </html>
