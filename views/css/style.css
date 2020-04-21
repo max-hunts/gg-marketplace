@@ -1,0 +1,82 @@
+* {
+	margin: 0;
+	padding: 0;
+	text-decoration: none;
+}
+
+@font-face{
+	font-family: os;
+	src: url(../fonts/ops.ttf);
+}
+
+@font-face{
+	font-family: osl;
+	src: url(../fonts/opsl.ttf);
+}
+
+body {
+	background: #FFFFFF;
+	max-width: 900px;
+	margin-left: auto;
+	margin-right: auto;
+	font-family: os;
+}
+
+::placeholder {
+	color: #aaaaaa;
+}
+
+.page {
+	background-color: red;
+}
+
+.navbar {
+	background-color: white;
+	height: 55px;
+}
+
+.logon-crumbs {
+	padding-top: 10px;
+	padding-bottom: : 10px;
+}
+
+.logon-crumbs input {
+	/*display: inline-flex;*/
+	border: 0.5px solid #979797;
+	float: left;
+	position: relative;
+	height: 34px;
+	width: 160px;
+	padding-left: 10px;
+	margin-right: 20px;
+	/*border: none;*/
+	font-family: osl;
+	font-size: 17px;
+	box-shadow: 0px 2px 3px #A5A5A5;
+}
+
+.logon-crumbs button {
+	float: left;
+	position: relative;
+	border: none;
+	height: 35px;
+	width: 35px;
+	margin-right: 20px;
+}
+
+.btn-login {
+	background-color: #3D10FF;
+	font-size: 30px;
+	color: white;
+	box-shadow: 0px 2px 3px #A5A5A5;
+}
+
+.btn-g-login {
+	background-color: #cacaca;
+	border-radius: 5px;
+}
+
+.img-g-login {
+	height: 35px;
+	width: 35px;
+}
