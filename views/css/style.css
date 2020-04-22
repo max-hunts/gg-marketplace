@@ -126,6 +126,24 @@ footer a {
 	cursor: pointer;
 }
 
+.btn-fb-login {
+	transition: 0.3s;
+	cursor: pointer;
+	background-color: white;
+	border-radius: 20px;
+}
+
+.btn-fb-login:hover {
+	box-shadow: 0px 2px 3px #A5A5A5;
+	transition: 0.3s;
+	cursor: pointer;
+}
+
+.btn-fb-login:active {
+	box-shadow: 0px 2px 3px red;
+	transition: 0.1s;
+}
+
 .btn-login:active {
 	color: white;
 	transition: 0.1s;

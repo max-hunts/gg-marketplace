@@ -28,6 +28,17 @@ function signinwithgoogle(){
 		})
 }
 
+function signinwithfb(){
+	var fbAuthProvider = new firebase.auth.FacebookAuthProvider()
+	firebase.auth().signInWithPopup(fbAuthProvider)
+		.then(function(data){
+			console.log('User signed in...')
+		})
+		.catch(function(error){
+			console.log(error)
+		})
+}
+
 function signinwithemail(){
 	const txtEmail = document.getElementById('fuid')
 	const txtPassword = document.getElementById('fpwd')
