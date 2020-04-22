@@ -322,3 +322,75 @@ footer a {
 	color: red;
 	transition: 0.3s;
 }
+
+.user-auth-message {
+	position: relative;
+	width: 100%;
+	text-align: center;
+}
+
+.user-auth-message p {
+	color: red;
+	font-size: 30px;
+
+}
+
+.new-product-field {
+	position: relative;
+	width: 100%;
+}
+
+.new-product-field p {
+	font-size: 25px;
+	color: #898989;
+	padding-bottom: 20px;
+}
+
+.new-product-field label {
+	font-size: 20px;
+	color: #898989;
+	display: inline-block;
+}
+
+.new-product-field input {
+	height: 40px;
+	width: 300px;
+	display: block;
+	font-size: 15px;
+	padding-left: 10px;
+	margin-bottom: 15px;
+	border-radius: 0;
+	border: 0.5px solid grey;
+}
+
+.new-product-field button {
+	height: 40px;
+	width: 100px;
+	display: block;
+	font-size: 19px;
+	font-family: osl;
+	box-shadow: 0px 2px 3px #A5A5A5;
+	margin-bottom: 15px;
+	border-radius: 0;
+	border: none;
+	background-color: #30a8ff;
+	transition: 0.3s;
+}
+
+.new-product-field button:hover {
+	transition: 0.3s;
+	background-color: #ff7700;
+}
+
+.new-product-field button:active {
+	transition: 0.1s;
+	background-color: #ffaf69;
+}
+
+.npf-long input {
+	width: 600px;
+}
+
+.npf-short input {
+	width: 150px;
+}

@@ -58,30 +58,38 @@
 					<div class="cart">
 						&#x1F6d2; | <%= 0%>
 					</div>
-					<div class="add-item">
-						<a href="/additmpage">⊕</a>
-					</div>
 				</div>
 			</div>
-			<div class="sbar">
-				<img src="media/gg_logo.png" alt="img">
-				<input id="sfield" type="text" placeholder="I Want...">
-				<button id="sbutton">Go!</button>
-				<a href="#">Extras</a>
-			</div>
+
 			<div class="space"></div>
-			<div class="welcome">
-				<img src="media/welcome.png">
-			</div>
-			<div class="space"></div>
-			<div class="products">
-				<p>Popular:</p>
-				<div class="product-container">
-					<img src="media/var.png" alt="img">
-					<p class="l"><%= "Item name"%></p>
-					<p class="r">£<%= "20.99"%></p>
+
+			<div class="user-auth-message" id="uAuthMsg" style="display: none;"><p>Please log in to continue</p></div>
+
+			<div class="new-product-field" style="display: block;">
+				<p>Add product</p>
+				<div class="npf-short">
+					<input type="text" id="pName" placeholder="Product Name">
 				</div>
+				<div class="npf-long">
+					<input type="text" id="pDesc" placeholder="Description">
+				</div>
+				<input type="text" id="pImgUrl" placeholder="TODO: image (url)">
+				<input type="text" id="pLoc" placeholder="Location (eg. London)">
+				<input type="text" id="pStock" placeholder="Quantity in stock (default: 1)">
+				<div class="npf-long">
+					<input type="text" id="pPublic" placeholder="Display: leave empty for public, type for private, CHECKBOXES ARE FUCKING HARD">
+				</div>
+				<div class="npf-short">
+					<input type="text" id="pPrice" placeholder="Price £">
+				</div>
+				<button id="pSend">Submit</button>
 			</div>
+
+			
+			
+
+
+
 
 
 			<div class="space"></div>
