@@ -21,13 +21,18 @@ app.set('views', __dirname + '/views')
 
 app.get("/", function(request, responce) {
 	dbRef = database.ref("/products")
-	dbRef.once('value', function(snapshot){
+	dbRef.limitToFirst(5).once('value', function(snapshot){
 		var data = snapshot.val()
 		if (!data) {
 			data = {}
 		}
 		console.log(data)
-		responce.render('home.ejs', {products: data})
+		console.log(data.length)
+		var x = "none"
+		if (request.query.itemAdded == "true") {
+			x = 'block'
+		}
+		responce.render('home.ejs', {products: data, message: x})
 	})
 
 	// responce.render("home.ejs")

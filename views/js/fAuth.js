@@ -4,11 +4,17 @@ function checkAuth(){
 			document.getElementById('uname-field').setAttribute("style", "display: block;")
 			document.getElementById('login-field').setAttribute("style", "display: none;")
 			document.getElementById('uname-dom').innerHTML = "Hello, " + user.displayName
+			document.getElementById('uname-field').setAttribute("style", "display: block;")
+			document.getElementById('login-field').setAttribute("style", "display: none;")
+			document.getElementById('uAuthMsg').setAttribute("style", "display: none;")
+			document.getElementById('npf').setAttribute("style", "display: block;")
 		}
 		else {
 			document.getElementById('uname-field').setAttribute("style", "display: none;")
 			document.getElementById('login-field').setAttribute("style", "display: block;")
 			document.getElementById('uname-dom').innerHTML = "Unregistered"
+			document.getElementById('uAuthMsg').setAttribute("style", "display: block;")
+			document.getElementById('npf').setAttribute("style", "display: none;")
 		}
 	})
 }

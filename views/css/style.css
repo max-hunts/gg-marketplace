@@ -49,6 +49,7 @@ footer a {
 
 ::placeholder {
 	color: #aaaaaa;
+	font-family: osl;
 }
 
 .page {
@@ -263,6 +264,12 @@ footer a {
 	margin-top: 10px;
 }
 
+.product-list-container {
+	display: flex;
+	justify-content: space-between;
+	width: 100%;
+}
+
 .product-container {
 	width: 160px;
 }
@@ -393,4 +400,17 @@ footer a {
 
 .npf-short input {
 	width: 150px;
+}
+
+.user-message {
+	width: 100%;
+}
+
+.user-message p {
+	position: relative;
+	font-family: osl;
+	font-size: 20px;
+	color: green;
+	left: 50%;
+	transform: translate(-10%, 0);
 }

@@ -14,22 +14,7 @@
   <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-auth.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/7.14.1/firebase-database.js"></script>
-  <script>
-  // Your web app's Firebase configuration
-  var firebaseConfig = {
-    apiKey: "AIzaSyCrhgibbVUCOu3Vz3pw9iutGwTXen724eU",
-    authDomain: "project-gg-3b754.firebaseapp.com",
-    databaseURL: "https://project-gg-3b754.firebaseio.com",
-    projectId: "project-gg-3b754",
-    storageBucket: "project-gg-3b754.appspot.com",
-    messagingSenderId: "338558477178",
-    appId: "1:338558477178:web:f1b9069d1da04749a26cc3",
-    measurementId: "G-Y42R9NNJXS"
-  };
-  // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
-</script>
+  <script src="js/fInit.js"></script>
 
 </head>
 
@@ -39,7 +24,7 @@
 			<div class="navbar">
 				<div class="logon-crumbs">
 					<div id="uname-field" style="display: none;">
-						<a id="uname-dom" class="user-name" href="#">Unregistered user</a>
+						<a id="uname-dom" class="user-name" href="/">Unregistered user</a>
 						<div class="user-logout">
 							<a onclick={signout()}>Log out</a>
 						</div>
@@ -64,57 +49,86 @@
 					</div>
 				</div>
 			</div>
+			<div class="user-message" style="display: <%= message %>;">
+				<p>Product added successfully</p>
+			</div>
 			<div class="sbar">
 				<img src="media/gg_logo.png" alt="img">
 				<input id="sfield" type="text" placeholder="I Want...">
 				<button id="sbutton">Go!</button>
 				<a href="#">Extras</a>
 			</div>
+
 			<div class="space"></div>
+
 			<div class="welcome">
 				<img src="media/welcome.png">
 			</div>
 			<div class="space"></div>
 			<div class="products">
 				<p>Popular:</p>
-				<div class="product-container">
-					<img src="media/var.png" alt="img">
-					<p class="l"><%= "Item name"%></p>
-					<p class="r">£<%= "20.99"%></p>
+				<div class="product-list-container">
+				<% var keys = Object.keys(products) %>
+				<% keys.forEach(function(key){ %>
+					<div class="product-container">
+						<a href="#"><img src="media/var.png" alt="img"></a>
+						<p class="l"><%= products[key].name%></p>
+						<p class="r">£ <%= products[key].price%></p>
+					</div>
+				<% }) %>
 				</div>
 			</div>
 
 
 			<div class="products">
 				<p>Personalised 1:</p>
-				<div class="product-container">
-					<img src="media/var.png" alt="img">
-					<p class="l"><%= "Item name"%></p>
-					<p class="r">£<%= "20.99"%></p>
+				<div class="product-list-container">
+					<div class="product-container">
+						<a href="#"><img src="media/var.png" alt="img"></a>
+						<p class="l"><%= "Item name"%></p>
+						<p class="r">£ <%= "20.99"%></p>
+					</div>
+					<div class="product-container">
+						<a href="#"><img src="media/var.png" alt="img"></a>
+						<p class="l"><%= "Item name"%></p>
+						<p class="r">£ <%= "20.99"%></p>
+					</div>
+					<div class="product-container">
+						<a href="#"><img src="media/var.png" alt="img"></a>
+						<p class="l"><%= "Item name"%></p>
+						<p class="r">£ <%= "20.99"%></p>
+					</div>
 				</div>
 			</div>
+
 			<div class="products">
 				<p>Personalised 2:</p>
-				<div class="product-container">
-					<img src="media/var.png" alt="img">
-					<p class="l"><%= "Item name"%></p>
-					<p class="r">£<%= "20.99"%></p>
+				<div class="product-list-container">
+					<div class="product-container">
+						<a href="#"><img src="media/var.png" alt="img"></a>
+						<p class="l"><%= "Item name"%></p>
+						<p class="r">£ <%= "20.99"%></p>
+					</div>
 				</div>
 			</div>
 			<div class="products">
 				<p>Personalised 3:</p>
-				<div class="product-container">
-					<img src="media/var.png" alt="img">
-					<p class="l"><%= "Item name"%></p>
-					<p class="r">£<%= "20.99"%></p>
+				<div class="product-list-container">
+					<div class="product-container">
+						<a href="#"><img src="media/var.png" alt="img"></a>
+						<p class="l"><%= "Item name"%></p>
+						<p class="r">£ <%= "20.99"%></p>
+					</div>
 				</div>
 			</div>
 			<div class="products">
 				<p>Recent:</p>
-				<div class="product-container">
-					<img src="media/var.png" alt="img">
-					<p class="l"><%= "Item name"%></p>
-					<p class="r">£<%= "20.99"%></p>
+				<div class="product-list-container">
+					<div class="product-container">
+						<a href="#"><img src="media/var.png" alt="img"></a>
+						<p class="l"><%= "Item name"%></p>
+						<p class="r">£ <%= "20.99"%></p>
+					</div>
 				</div>
 			</div>
 
