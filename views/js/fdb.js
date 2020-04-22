@@ -14,25 +14,28 @@ function productSubmutEventHandler(){
 
 	const nameField = document.getElementById('pName')
 	const descField = document.getElementById('pDesc')
-	const imgField = document.getElementById('pImgUrl')
 	const locField = document.getElementById('pLoc')
 	const stockField = document.getElementById('pStock')
 	const publicField = document.getElementById('pPublic')
 	const priceField = document.getElementById('pPrice')
+
+	const imgBtn = document.getElementById('pImg')
+	var image = imgBtn.files[0]
+	var storageRef = firebase.storage().ref('/product-img/' + image.name)
+	storageRef.put(image)
 
 	var sessUid = firebase.auth().currentUser.uid
 
 	data.id = 999
 	data.name = nameField.value
 	data.desc = descField.value
-	data.img = imgField.value
+	data.img = image.name
 	data.location = locField.value
 	data.stock = stockField.value
 	data.public = publicField.value
 	data.price = priceField.value
 	data.owner = sessUid
 	data.holder = sessUid
-
 
 	addItem(data)
 }

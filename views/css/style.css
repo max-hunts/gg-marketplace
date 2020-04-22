@@ -28,6 +28,7 @@ body {
 }
 
 main {
+	min-height: 79.7vh;
 	/*padding-bottom: 200px;*/
 }
 
@@ -272,10 +273,12 @@ footer a {
 
 .product-container {
 	width: 160px;
+	height: 100%;
 }
 
 .product-container img {
 	width: 100%;
+	max-height: 90%;
 }
 
 .product-container p {
@@ -283,6 +286,7 @@ footer a {
 	color: #CA5555;
 	font-size: 17px;
 }
+
 .r {float: right;}
 .l {float: left;}
 
@@ -368,6 +372,14 @@ footer a {
 	margin-bottom: 15px;
 	border-radius: 0;
 	border: 0.5px solid grey;
+}
+
+#pImg {
+	position: relative;
+	border: none;
+	color: grey;
+	left: -10px;
+	top: 12px;
 }
 
 .new-product-field button {
