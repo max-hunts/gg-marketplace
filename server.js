@@ -20,12 +20,10 @@ app.set('views', __dirname + '/views')
 
 
 app.get("/", function(request, responce) {
-	dbRef = database.ref("/products")
+	var dbRef = database.ref("/products")
 	dbRef.limitToFirst(5).once('value', function(snapshot){
-		var data = snapshot.val()
-		if (!data) {
-			data = {}
-		}
+		var data = {}
+		data = snapshot.val()
 		var x = "none"
 		if (request.query.itemAdded == "true") {
 			x = 'block'
@@ -42,9 +40,20 @@ app.get('/additmpage', function(request, responce){
 
 app.get('/product', function(request, responce){
 	if (request.query.productid) {
-		console.log(request.query.productid)
+		var dbRef = database.ref("/products/"+request.query.productid)
+		dbRef.once('value', function(snapshot){
+			data = snapshot.val()
+			if (data){
+				responce.render('product.ejs', {item:data})
+			}
+			else {
+				responce.render('404.ejs')
+			}
+		})
 	}
-	responce.render('product.ejs')
+	else {
+		responce.render('404.ejs')
+	}
 })
 
 var port = 5000
