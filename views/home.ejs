@@ -72,7 +72,7 @@
 				<% var keys = Object.keys(products) %>
 				<% keys.forEach(function(key){ %>
 					<div class="product-container">
-						<a href="#">
+						<a href="/product?productid=<%=key%>">
 							<img class="dyn-img" title="<%= products[key].img %>" alt="img">
 						</a>
 						<p class="l"><%= products[key].name%></p>
