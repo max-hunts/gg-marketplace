@@ -26,8 +26,6 @@ app.get("/", function(request, responce) {
 		if (!data) {
 			data = {}
 		}
-		console.log(data)
-		console.log(data.length)
 		var x = "none"
 		if (request.query.itemAdded == "true") {
 			x = 'block'
@@ -42,6 +40,12 @@ app.get('/additmpage', function(request, responce){
 	responce.render('add-item.ejs')
 })
 
+app.get('/product', function(request, responce){
+	if (request.query.productid) {
+		console.log(request.query.productid)
+	}
+	responce.render('product.ejs')
+})
 
 var port = 5000
 
