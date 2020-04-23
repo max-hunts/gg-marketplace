@@ -23,7 +23,7 @@ app.set('views', __dirname + '/views')
 
 app.get("/", function(request, responce) {
 	var dbRef = database.ref("/products")
-	dbRef.limitToFirst(5).once('value', function(snapshot){
+	dbRef.limitToLast(5).once('value', function(snapshot){
 		var data = {}
 		data = snapshot.val()
 		var x = "none"
@@ -38,7 +38,7 @@ app.get("/", function(request, responce) {
 
 app.get("/home", function(request, responce) {
 	var dbRef = database.ref("/products")
-	dbRef.limitToFirst(5).once('value', function(snapshot){
+	dbRef.limitToLast(5).once('value', function(snapshot){
 		var data = {}
 		data = snapshot.val()
 		var x = "none"

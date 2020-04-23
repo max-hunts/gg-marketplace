@@ -21,7 +21,22 @@ app.set('views', __dirname + '/views')
 
 app.get("/", function(request, responce) {
 	var dbRef = database.ref("/products")
-	dbRef.limitToFirst(5).once('value', function(snapshot){
+	dbRef.limitToLast(5).once('value', function(snapshot){
+		var data = {}
+		data = snapshot.val()
+		var x = "none"
+		if (request.query.itemAdded == "true") {
+			x = 'block'
+		}
+		responce.render('home.ejs', {products: data, message: x})
+	})
+
+	// responce.render("home.ejs")
+})
+
+app.get("/home", function(request, responce) {
+	var dbRef = database.ref("/products")
+	dbRef.limitToLast(5).once('value', function(snapshot){
 		var data = {}
 		data = snapshot.val()
 		var x = "none"
