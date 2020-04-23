@@ -16,6 +16,7 @@
   <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-storage.js"></script>
   <script defer src="https://www.gstatic.com/firebasejs/7.14.1/firebase-database.js"></script>
   <script src="js/fInit.js"></script>
+
 </head>
 
 <body>
@@ -24,7 +25,7 @@
 			<div class="navbar">
 				<div class="logon-crumbs">
 					<div id="uname-field" style="display: none;">
-						<a id="uname-dom" class="user-name" href="/">Unregistered user</a>
+						<a id="uname-dom" class="user-name" href="home">Unregistered user</a>
 						<div class="user-logout">
 							<a onclick={signout()}>Log out</a>
 						</div>
@@ -44,36 +45,38 @@
 					<div class="cart">
 						&#x1F6d2; | <%= 0%>
 					</div>
-					<div class="add-item">
-						<a href="/additmpage">⊕</a>
-					</div>
 				</div>
-			</div>
-
-			<div class="sbar">
-				<img src="media/gg_logo.png" alt="img">
-				<input id="sfield" type="text" placeholder="I Want...">
-				<button id="sbutton">Go!</button>
-				<a href="#">Extras</a>
 			</div>
 
 			<div class="space"></div>
 
+			<div class="user-auth-message" id="uAuthMsg" style="display: block;"><p>Please log in to continue</p></div>
 
-			<div class="product-page-container">
-				<div class="product-page-info-container">
-					<div class="product-page-img"><img class="dyn-img" src="media/noimage.png" title="<%= item.img %>"></div>
-					<div class="product-page-info">			
-						<h2><%= item.name %> </h2>
-						<p>Seller <%= item.owner %></p>
-						<p>Location: <%= item.location %></p>
-						<p>In stock: <%= item.stock %></p>
-						<p>Price: £<%= item.price %></p>
-						<button onclick={purchaseItem()} id="REMEMBER TO ADD AUTH VERIFICATION TO JS SCRIPT">Buy!</button>
-					</div>
+			<div class="new-product-field" id="npf" style="display: none;">
+				<p>Add product</p>
+				<div class="npf-short">
+					<input type="text" id="pName" placeholder="Product Name">
 				</div>
-				<div class="product-page-description"><p><%= item.desc %></p></div>
+				<div class="npf-long">
+					<input type="text" id="pDesc" placeholder="Description">
+				</div>
+				<input type="file" id="pImg" value="upload">
+				<input type="text" id="pLoc" placeholder="Location (eg. London)">
+				<input type="text" id="pStock" placeholder="Quantity in stock (default: 1)">
+				<div class="npf-long">
+					<input type="text" id="pPublic" placeholder="Display: leave empty for public, type for private, CHECKBOXES ARE FUCKING HARD">
+				</div>
+				<div class="npf-short">
+					<input type="text" id="pPrice" placeholder="Price £">
+				</div>
+				<button id="pSend" onclick={productSubmutEventHandler()}>Submit</button>
 			</div>
+
+			
+			
+
+
+
 
 
 			<div class="space"></div>

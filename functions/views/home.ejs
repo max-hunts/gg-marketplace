@@ -24,7 +24,7 @@
 			<div class="navbar">
 				<div class="logon-crumbs">
 					<div id="uname-field" style="display: none;">
-						<a id="uname-dom" class="user-name" href="/">Unregistered user</a>
+						<a id="uname-dom" class="user-name" href="home">Unregistered user</a>
 						<div class="user-logout">
 							<a onclick={signout()}>Log out</a>
 						</div>
@@ -45,7 +45,7 @@
 						&#x1F6d2; | <%= 0%>
 					</div>
 					<div class="add-item">
-						<a href="/additmpage">⊕</a>
+						<a href="additmpage">⊕</a>
 					</div>
 				</div>
 			</div>
@@ -72,7 +72,7 @@
 				<% var keys = Object.keys(products) %>
 				<% keys.forEach(function(key){ %>
 					<div class="product-container">
-						<a href="/product?productid=<%=key%>">
+						<a href="product?productid=<%=key%>">
 							<img class="dyn-img" title="<%= products[key].img %>" alt="img">
 						</a>
 						<p class="l"><%= products[key].name%></p>

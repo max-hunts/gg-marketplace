@@ -46,7 +46,7 @@ function addItem(item){
 
 	itemRef.push(item)
 		.then(function(){
-			window.location.replace('/?itemAdded=true')
+			window.location.replace('home?itemAdded=true')
 		})
 		.catch(function(error){
 			console.log(error)
