@@ -384,7 +384,7 @@ footer a {
 
 .new-product-field button {
 	height: 40px;
-	width: 100px;
+	width: 120px;
 	display: block;
 	font-size: 19px;
 	font-family: osl;
@@ -404,6 +404,10 @@ footer a {
 .new-product-field button:active {
 	transition: 0.1s;
 	background-color: #ffaf69;
+}
+
+.new-product-field button:disabled {
+	background-color: #b9b9b9;
 }
 
 .npf-long input {
@@ -473,7 +477,9 @@ footer a {
 	transition: 0.1s;
 	background-color: #ffaf69;
 }
-
+.product-page-info button:disabled {
+	background-color: #b9b9b9;
+}
 .product-page-info h2 {
 	font-size: 30px;
 }

@@ -7,7 +7,7 @@ function leavePage(){
 	}
 }
 
-function productSubmutEventHandler(){
+function productSubmitEventHandler(){
 	data = {
 		id: 1,
 		name: "",
@@ -49,6 +49,11 @@ function productSubmutEventHandler(){
 	var image = imgBtn.files[0]
 	var imgPath = productKey + '/' + image.name
 	var storageRef = firebase.storage().ref('/product-img/' + imgPath)
+
+	const submitBtn = document.getElementById('pSend')
+	submitBtn.innerHTML = "Uploading..."
+	submitBtn.disabled = true
+
 	updateDBImg(productKey, imgPath)
 
 	storageRef.put(image).then(function(){
@@ -87,4 +92,17 @@ function updateImgs() {
     	pathReference.getDownloadURL().then(function(url) {image.src = url})
     })
 }
+
 updateImgs();
+
+function purchaseItem() {
+	const purchaseBtn = document.getElementById('remember-to-add-auth-verificartion-to-js-handler')
+	if (purchaseBtn.innerHTML == "Buy!") {
+		purchaseBtn.innerHTML = "Functionality not yet implemented 😢"
+		purchaseBtn.setAttribute("style", "width: 500px;");
+	}
+	else {
+		purchaseBtn.disabled = true
+	}
+	
+}
