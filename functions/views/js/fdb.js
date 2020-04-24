@@ -42,9 +42,7 @@ function productSubmutEventHandler(){
 	var storageRef = firebase.storage().ref('/product-img/' + imgPath)
 	updateDBImg(productKey, imgPath)
 
-	storageRef.put(image).then(function(){
-			window.location.replace('home?itemAdded=true')
-		})
+	storageRef.put(image)
 }
 
 function addItem(item){
@@ -60,7 +58,9 @@ function updateDBImg(key, value){
 	var itemRef = database.ref('/products/' + key)
 	console.log("itemRef")
 	console.log(itemRef)	
-	itemRef.update({img: value});
+	itemRef.update({img: value}).then(function(){
+			window.location.replace('home?itemAdded=true')
+		})
 }
 
 function updateImgs() {
