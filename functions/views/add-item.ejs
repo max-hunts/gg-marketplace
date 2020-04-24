@@ -10,6 +10,8 @@
 
   <link rel="stylesheet" href="css/style.css">
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
   <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-analytics.js"></script>
   <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-auth.js"></script>
@@ -60,7 +62,7 @@
 				<div class="npf-long">
 					<input required type="text" id="pDesc" placeholder="Description">
 				</div>
-				<input required type="file" id="pImg" value="upload">
+				<input required type="file" id="pImg" value="upload" accept="image/jpeg, image/png, image/gif">
 				<input required type="text" id="pLoc" placeholder="Location (eg. London)">
 				<input required type="text" id="pStock" placeholder="Quantity in stock (default: 1)">
 				<div class="npf-long">

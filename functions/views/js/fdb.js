@@ -1,3 +1,12 @@
+var permissionToLeavePage1 = false
+var permissionToLeavePage2 = false
+
+function leavePage(){
+	if (permissionToLeavePage1 && permissionToLeavePage2) {
+		window.location.replace('home?itemAdded=true')
+	}
+}
+
 function productSubmutEventHandler(){
 	data = {
 		id: 1,
@@ -42,7 +51,10 @@ function productSubmutEventHandler(){
 	var storageRef = firebase.storage().ref('/product-img/' + imgPath)
 	updateDBImg(productKey, imgPath)
 
-	storageRef.put(image)
+	storageRef.put(image).then(function(){
+		permissionToLeavePage2 = true
+		leavePage()
+	})
 }
 
 function addItem(item){
@@ -59,7 +71,8 @@ function updateDBImg(key, value){
 	console.log("itemRef")
 	console.log(itemRef)	
 	itemRef.update({img: value}).then(function(){
-			window.location.replace('home?itemAdded=true')
+		permissionToLeavePage1 = true
+		leavePage()
 		})
 }
 
