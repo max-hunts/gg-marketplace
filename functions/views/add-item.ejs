@@ -55,19 +55,19 @@
 			<div class="new-product-field" id="npf" style="display: none;">
 				<p>Add product</p>
 				<div class="npf-short">
-					<input type="text" id="pName" placeholder="Product Name">
+					<input required autofocus type="text" id="pName" placeholder="Product Name">
 				</div>
 				<div class="npf-long">
-					<input type="text" id="pDesc" placeholder="Description">
+					<input required type="text" id="pDesc" placeholder="Description">
 				</div>
-				<input type="file" id="pImg" value="upload">
-				<input type="text" id="pLoc" placeholder="Location (eg. London)">
-				<input type="text" id="pStock" placeholder="Quantity in stock (default: 1)">
+				<input required type="file" id="pImg" value="upload">
+				<input required type="text" id="pLoc" placeholder="Location (eg. London)">
+				<input required type="text" id="pStock" placeholder="Quantity in stock (default: 1)">
 				<div class="npf-long">
 					<input type="text" id="pPublic" placeholder="Display: leave empty for public, type for private, CHECKBOXES ARE FUCKING HARD">
 				</div>
 				<div class="npf-short">
-					<input type="text" id="pPrice" placeholder="Price £">
+					<input required type="text" id="pPrice" placeholder="Price £">
 				</div>
 				<button id="pSend" onclick={productSubmutEventHandler()}>Submit</button>
 			</div>

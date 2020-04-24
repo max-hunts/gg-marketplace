@@ -20,16 +20,13 @@ function productSubmutEventHandler(){
 	const priceField = document.getElementById('pPrice')
 
 	const imgBtn = document.getElementById('pImg')
-	var image = imgBtn.files[0]
-	var storageRef = firebase.storage().ref('/product-img/' + image.name)
-	storageRef.put(image)
 
 	var sessUid = firebase.auth().currentUser.uid
 
 	data.id = 999
 	data.name = nameField.value
 	data.desc = descField.value
-	data.img = image.name
+	data.img = "default.png"
 	data.location = locField.value
 	data.stock = stockField.value
 	data.public = publicField.value
@@ -37,20 +34,33 @@ function productSubmutEventHandler(){
 	data.owner = sessUid
 	data.holder = sessUid
 
-	addItem(data)
+	var productKey = addItem(data)
+	console.log(productKey)
+
+	var image = imgBtn.files[0]
+	var imgPath = productKey + '/' + image.name
+	var storageRef = firebase.storage().ref('/product-img/' + imgPath)
+	updateDBImg(productKey, imgPath)
+
+	storageRef.put(image).then(function(){
+			window.location.replace('home?itemAdded=true')
+		})
 }
 
 function addItem(item){
 	var database = firebase.database()
 	var itemRef = database.ref('/products')
+	var key = itemRef.push(item)
+	return key.key
+}
 
-	itemRef.push(item)
-		.then(function(){
-			window.location.replace('home?itemAdded=true')
-		})
-		.catch(function(error){
-			console.log(error)
-		})
+function updateDBImg(key, value){
+	console.log("Updating db, key=" + key + " value="+value+" total=" + '/products/' + key)
+	var database = firebase.database()
+	var itemRef = database.ref('/products/' + key)
+	console.log("itemRef")
+	console.log(itemRef)	
+	itemRef.update({img: value});
 }
 
 function updateImgs() {
