@@ -6,15 +6,19 @@ function checkAuth(){
 			document.getElementById('uname-dom').innerHTML = "Hello, " + user.displayName
 			document.getElementById('uname-field').setAttribute("style", "display: block;")
 			document.getElementById('login-field').setAttribute("style", "display: none;")
-			document.getElementById('uAuthMsg').setAttribute("style", "display: none;")
-			document.getElementById('npf').setAttribute("style", "display: block;")
+			try {document.getElementById('uAuthMsg').setAttribute("style", "display: none;")}
+			catch(error) {console.log(error)}
+			try{document.getElementById('npf').setAttribute("style", "display: block;")}
+			catch(error) {console.log(error)}
 		}
 		else {
 			document.getElementById('uname-field').setAttribute("style", "display: none;")
 			document.getElementById('login-field').setAttribute("style", "display: block;")
 			document.getElementById('uname-dom').innerHTML = "Unregistered"
-			document.getElementById('uAuthMsg').setAttribute("style", "display: block;")
-			document.getElementById('npf').setAttribute("style", "display: none;")
+			try{document.getElementById('uAuthMsg').setAttribute("style", "display: block;")}
+			catch(error) {console.log(error)}
+			try{document.getElementById('npf').setAttribute("style", "display: none;")}
+			catch(error) {console.log(error)}
 		}
 	})
 }

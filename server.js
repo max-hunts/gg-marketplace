@@ -53,6 +53,22 @@ app.get('/additmpage', function(request, responce){
 	responce.render('add-item.ejs')
 })
 
+app.get('/my-products', function(request, responce){
+	request.query.userid = "FhZpTE7ZYzgDDwBBl2MYkc243Se2"
+	if (request.query.userid) {
+		var dbRef = database.ref("/products")
+		dbRef.orderByChild('owner').equalTo(request.query.userid).once('value', function(snapshot){
+			var data = {}
+			data = snapshot.val()
+			responce.render('my-products.ejs', {products: data})
+		})
+	}
+	else {
+		responce.render('404.ejs')
+	}
+	
+})
+
 app.get('/product', function(request, responce){
 	if (request.query.productid) {
 		var dbRef = database.ref("/products/"+request.query.productid)
