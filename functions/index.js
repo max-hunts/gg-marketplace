@@ -56,25 +56,35 @@ app.get('/my-products', function(request, responce){
 		.then(function(decodedToken) {
 			let uid = decodedToken.uid;
 			var dbRef = database.ref("/products")
-			dbRef.orderByChild('owner').equalTo(uid).once('value', function(snapshot){
-				var data = {
-					  'x': {
-							desc: '',
-							holder: '',
-							id: 999,
-							img: '',
-							location: '',
-							name: 'No products listed 😢',
-							owner: '',
-							price: '',
-							public: '',
-							stock: ''
-						  },
-				}
-				if (snapshot.val()) {data = snapshot.val()}
-				console.log(data)
-				responce.render('my-products.ejs', {products: data})
-			})
+
+			if (uid == "If84zSzRvlcCqRs0ZPJRpAcY1He2") {
+				dbRef.orderByChild('owner').once('value', function(snapshot){
+					var data = snapshot.val()
+					responce.render('my-products.ejs', {products: data})
+				})
+			}
+			else {
+				dbRef.orderByChild('owner').equalTo(uid).once('value', function(snapshot){
+					var data = {
+						  'x': {
+								desc: '',
+								holder: '',
+								id: 999,
+								img: '',
+								location: '',
+								name: 'No products listed 😢',
+								owner: '',
+								price: '',
+								public: '',
+								stock: ''
+							  },
+					}
+					if (snapshot.val()) {data = snapshot.val()}
+					responce.render('my-products.ejs', {products: data})
+				})
+			}
+
+
 		})
 		.catch(function(error) {
 			console.log(error)
