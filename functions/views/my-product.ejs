@@ -68,8 +68,16 @@
 						<p>Seller <%= item.owner %></p>
 						<p>Location: <%= item.location %></p>
 						<p>In stock: <%= item.stock %></p>
+						<% var publicField %>
+						<% if (item.public == "") {publicField = "On sale"} else {publicField = "Hidden"}%>
+						<p>Status: <%= publicField %></p>
 						<p>Price: £<%= item.price %></p>
-						<button onclick={x()} id="xbtn">Smth</button>
+						<div class="product-mgmt-buttons">
+							<div class="edit-btn"><button onclick={x()} id="editBtn">Edit</button> </div>
+							<div class="sell-btn"><button onclick={y()} id="sellBtn">Sell</button> </div>
+							<div class="ship-btn"><button onclick={z()} id="shipBtn">Ship</button> </div>
+						</div>
+						
 					</div>
 				</div>
 				<div class="product-page-description"><p><%= item.desc %></p></div>

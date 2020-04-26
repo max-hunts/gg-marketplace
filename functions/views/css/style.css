@@ -280,16 +280,17 @@ footer a {
 	display: flex;
 	justify-content: space-between;
 	width: 100%;
+	padding-bottom: 40px;
 }
 
 .product-container {
 	width: 160px;
-	height: 100%;
+	height: 160px;
 }
 
 .product-container img {
 	width: 100%;
-	max-height: 90%;
+	max-height: 100%;
 }
 
 .product-container p {
@@ -521,7 +522,7 @@ footer a {
 }
 .my-product-container img {
 	width: 100%;
-	max-height: 100%;
+	height: 100%;
 	cursor: pointer;
 }
 .my-product-details-container {
@@ -539,11 +540,14 @@ footer a {
 .top {
 	padding-top: 5px;
 }
-.middle {
-	padding-top: 50px;
+.middle-top {
+	padding-top: 30px;
+}
+.middle-bottom {
+	padding-top: 30px;
 }
 .bottom {
-	padding-top: 50px;
+	padding-top: 30px;
 }
 
 .purchase-message {
@@ -552,4 +556,54 @@ footer a {
 	 font-size: 25px;
 	 font-family: osl;
 	 padding-bottom: 10px;
+}
+
+.product-mgmt-buttons {
+	display: inline-flex;
+}
+.product-mgmt-buttons button {
+	margin-top: 38px;
+	height: 40px;
+	width: 100px;
+	display: block;
+	font-size: 19px;
+	font-family: osl;
+	box-shadow: 0px 2px 3px #A5A5A5;
+	border-radius: 0;
+	border: none;
+	transition: 0.3s;
+	margin-right: 15px;
+}
+.product-mgmt-buttons button:hover {
+	transition: 0.3s;
+}
+.product-mgmt-buttons button:active {
+	transition: 0.1s;
+}
+.edit-btn button {
+	background-color: #A562FF;
+}
+.sell-btn button {
+	background-color: #0FDD00;
+}
+.ship-btn button {
+	background-color: #CB0070;
+}
+.edit-btn button:hover {
+	background-color: #20A0A0;
+}
+.sell-btn button:hover {
+	background-color: #AAFF00;
+}
+.ship-btn button:hover {
+	background-color: cyan;
+}
+.edit-btn button:active {
+	background-color: pink;
+}
+.sell-btn button:active {
+	background-color: #00FF00;
+}
+.ship-btn button:active {
+	background-color: #00CCEE;
 }

@@ -71,7 +71,10 @@
 						</a>
 						<div class="my-product-details-container">
 							<p class="top"><%= products[key].name%></p>
-							<p class="middle"><%= products[key].location%></p>
+							<% var publicField %>
+							<% if (products[key].public == "") {publicField = "On sale"} else {publicField = "Hidden"}%>
+							<p class="middle-top"><%= publicField%></p>
+							<p class="middle-bottom"><%= products[key].location%></p>
 							<p class="bottom">£ <%= products[key].price%></p>
 						</div>
 					</div>
