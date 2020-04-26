@@ -23,21 +23,14 @@ app.set('views', __dirname + '/views')
 
 
 app.get("/", function(request, responce) {
-	var dbRef = database.ref("/products")
-	dbRef.limitToLast(5).once('value', function(snapshot){
-		var data = {}
-		data = snapshot.val()
-		var x = "none"
-		if (request.query.itemAdded == "true") {
-			x = 'block'
-		}
-		responce.render('home.ejs', {products: data, message: x})
-	})
-
-	// responce.render("home.ejs")
+	homePage(request, responce)
 })
 
 app.get("/home", function(request, responce) {
+	homePage(request, responce)
+})
+
+function homePage(request, responce) {
 	var dbRef = database.ref("/products")
 	dbRef.limitToLast(5).once('value', function(snapshot){
 		var data = {}
@@ -48,9 +41,7 @@ app.get("/home", function(request, responce) {
 		}
 		responce.render('home.ejs', {products: data, message: x})
 	})
-
-	// responce.render("home.ejs")
-})
+}
 
 app.get('/additmpage', function(request, responce){
 	responce.render('add-item.ejs')
