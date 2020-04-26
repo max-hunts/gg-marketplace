@@ -32,7 +32,7 @@ app.get("/home", function(request, responce) {
 
 function homePage(request, responce) {
 	var dbRef = database.ref("/products")
-	dbRef.limitToLast(5).once('value', function(snapshot){
+	dbRef.orderByChild("public").equalTo("").limitToLast(5).once('value', function(snapshot){
 		var data = {}
 		data = snapshot.val()
 		var x = "none"
@@ -93,6 +93,27 @@ app.get('/my-products', function(request, responce){
 	}
 })
 
+app.get('/my-product', function(request, responce){
+	if (request.query.uToken && request.query.productid) {
+	admin.auth().verifyIdToken(request.query.uToken)
+		.then(function(decodedToken) {
+			let uid = decodedToken.uid;
+			var dbRef = database.ref("/products/"+request.query.productid)
+			dbRef.once('value', function(snapshot){
+				data = snapshot.val()
+				responce.render('my-product.ejs', {item:data, key:request.query.productid})
+			})
+		})
+		.catch(function(error) {
+			console.log(error)
+			responce.send("<h1>Bad Auth Token</h1><a href='home'>Home</a>")
+		});
+	}
+	else {
+		responce.send("<h1>No Auth Token Provided</h1><a href='home'>Home</a>")
+	}
+})
+
 app.get('/product', function(request, responce){
 	if (request.query.productid) {
 		var dbRef = database.ref("/products/"+request.query.productid)
@@ -118,7 +139,7 @@ app.post('/purchase-api', function(request, responce){
 				let uid = decodedToken.uid;
 				let product = request.body.item
 				var productRef = database.ref("/products/"+product)
-				productRef.update({owner:uid})
+				productRef.update({owner:uid, public:"no"})
 				responce.send({success:true, error:null})
 			})
 			.catch(function(error) {

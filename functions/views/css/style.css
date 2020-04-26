@@ -88,7 +88,18 @@ footer a {
 	font-family: osl;
 	font-size: 23px;
 	color: #898989;
+	cursor: pointer;
+	transition: 0.3s;
 }
+
+.user-name:hover {
+	color: red;
+}
+.user-name:active {
+	transition: 0.1s;
+	color: #F0F0F0;
+}
+
 
 .logon-crumbs button {
 	float: left;
@@ -511,6 +522,7 @@ footer a {
 .my-product-container img {
 	width: 100%;
 	max-height: 100%;
+	cursor: pointer;
 }
 .my-product-details-container {
 	display: block;

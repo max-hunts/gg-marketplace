@@ -143,6 +143,14 @@ function purchaseItem() {
 	
 }
 
+function my_product(productID) {
+	firebase.auth().currentUser.getIdToken().then(function(idToken) {
+		console.log("my-products?uToken=" + idToken + '&productid=' + productID)
+		window.location.replace("my-product?uToken=" + idToken + '&productid=' + productID)
+	})
+	.catch(e => {console.log(e)})
+}
+
 function my_products() {
 	firebase.auth().currentUser.getIdToken().then(function(idToken) {
 		window.location.replace("my-products?uToken=" + idToken)
