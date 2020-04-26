@@ -106,3 +106,7 @@ function purchaseItem() {
 	}
 	
 }
+
+function my_products() {
+	console.log(firebase.auth().currentUser.getIdToken())
+}
