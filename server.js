@@ -99,7 +99,7 @@ app.get('/product', function(request, responce){
 		dbRef.once('value', function(snapshot){
 			data = snapshot.val()
 			if (data){
-				responce.render('product.ejs', {item:data})
+				responce.render('product.ejs', {item:data, key:request.query.productid})
 			}
 			else {
 				responce.render('404.ejs')
@@ -108,6 +108,27 @@ app.get('/product', function(request, responce){
 	}
 	else {
 		responce.render('404.ejs')
+	}
+})
+
+app.post('/purchase-api', function(request, responce){
+	console.log(request.body)
+	if (request.body.item && request.body.user) {
+		admin.auth().verifyIdToken(request.body.user)
+			.then(function(decodedToken) {
+				let uid = decodedToken.uid;
+				let product = request.body.item
+				var productRef = database.ref("/products/"+product)
+				productRef.update({owner:uid})
+				responce.send({success:true, error:null})
+			})
+			.catch(function(error) {
+				console.log(error)
+				responce.send({ error: 'invalid auth token' })
+			});
+	}
+	else {
+		responce.send({ error: 'invalid data' })
 	}
 })
 

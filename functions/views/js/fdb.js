@@ -98,8 +98,44 @@ updateImgs();
 function purchaseItem() {
 	const purchaseBtn = document.getElementById('remember-to-add-auth-verificartion-to-js-handler')
 	if (purchaseBtn.innerHTML == "Buy!") {
-		purchaseBtn.innerHTML = "Functionality not yet implemented 😢"
-		purchaseBtn.setAttribute("style", "width: 500px;");
+		if (firebase.auth().currentUser) {
+			firebase.auth().currentUser.getIdToken().then(function(idToken) {
+				var item_id_element = document.getElementById("productID")
+				var item_id = item_id_element.getAttribute("product_id")
+				const url = 'purchase-api';
+				// The data we are going to send in our request
+				let data = {
+				    item: item_id,
+				    user: idToken
+				}
+				// The parameters we are gonna pass to the fetch function
+				let postData = { 
+				    method: 'POST', 
+				    body: JSON.stringify(data),
+				    headers: {'Content-Type': 'application/json'}
+				}
+				fetch(url, postData)
+				.then(response => response.json())
+				.then(function(result){
+					console.log(result)
+					if (result.success == true) {
+						document.getElementById("api-response").setAttribute("style", "display: block")
+					}
+					else {
+						document.getElementById("api-response").innerHTML = "Error: " + result.error
+						document.getElementById("api-response").setAttribute("style", "display: block")
+						document.getElementById("api-response").setAttribute("style", "color: #DD0000")
+					}
+					//check return value
+					//update element accordingly
+				})
+			})
+		}
+		else {
+			purchaseBtn.innerHTML = "Please log in to continue"
+			purchaseBtn.setAttribute("style", "width: 500px;");
+		}
+		
 	}
 	else {
 		purchaseBtn.disabled = true

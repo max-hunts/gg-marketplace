@@ -533,3 +533,11 @@ footer a {
 .bottom {
 	padding-top: 50px;
 }
+
+.purchase-message {
+	 color: #00df90;
+	 text-align: center;
+	 font-size: 25px;
+	 font-family: osl;
+	 padding-bottom: 10px;
+}

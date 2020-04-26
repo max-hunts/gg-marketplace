@@ -114,4 +114,23 @@ app.get('/product', function(request, responce){
 	}
 })
 
+app.post('/purchase-api', function(request, responce){
+	if (request.body.item && request.body.user) {
+		admin.auth().verifyIdToken(request.body.user)
+			.then(function(decodedToken) {
+				let uid = decodedToken.uid;
+				let product = request.body.item
+				var productRef = database.ref("/products/"+product)
+				productRef.update({owner:uid})
+				responce.send({success:true, error:null})
+			})
+			.catch(function(error) {
+				responce.send({ error: 'invalid auth token' })
+			});
+	}
+	else {
+		responce.send({ error: 'invalid data' })
+	}
+})
+
 exports.application = functions.https.onRequest(app)
