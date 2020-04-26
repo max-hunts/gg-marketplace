@@ -69,6 +69,7 @@ function signinwithemail(){
 
 function signout(){
 	firebase.auth().signOut()
+	window.location.replace(window.location.href.split("?")[0])
 }
 
 

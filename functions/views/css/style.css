@@ -501,8 +501,12 @@ footer a {
 }
 .my-product-container {
 	padding-top: 15px;
-	width: 300px;
+	width: 100%;
 	display: inline-flex;
+}
+.my-product-container a {
+	width: 20%;
+	max-height: 20%;
 }
 .my-product-container img {
 	width: 100%;
@@ -518,6 +522,7 @@ footer a {
 	font-family: nunito;
 	color: #CA5555;
 	font-size: 25px;
+	width: 100%;
 }
 .top {
 	padding-top: 5px;

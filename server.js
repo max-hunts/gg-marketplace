@@ -56,26 +56,41 @@ app.get('/additmpage', function(request, responce){
 	responce.render('add-item.ejs')
 })
 
-app.post('/my-products', function(request, responce){
-	admin.auth().verifyIdToken(request.body.uToken)
+app.get('/my-products', function(request, responce){
+	if (request.query.uToken) {
+	admin.auth().verifyIdToken(request.query.uToken)
 		.then(function(decodedToken) {
 			let uid = decodedToken.uid;
 			var dbRef = database.ref("/products")
 			dbRef.orderByChild('owner').equalTo(uid).once('value', function(snapshot){
-				var data = {}
-				data = snapshot.val()
+				var data = {
+					  'x': {
+							desc: '',
+							holder: '',
+							id: 999,
+							img: '',
+							location: '',
+							name: 'No products listed 😢',
+							owner: '',
+							price: '',
+							public: '',
+							stock: ''
+						  },
+				}
+				if (snapshot.val()) {data = snapshot.val()}
 				console.log(data)
 				responce.render('my-products.ejs', {products: data})
 			})
 		})
 		.catch(function(error) {
 			console.log(error)
+			responce.send("<h1>Bad Auth Token</h1><a href='home'>Home</a>")
 		});
+	}
+	else {
+		responce.send("<h1>No Auth Token Provided</h1><a href='home'>Home</a>")
+	}
 })
-
-
-
-
 
 app.get('/product', function(request, responce){
 	if (request.query.productid) {

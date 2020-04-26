@@ -89,7 +89,7 @@ function updateImgs() {
 	// console.log(images)
 	Array.from(images).forEach((image) => {
 		var pathReference = rootReference.child(image.title)
-		pathReference.getDownloadURL().then(function(url) {image.src = url})
+		pathReference.getDownloadURL().then(function(url) {image.src = url}).catch(e => {console.log(e.message)})
 	})
 }
 
@@ -109,12 +109,7 @@ function purchaseItem() {
 
 function my_products() {
 	firebase.auth().currentUser.getIdToken().then(function(idToken) {
-		let data = JSON.stringify({uToken: idToken})
-
-		fetch("my-products", {
-		  method: "POST",
-		  headers: {"Content-type": "application/json"},
-		  body: data
-		})
+		window.location.replace("my-products?uToken=" + idToken)
 	})
+	.catch(e => {console.log(e)})
 }

@@ -2,6 +2,7 @@ const functions = require('firebase-functions');
 
 var express = require('express')
 var logger = require('morgan')
+var bodyParser = require('body-parser')
 var admin = require("firebase-admin");
 var serviceAccount = require("./project-gg-3b754-firebase-adminsdk-4848h-5a5778b77b.json");
 
@@ -13,6 +14,9 @@ var database = firebaseadmin.database()
 
 var app = express()
 
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}))
+
 app.use(logger('dev'))
 app.use(express.static('views'))
 
@@ -22,21 +26,14 @@ app.set('views', __dirname + '/views')
 
 
 app.get("/", function(request, responce) {
-	var dbRef = database.ref("/products")
-	dbRef.limitToLast(5).once('value', function(snapshot){
-		var data = {}
-		data = snapshot.val()
-		var x = "none"
-		if (request.query.itemAdded == "true") {
-			x = 'block'
-		}
-		responce.render('home.ejs', {products: data, message: x})
-	})
-
-	// responce.render("home.ejs")
+	homePage(request, responce)
 })
 
 app.get("/home", function(request, responce) {
+	homePage(request, responce)
+})
+
+function homePage(request, responce) {
 	var dbRef = database.ref("/products")
 	dbRef.limitToLast(5).once('value', function(snapshot){
 		var data = {}
@@ -47,12 +44,46 @@ app.get("/home", function(request, responce) {
 		}
 		responce.render('home.ejs', {products: data, message: x})
 	})
-
-	// responce.render("home.ejs")
-})
+}
 
 app.get('/additmpage', function(request, responce){
 	responce.render('add-item.ejs')
+})
+
+app.get('/my-products', function(request, responce){
+	if (request.query.uToken) {
+	admin.auth().verifyIdToken(request.query.uToken)
+		.then(function(decodedToken) {
+			let uid = decodedToken.uid;
+			var dbRef = database.ref("/products")
+			dbRef.orderByChild('owner').equalTo(uid).once('value', function(snapshot){
+				var data = {
+					  'x': {
+							desc: '',
+							holder: '',
+							id: 999,
+							img: '',
+							location: '',
+							name: 'No products listed 😢',
+							owner: '',
+							price: '',
+							public: '',
+							stock: ''
+						  },
+				}
+				if (snapshot.val()) {data = snapshot.val()}
+				console.log(data)
+				responce.render('my-products.ejs', {products: data})
+			})
+		})
+		.catch(function(error) {
+			console.log(error)
+			responce.send("<h1>Bad Auth Token</h1><a href='home'>Home</a>")
+		});
+	}
+	else {
+		responce.send("<h1>No Auth Token Provided</h1><a href='home'>Home</a>")
+	}
 })
 
 app.get('/product', function(request, responce){
