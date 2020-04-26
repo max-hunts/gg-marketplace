@@ -1,5 +1,6 @@
 var express = require('express')
 var logger = require('morgan')
+var bodyParser = require('body-parser')
 var admin = require("firebase-admin");
 var serviceAccount = require("./secrets/project-gg-3b754-firebase-adminsdk-4848h-5a5778b77b.json");
 
@@ -8,9 +9,11 @@ var firebaseadmin = admin.initializeApp({
   databaseURL: "https://project-gg-3b754.firebaseio.com"
 });
 var database = firebaseadmin.database()
+var auth = admin.auth();
 
 var app = express()
-
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({extended: true}))
 app.use(logger('dev'))
 app.use(express.static('views'))
 
@@ -53,21 +56,26 @@ app.get('/additmpage', function(request, responce){
 	responce.render('add-item.ejs')
 })
 
-app.get('/my-products', function(request, responce){
-	request.query.userid = "FhZpTE7ZYzgDDwBBl2MYkc243Se2"
-	if (request.query.userid) {
-		var dbRef = database.ref("/products")
-		dbRef.orderByChild('owner').equalTo(request.query.userid).once('value', function(snapshot){
-			var data = {}
-			data = snapshot.val()
-			responce.render('my-products.ejs', {products: data})
+app.post('/my-products', function(request, responce){
+	admin.auth().verifyIdToken(request.body.uToken)
+		.then(function(decodedToken) {
+			let uid = decodedToken.uid;
+			var dbRef = database.ref("/products")
+			dbRef.orderByChild('owner').equalTo(uid).once('value', function(snapshot){
+				var data = {}
+				data = snapshot.val()
+				console.log(data)
+				responce.render('my-products.ejs', {products: data})
+			})
 		})
-	}
-	else {
-		responce.render('404.ejs')
-	}
-	
+		.catch(function(error) {
+			console.log(error)
+		});
 })
+
+
+
+
 
 app.get('/product', function(request, responce){
 	if (request.query.productid) {

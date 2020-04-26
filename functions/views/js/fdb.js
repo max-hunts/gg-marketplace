@@ -89,8 +89,8 @@ function updateImgs() {
 	// console.log(images)
 	Array.from(images).forEach((image) => {
 		var pathReference = rootReference.child(image.title)
-    	pathReference.getDownloadURL().then(function(url) {image.src = url})
-    })
+		pathReference.getDownloadURL().then(function(url) {image.src = url})
+	})
 }
 
 updateImgs();
@@ -108,5 +108,13 @@ function purchaseItem() {
 }
 
 function my_products() {
-	console.log(firebase.auth().currentUser.getIdToken())
+	firebase.auth().currentUser.getIdToken().then(function(idToken) {
+		let data = JSON.stringify({uToken: idToken})
+
+		fetch("my-products", {
+		  method: "POST",
+		  headers: {"Content-type": "application/json"},
+		  body: data
+		})
+	})
 }
