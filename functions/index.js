@@ -102,7 +102,7 @@ app.get('/product', function(request, responce){
 		dbRef.once('value', function(snapshot){
 			data = snapshot.val()
 			if (data){
-				responce.render('product.ejs', {item:data})
+				responce.render('product.ejs', {item:data, key:request.query.productid})
 			}
 			else {
 				responce.render('404.ejs')

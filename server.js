@@ -112,7 +112,6 @@ app.get('/product', function(request, responce){
 })
 
 app.post('/purchase-api', function(request, responce){
-	console.log(request.body)
 	if (request.body.item && request.body.user) {
 		admin.auth().verifyIdToken(request.body.user)
 			.then(function(decodedToken) {
@@ -123,7 +122,6 @@ app.post('/purchase-api', function(request, responce){
 				responce.send({success:true, error:null})
 			})
 			.catch(function(error) {
-				console.log(error)
 				responce.send({ error: 'invalid auth token' })
 			});
 	}
