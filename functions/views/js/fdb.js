@@ -12,10 +12,10 @@ function productSubmitEventHandler(){
 		id: 1,
 		name: "",
 		desc: "",
-		img: "",
+		img: "default.png",
 		location: "",
-		stock: 0,
-		public: true,
+		stock: 1,
+		status: "on-sale",
 		price: 0,
 		owner: "",
 		holder: ""
@@ -25,7 +25,6 @@ function productSubmitEventHandler(){
 	const descField = document.getElementById('pDesc')
 	const locField = document.getElementById('pLoc')
 	const stockField = document.getElementById('pStock')
-	const publicField = document.getElementById('pPublic')
 	const priceField = document.getElementById('pPrice')
 
 	const imgBtn = document.getElementById('pImg')
@@ -35,10 +34,10 @@ function productSubmitEventHandler(){
 	data.id = 999
 	data.name = nameField.value
 	data.desc = descField.value
-	data.img = "default.png"
 	data.location = locField.value
-	data.stock = stockField.value
-	data.public = publicField.value
+	if (stockField.value) {
+		data.stock = stockField.value
+	}
 	data.price = priceField.value
 	data.owner = sessUid
 	data.holder = sessUid
@@ -119,12 +118,15 @@ function purchaseItem() {
 				.then(function(result){
 					console.log(result)
 					if (result.success == true) {
-						document.getElementById("api-response").setAttribute("style", "display: block")
+						purchaseBtn.setAttribute("style", "background: #00DD00; width:500px;")
+						purchaseBtn.innerHTML = "Item Purchased, Congratulations!"
 					}
 					else {
+						purchaseBtn.setAttribute("style", "background: red;")
+						purchaseBtn.disabled = true
+						purchaseBtn.innerHTML = "ERROR"
 						document.getElementById("api-response").innerHTML = "Error: " + result.error
 						document.getElementById("api-response").setAttribute("style", "display: block")
-						document.getElementById("api-response").setAttribute("style", "color: #DD0000")
 					}
 					//check return value
 					//update element accordingly

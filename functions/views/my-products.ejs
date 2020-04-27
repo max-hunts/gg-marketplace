@@ -66,14 +66,10 @@
 					<% var keys = Object.keys(products) %>
 					<% keys.forEach(function(key){ %>
 					<div class="my-product-container">
-						<a>
-							<img class="dyn-img" onclick={my_product("<%= key%>")} title="<%= products[key].img %>" alt="img" src="media/var.png">
-						</a>
+						<img class="dyn-img" onclick={my_product("<%= key%>")} title="<%= products[key].img %>" alt="img" src="media/var.png">
 						<div class="my-product-details-container">
 							<p class="top"><%= products[key].name%></p>
-							<% var publicField %>
-							<% if (products[key].public == "") {publicField = "On sale"} else {publicField = "Hidden"}%>
-							<p class="middle-top"><%= publicField%></p>
+							<p class="middle-top"><%= products[key].status%></p>
 							<p class="middle-bottom"><%= products[key].location%></p>
 							<p class="bottom">£ <%= products[key].price%></p>
 						</div>

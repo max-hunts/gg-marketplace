@@ -511,18 +511,18 @@ footer a {
 .my-products-container {
 
 }
+
 .my-product-container {
 	padding-top: 15px;
 	width: 100%;
+	height: 160px;
 	display: inline-flex;
 }
-.my-product-container a {
-	width: 20%;
-	max-height: 20%;
-}
+
+
 .my-product-container img {
-	width: 100%;
-	height: 100%;
+	width: 20%;
+	max-height: 90%;
 	cursor: pointer;
 }
 .my-product-details-container {
@@ -590,7 +590,7 @@ footer a {
 	background-color: #CB0070;
 }
 .edit-btn button:hover {
-	background-color: #20A0A0;
+	background-color: #ea62ff;
 }
 .sell-btn button:hover {
 	background-color: #AAFF00;

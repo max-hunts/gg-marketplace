@@ -32,9 +32,9 @@ app.get("/home", function(request, responce) {
 
 function homePage(request, responce) {
 	var dbRef = database.ref("/products")
-	dbRef.orderByChild("public").equalTo("").limitToLast(5).once('value', function(snapshot){
+	dbRef.orderByChild("status").equalTo("on-sale").limitToLast(5).once('value', function(snapshot){
 		var data = {}
-		data = snapshot.val()
+		if (snapshot.val()) {data = snapshot.val()}
 		var x = "none"
 		if (request.query.itemAdded == "true") {
 			x = 'block'
@@ -139,7 +139,7 @@ app.post('/purchase-api', function(request, responce){
 				let uid = decodedToken.uid;
 				let product = request.body.item
 				var productRef = database.ref("/products/"+product)
-				productRef.update({owner:uid, public:"no"})
+				productRef.update({owner:uid, status:"sold"})
 				responce.send({success:true, error:null})
 			})
 			.catch(function(error) {
