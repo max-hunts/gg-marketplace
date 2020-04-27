@@ -65,16 +65,16 @@
 					<div class="product-page-img"><img class="dyn-img" src="media/noimage.png" title="<%= item.img %>"></div>
 					<div class="product-page-info">			
 						<h2><%= item.name %> </h2>
-						<p>Seller <%= item.owner %></p>
+						<p>Seller: You</p>
 						<p>Location: <%= item.location %></p>
 						<p>In stock: <%= item.stock %></p>
-						<% var publicField %>
-						<% if (item.public == "") {publicField = "On sale"} else {publicField = "Hidden"}%>
-						<p>Status: <%= publicField %></p>
+						<p>Status: <%= item.status %></p>
 						<p>Price: £<%= item.price %></p>
 						<div class="product-mgmt-buttons">
 							<div class="edit-btn"><button onclick={edit_item()} id="editBtn">Edit</button> </div>
-							<div class="sell-btn"><button onclick={y()} id="sellBtn">Sell</button> </div>
+							<% var sellbtnStyle = ""%>
+							<% if (item.status == "sold") {sellbtnStyle = "visibility:all;"} else {sellbtnStyle = "visibility:hidden;"}%>
+							<div class="sell-btn" style=<%= sellbtnStyle%>><button onclick={place_item_on_sale()} id="sellBtn">Sell</button> </div>
 							<div class="ship-btn"><button onclick={z()} id="shipBtn">Ship</button> </div>
 						</div>
 						

@@ -140,17 +140,17 @@ function purchaseItem() {
 			firebase.auth().currentUser.getIdToken().then(function(idToken) {
 				var item_id_element = document.getElementById("productID")
 				var item_id = item_id_element.getAttribute("product_id")
-				const url = 'purchase-api';
+				const url = 'purchase-api'
 				// The data we are going to send in our request
 				let data = {
-				    item: item_id,
-				    user: idToken
+					item: item_id,
+					user: idToken
 				}
 				// The parameters we are gonna pass to the fetch function
 				let postData = { 
-				    method: 'POST', 
-				    body: JSON.stringify(data),
-				    headers: {'Content-Type': 'application/json'}
+					method: 'POST', 
+					body: JSON.stringify(data),
+					headers: {'Content-Type': 'application/json'}
 				}
 				fetch(url, postData)
 				.then(response => response.json())
@@ -167,8 +167,6 @@ function purchaseItem() {
 						document.getElementById("api-response").innerHTML = "Error: " + result.error
 						document.getElementById("api-response").setAttribute("style", "display: block")
 					}
-					//check return value
-					//update element accordingly
 				})
 			})
 		}
@@ -177,6 +175,9 @@ function purchaseItem() {
 			purchaseBtn.setAttribute("style", "width: 500px;");
 		}
 		
+	}
+	else if (purchaseBtn.innerHTML == "Item Purchased, Congratulations!") {
+		window.location.replace("home")
 	}
 	else {
 		purchaseBtn.disabled = true
@@ -188,15 +189,48 @@ function edit_item() {
 	firebase.auth().currentUser.getIdToken().then(function(idToken) {
 		var item_id_element = document.getElementById("productID")
 		var item_id = item_id_element.getAttribute("product_id")
-		console.log("edit-item?uToken=" + idToken + '&productid=' + item_id)
 		window.location.replace("edit-item?uToken=" + idToken + '&productid=' + item_id)
+	})
+	.catch(e => {console.log(e)})
+}
+
+function place_item_on_sale() {
+	firebase.auth().currentUser.getIdToken().then(function(idToken) {
+		var item_id_element = document.getElementById("productID")
+		var item_id = item_id_element.getAttribute("product_id")
+		var place_on_sale_button = document.getElementById("sellBtn")
+		const url = 'place-on-sale-api'
+		let data = {
+					item: item_id,
+					user: idToken
+				}
+		let postData = { 
+					method: 'POST', 
+					body: JSON.stringify(data),
+					headers: {'Content-Type': 'application/json'}
+				}
+		fetch(url, postData)
+		.then(response => response.json())
+		.then(function(result){
+			console.log(result)
+			if (result.success == true) {
+				place_on_sale_button.setAttribute("style", "background: #00DD00; width:200px;")
+				place_on_sale_button.innerHTML = "Item on sale!"
+				place_on_sale_button.disabled = true
+			}
+			else {
+				place_on_sale_button.setAttribute("style", "background: red;")
+				place_on_sale_button.disabled = true
+				place_on_sale_button.innerHTML = "ERROR"
+				console.log(result.error)
+			}
+		})
 	})
 	.catch(e => {console.log(e)})
 }
 
 function my_product(productID) {
 	firebase.auth().currentUser.getIdToken().then(function(idToken) {
-		console.log("my-products?uToken=" + idToken + '&productid=' + productID)
 		window.location.replace("my-product?uToken=" + idToken + '&productid=' + productID)
 	})
 	.catch(e => {console.log(e)})
