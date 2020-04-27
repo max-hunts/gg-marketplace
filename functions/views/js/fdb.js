@@ -61,6 +61,45 @@ function productSubmitEventHandler(){
 	})
 }
 
+function productUpdateEventHandler() {
+	const submitBtn = document.getElementById('pSend')
+	if (submitBtn.innerHTML == "Update") {
+		const nameField = document.getElementById('pName')
+		const descField = document.getElementById('pDesc')
+		const locField = document.getElementById('pLoc')
+		const stockField = document.getElementById('pStock')
+		const priceField = document.getElementById('pPrice')
+
+		// const imgBtn = document.getElementById('pImg')
+
+		const item_id_element = document.getElementById("productID")
+		const item_id = item_id_element.getAttribute("product_id")
+
+		const sessUid = firebase.auth().currentUser.uid
+
+		submitBtn.innerHTML = "Updating..."
+		submitBtn.disabled = true
+
+		var database = firebase.database()
+		var productRef = database.ref("/products/"+item_id)
+		productRef.update({
+			name: nameField.value,
+			desc: descField.value,
+			location: locField.value,
+			stock: stockField.value,
+			price: priceField.value
+		})
+		.then(function(){
+			submitBtn.setAttribute("style", "width: 300px; background: #00DD00;cursor: pointer;")
+			submitBtn.innerHTML = "Done!, Go Home..."
+			submitBtn.disabled = false
+		})
+	}
+	else {
+		window.location.replace('home')
+	}
+}
+
 function addItem(item){
 	var database = firebase.database()
 	var itemRef = database.ref('/products')
@@ -143,6 +182,16 @@ function purchaseItem() {
 		purchaseBtn.disabled = true
 	}
 	
+}
+
+function edit_item() {
+	firebase.auth().currentUser.getIdToken().then(function(idToken) {
+		var item_id_element = document.getElementById("productID")
+		var item_id = item_id_element.getAttribute("product_id")
+		console.log("edit-item?uToken=" + idToken + '&productid=' + item_id)
+		window.location.replace("edit-item?uToken=" + idToken + '&productid=' + item_id)
+	})
+	.catch(e => {console.log(e)})
 }
 
 function my_product(productID) {

@@ -117,6 +117,32 @@ app.get('/my-product', function(request, responce){
 	}
 })
 
+app.get('/edit-item', function(request, responce){
+	if (request.query.uToken && request.query.productid) {
+	admin.auth().verifyIdToken(request.query.uToken)
+		.then(function(decodedToken) {
+			let uid = decodedToken.uid;
+			var dbRef = database.ref("/products/"+request.query.productid)
+			dbRef.once('value', function(snapshot){
+				data = snapshot.val()
+				if (data.owner == uid) {
+					responce.render('edit-item.ejs', {item:data, key:request.query.productid})
+				}
+				else {
+					responce.send('<h1 style="color:red;" >Unauthorized user</h1><a href="home">Home</a>')
+				}
+			})
+		})
+		.catch(function(error) {
+			console.log(error)
+			responce.send("<h1>Bad Auth Token</h1><a href='home'>Home</a>")
+		});
+	}
+	else {
+		responce.send("<h1>No Auth Token Provided</h1><a href='home'>Home</a>")
+	}
+})
+
 app.get('/product', function(request, responce){
 	if (request.query.productid) {
 		var dbRef = database.ref("/products/"+request.query.productid)
