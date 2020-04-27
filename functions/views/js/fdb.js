@@ -229,6 +229,41 @@ function place_item_on_sale() {
 	.catch(e => {console.log(e)})
 }
 
+function ship_item() {
+	firebase.auth().currentUser.getIdToken().then(function(idToken) {
+		var item_id_element = document.getElementById("productID")
+		var item_id = item_id_element.getAttribute("product_id")
+		var place_on_sale_button = document.getElementById("shipBtn")
+		const url = 'ship-api'
+		let data = {
+					item: item_id,
+					user: idToken
+				}
+		let postData = { 
+					method: 'POST', 
+					body: JSON.stringify(data),
+					headers: {'Content-Type': 'application/json'}
+				}
+		fetch(url, postData)
+		.then(response => response.json())
+		.then(function(result){
+			console.log(result)
+			if (result.success == true) {
+				place_on_sale_button.setAttribute("style", "background: #00DD00; width:200px;")
+				place_on_sale_button.innerHTML = "Item shipped!"
+				place_on_sale_button.disabled = true
+			}
+			else {
+				place_on_sale_button.setAttribute("style", "background: red;")
+				place_on_sale_button.disabled = true
+				place_on_sale_button.innerHTML = "ERROR"
+				console.log(result.error)
+			}
+		})
+	})
+	.catch(e => {console.log(e)})
+}
+
 function my_product(productID) {
 	firebase.auth().currentUser.getIdToken().then(function(idToken) {
 		window.location.replace("my-product?uToken=" + idToken + '&productid=' + productID)

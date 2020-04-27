@@ -202,6 +202,28 @@ app.post('/place-on-sale-api', function(request, responce){
 	}
 })
 
+app.post('/ship-api', function(request, responce){
+	if (request.body.item && request.body.user) {
+		admin.auth().verifyIdToken(request.body.user)
+			.then(function(decodedToken) {
+				let uid = decodedToken.uid;
+				let product = request.body.item
+				var productRef = database.ref("/products/"+product)
+				productRef.update({status:"shipped"})
+				.then(function(){
+					responce.send({success:true, error:null})
+				})
+				.catch(e => {console.log(e)})
+			})
+			.catch(function(error) {
+				responce.send({ error: 'invalid auth token' })
+			});
+	}
+	else {
+		responce.send({ error: 'invalid data' })
+	}
+})
+
 var port = 5000
 
 app.listen(port, function() {
