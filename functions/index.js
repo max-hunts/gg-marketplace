@@ -66,17 +66,8 @@ app.get('/my-products', function(request, responce){
 			else {
 				dbRef.orderByChild('owner').equalTo(uid).once('value', function(snapshot){
 					var data = {
-						  'x': {
-								desc: '',
-								holder: '',
-								id: 999,
-								img: '',
-								location: '',
-								name: 'No products listed 😢',
-								owner: '',
-								price: '',
-								public: '',
-								stock: ''
+						  'x': {desc: '', holder: '', id: 999, img: '', location: '', name: 'No products listed 😢', 
+								owner: '', price: '', public: '', stock: ''
 							  },
 					}
 					if (snapshot.val()) {data = snapshot.val()}
