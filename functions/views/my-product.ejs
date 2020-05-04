@@ -71,12 +71,14 @@
 						<p>Status: <%= item.status %></p>
 						<p>Price: £<%= item.price %></p>
 						<div class="product-mgmt-buttons">
-							<% var shipbtnStyle = ""%>
-							<% if (item.status == "shipped") {shipbtnStyle = "visibility:hidden;"} else {shipbtnStyle = "visibility:all;"}%>
-							<div class="edit-btn" style=<%= shipbtnStyle%>><button onclick={edit_item()} id="editBtn">Edit</button> </div>
+							<% var editbtnStyle = ""%>
+							<% if (item.status == "shipped") {editbtnStyle = "visibility:hidden;"} else {editbtnStyle = "visibility:all;"}%>
+							<div class="edit-btn" style=<%= editbtnStyle%>><button onclick={edit_item()} id="editBtn">Edit</button> </div>
 							<% var sellbtnStyle = ""%>
 							<% if (item.status == "sold") {sellbtnStyle = "visibility:all;"} else {sellbtnStyle = "visibility:hidden;"}%>
 							<div class="sell-btn" style=<%= sellbtnStyle%>><button onclick={place_item_on_sale()} id="sellBtn">Sell</button> </div>
+							<% var shipbtnStyle = ""%>
+							<% if (item.owner == item.holder || item.status == "shipped") {shipbtnStyle = "visibility:hidden;"} else {shipbtnStyle = "visibility:all;"}%>
 							<div class="ship-btn" style=<%= shipbtnStyle%>><button onclick={ship_item()} id="shipBtn">Ship</button> </div>
 						</div>
 						
