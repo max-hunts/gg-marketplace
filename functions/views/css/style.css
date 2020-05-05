@@ -607,3 +607,11 @@ footer a {
 .ship-btn button:active {
 	background-color: #00CCEE;
 }
+
+.e404 {
+	width: 100%;
+}
+
+.e404 svg {
+	width: 100%;
+}

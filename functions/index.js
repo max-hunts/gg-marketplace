@@ -9,7 +9,7 @@ var serviceAccount = require("./project-gg-3b754-firebase-adminsdk-4848h-5a5778b
 var firebaseadmin = admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://project-gg-3b754.firebaseio.com"
-});
+})
 var database = firebaseadmin.database()
 
 var app = express()
@@ -216,6 +216,10 @@ app.post('/ship-api', function(request, responce){
 	else {
 		responce.send({ error: 'invalid data' })
 	}
+})
+
+app.get('*', function(request, responce){
+	responce.render('404.ejs')
 })
 
 exports.application = functions.https.onRequest(app)
