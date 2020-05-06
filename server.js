@@ -20,6 +20,14 @@ app.use(express.static('views'))
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
 
+let nodemailer = require('nodemailer')
+let transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'noreply.projectgg@gmail.com',
+    pass: 'REDACTED'
+  }
+});
 
 
 app.get("/", function(request, responce) {
@@ -211,6 +219,7 @@ app.post('/ship-api', function(request, responce){
 				var productRef = database.ref("/products/"+product)
 				productRef.update({status:"shipped"})
 				.then(function(){
+					sendEmail("maxdebaoli@gmail.com", "Please ship item "+product)
 					responce.send({success:true, error:null})
 				})
 				.catch(e => {console.log(e)})
@@ -223,6 +232,24 @@ app.post('/ship-api', function(request, responce){
 		responce.send({ error: 'invalid data' })
 	}
 })
+
+function sendEmail(address, content){
+	var mailOptions = {
+		from: 'noreply.projectgg@gmail.com',
+		to: address,
+		subject: 'Your Item has been requested',
+		text: content
+	}
+	transporter.sendMail(mailOptions, function(error, info){
+		if (error) {
+			console.log(error);
+		} else {
+			console.log('Email sent: ' + info.response);
+	  }
+	});
+
+}
+
 
 app.get('*', function(request, responce){
 	responce.render('404.ejs')

@@ -233,7 +233,7 @@ function ship_item() {
 	firebase.auth().currentUser.getIdToken().then(function(idToken) {
 		var item_id_element = document.getElementById("productID")
 		var item_id = item_id_element.getAttribute("product_id")
-		var place_on_sale_button = document.getElementById("shipBtn")
+		var ship_button = document.getElementById("shipBtn")
 		const url = 'ship-api'
 		let data = {
 					item: item_id,
@@ -249,14 +249,20 @@ function ship_item() {
 		.then(function(result){
 			console.log(result)
 			if (result.success == true) {
-				place_on_sale_button.setAttribute("style", "background: #00DD00; width:200px;")
-				place_on_sale_button.innerHTML = "Item shipped!"
-				place_on_sale_button.disabled = true
+				ship_button.setAttribute("style", "background: #00DD00; width:200px;")
+				ship_button.innerHTML = "Item shipped!"
+				ship_button.disabled = true
+
+				var sell_button = document.getElementById("sellBtn")
+				var edit_button = document.getElementById("editBtn")
+				sell_button.disabled = true
+				edit_button.disabled = true
+
 			}
 			else {
-				place_on_sale_button.setAttribute("style", "background: red;")
-				place_on_sale_button.disabled = true
-				place_on_sale_button.innerHTML = "ERROR"
+				ship_button.setAttribute("style", "background: red;")
+				ship_button.disabled = true
+				ship_button.innerHTML = "ERROR"
 				console.log(result.error)
 			}
 		})
