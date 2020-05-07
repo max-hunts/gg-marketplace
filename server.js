@@ -219,7 +219,7 @@ app.post('/ship-api', function(request, responce){
 				var productRef = database.ref("/products/"+product)
 				productRef.update({status:"shipped"})
 				.then(function(){
-					sendEmail("maxdebaoli@gmail.com", "Please ship item "+product)
+					processItemShipEmail(product, uid)
 					responce.send({success:true, error:null})
 				})
 				.catch(e => {console.log(e)})
@@ -232,6 +232,31 @@ app.post('/ship-api', function(request, responce){
 		responce.send({ error: 'invalid data' })
 	}
 })
+
+function processItemShipEmail(itemID, buyerID){
+	let productRef = database.ref("/products/"+itemID)
+	productRef.once('value',function(snapshot){
+		let item = snapshot.val()
+		let itemName = item.name
+		let itemHolder = item.holder
+		let usersRef = database.ref("/users")
+		usersRef.orderByChild("UID").equalTo(itemHolder).once('value', function(snapshot){
+			vals = snapshot.val()
+			var keys = Object.keys(vals)
+			uData = vals[keys[0]]
+			let holderEmail = uData.email
+			let clientRef = database.ref("/users")
+			usersRef.orderByChild("UID").equalTo(buyerID).once('value', function(snapshot){
+				cvals = snapshot.val()
+				var ckeys = Object.keys(cvals)
+				cData = cvals[ckeys[0]]
+				let clientAddress = cData.address
+				let emailContent = "Please ship Item: " + itemName + " (ItemID: " + itemID + ")\nShipping address: " + clientAddress
+				sendEmail(holderEmail, emailContent)
+			})
+		})
+	})
+}
 
 function sendEmail(address, content){
 	var mailOptions = {
@@ -246,10 +271,8 @@ function sendEmail(address, content){
 		} else {
 			console.log('Email sent: ' + info.response);
 	  }
-	});
-
+	})
 }
-
 
 app.get('*', function(request, responce){
 	responce.render('404.ejs')

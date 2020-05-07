@@ -283,3 +283,30 @@ function my_products() {
 	})
 	.catch(e => {console.log(e)})
 }
+
+function showShipField(){
+	document.getElementById('shippingaddressbutton').setAttribute("style", "display:none;")
+	document.getElementById('shippingaddressinput').setAttribute("style", "display:block;")
+}
+
+function addShippingAddress(){
+	let database = firebase.database()
+	var usersRef = database.ref("/users")
+	usersRef.orderByChild("UID").equalTo(firebase.auth().currentUser.uid).once('value', function(snapshot){
+		vals = snapshot.val()
+		var keys = Object.keys(vals)
+		userKey = keys[0]
+		userRef = database.ref("/users/"+userKey)
+		userRef.update({address:document.getElementById('shippingaddressinput').value})
+		.then(document.getElementById("shippingaddressinput").value = "Success!")
+		.catch(e => {console.log(e)})
+	})
+}
+
+var addressField = document.getElementById("shippingaddressinput")
+addressField.addEventListener("keyup", function(event) {
+  if (event.keyCode === 13) {
+   event.preventDefault()
+   addShippingAddress()
+  }
+});

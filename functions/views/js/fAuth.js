@@ -1,9 +1,20 @@
 function checkAuth(){
 	firebase.auth().onAuthStateChanged(function(user){
 		if (user) {
+			document.getElementById('uname-dom').innerHTML = "Loading..."
+			let database = firebase.database()
+			var uid = user.uid
+			var dbRef = database.ref("/users")
+			dbRef.orderByChild("UID").equalTo(uid).once('value', function(snapshot){
+				vals = snapshot.val()
+				var keys = Object.keys(vals)
+				uData = vals[keys[0]]
+				document.getElementById('uname-dom').innerHTML = "Hello, " + uData.fName
+			})
+
 			document.getElementById('uname-field').setAttribute("style", "display: block;")
 			document.getElementById('login-field').setAttribute("style", "display: none;")
-			document.getElementById('uname-dom').innerHTML = "Hello, " + user.displayName
+			
 			document.getElementById('uname-field').setAttribute("style", "display: block;")
 			document.getElementById('login-field').setAttribute("style", "display: none;")
 			try {document.getElementById('uAuthMsg').setAttribute("style", "display: none;")}
@@ -23,14 +34,14 @@ function checkAuth(){
 	})
 }
 
-window.onload = function(){
-	checkAuth()
-}
+checkAuth()
+
 
 function signinwithgoogle(){
 	var googleAuthProvider = new firebase.auth.GoogleAuthProvider()
 	firebase.auth().signInWithPopup(googleAuthProvider)
 		.then(function(data){
+			checkNewUser(data)
 			console.log('User signed in...')
 		})
 		.catch(function(error){
@@ -38,10 +49,38 @@ function signinwithgoogle(){
 		})
 }
 
+function checkNewUser(credential){
+	let database = firebase.database()
+	var uid = credential.user.uid
+	var dbRef = database.ref("/users")
+	dbRef.orderByChild("UID").equalTo(uid).once('value', function(snapshot){
+		if (snapshot.exists()){
+			let uData = snapshot.val()
+			console.log(uData)
+			console.log("Logged in User: " + uData.fName + " " + uData.lName)
+		}
+		else {
+			console.log("Creating new user")
+			let uData = {
+				fName:credential.user.displayName,
+				lName:"",
+				UID:credential.user.uid,
+				email:credential.user.email,
+				address:""
+			}
+			let itemRef = database.ref('/users')
+			itemRef.push(uData)
+			.then(function(){console.log("Added "+credential.displayName+" to user database")})
+			.catch(function(error){console.log(error)})
+		}
+	})
+}
+
 function signinwithfb(){
 	var fbAuthProvider = new firebase.auth.FacebookAuthProvider()
 	firebase.auth().signInWithPopup(fbAuthProvider)
 		.then(function(data){
+			checkNewUser(data)
 			console.log('User signed in...')
 		})
 		.catch(function(error){
@@ -59,7 +98,8 @@ function signinwithemail(){
 
 	auth.signInWithEmailAndPassword(email, pass)
 		.catch(e => console.log(e.message))
-		.then(function(){
+		.then(function(data){
+			checkNewUser(data)
 			txtPassword.value = ''
 			txtEmail.value = ''
 		})
