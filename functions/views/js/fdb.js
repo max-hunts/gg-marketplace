@@ -305,18 +305,20 @@ function addShippingAddress(){
 		.catch(e => {console.log(e)})
 	})
 }
-
-var addressField = document.getElementById("shippingaddressinput")
-addressField.addEventListener("keyup", function(event) {
+try {
+	var addressField = document.getElementById("shippingaddressinput")
+	addressField.addEventListener("keyup", function(event) {
 	if (event.keyCode === 13) {
-	event.preventDefault()
-	if (addressField.value == "Success!" || addressField.value == ""){
-		addressField.value = ""
-		addressField.blur()
-	}
-	else {
-			addShippingAddress()
+		event.preventDefault()
+		if (addressField.value == "Success!" || addressField.value == ""){
+			addressField.value = ""
 			addressField.blur()
 		}
-	}
-});
+		else {
+				addShippingAddress()
+				addressField.blur()
+			}
+		}
+	})
+}
+catch(e=>{console.log(e)}
