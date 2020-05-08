@@ -154,7 +154,17 @@ app.get('/product', function(request, responce){
 		dbRef.once('value', function(snapshot){
 			data = snapshot.val()
 			if (data){
-				responce.render('product.ejs', {item:data, key:request.query.productid})
+				sellerID = data.owner
+				let sellerName = "John Doe (error)"
+				let usersRef = database.ref("/users")
+				usersRef.orderByChild("UID").equalTo(sellerID).once('value', function(snapshot){
+					vals = snapshot.val()
+					var keys = Object.keys(vals)
+					uData = vals[keys[0]]
+					sellerName = uData.fName + " " + uData.lName
+					responce.render('product.ejs', {item:data, key:request.query.productid, seller:sellerName})
+				})
+				.catch(e => {console.log(e)})
 			}
 			else {
 				responce.render('404.ejs')

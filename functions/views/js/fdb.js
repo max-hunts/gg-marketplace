@@ -298,15 +298,25 @@ function addShippingAddress(){
 		userKey = keys[0]
 		userRef = database.ref("/users/"+userKey)
 		userRef.update({address:document.getElementById('shippingaddressinput').value})
-		.then(document.getElementById("shippingaddressinput").value = "Success!")
+		.then(function(){
+			document.getElementById("shippingaddressinput").value = ""
+			document.getElementById("shippingaddressinput").placeholder = "Success!"
+		})
 		.catch(e => {console.log(e)})
 	})
 }
 
 var addressField = document.getElementById("shippingaddressinput")
 addressField.addEventListener("keyup", function(event) {
-  if (event.keyCode === 13) {
-   event.preventDefault()
-   addShippingAddress()
-  }
+	if (event.keyCode === 13) {
+	event.preventDefault()
+	if (addressField.value == "Success!" || addressField.value == ""){
+		addressField.value = ""
+		addressField.blur()
+	}
+	else {
+			addShippingAddress()
+			addressField.blur()
+		}
+	}
 });

@@ -10,6 +10,11 @@ function checkAuth(){
 				var keys = Object.keys(vals)
 				uData = vals[keys[0]]
 				document.getElementById('uname-dom').innerHTML = "Hello, " + uData.fName
+
+				if (!uData.address) {
+					document.getElementsByClassName("notifications")[0].innerHTML = "🔔 | Update shipping address"
+					document.getElementsByClassName("notifications")[0].setAttribute("style", "color: red;")
+				}
 			})
 
 			document.getElementById('uname-field').setAttribute("style", "display: block;")
@@ -70,7 +75,10 @@ function checkNewUser(credential){
 			}
 			let itemRef = database.ref('/users')
 			itemRef.push(uData)
-			.then(function(){console.log("Added "+credential.displayName+" to user database")})
+			.then(function(){
+				console.log("Added "+credential.displayName+" to user database")
+				window.location.replace('home')
+			})
 			.catch(function(error){console.log(error)})
 		}
 	})
