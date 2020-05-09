@@ -1,19 +1,19 @@
-var express = require('express')
-var logger = require('morgan')
-var bodyParser = require('body-parser')
-var admin = require("firebase-admin");
-var serviceAccount = require("./secrets/project-gg-3b754-firebase-adminsdk-4848h-5a5778b77b.json");
+let express = require('express')
+let logger = require('morgan')
+let bodyParser = require('body-parser')
+let admin = require("firebase-admin");
+let serviceAccount = require("./secrets/project-gg-3b754-firebase-adminsdk-4848h-5a5778b77b.json");
 
-var firebaseadmin = admin.initializeApp({
+let firebaseadmin = admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
   databaseURL: "https://project-gg-3b754.firebaseio.com"
 })
-var database = firebaseadmin.database()
-var auth = admin.auth();
+let database = firebaseadmin.database()
+let auth = admin.auth();
 
-var app = express()
-app.use(bodyParser.json())
+let app = express()
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json({ limit: '10mb' }));
 app.use(logger('dev'))
 app.use(express.static('views'))
 
@@ -301,6 +301,143 @@ app.post('/ship-api', function(request, responce){
 	}
 })
 
+app.post('/login-user-api', function(request, responce){
+	if (request.body.uToken && request.body.user) {
+		admin.auth().verifyIdToken(request.body.uToken)
+			.then(async function(decodedToken) {
+				let user = request.body.user
+				let uid = decodedToken.uid
+
+				if (uid != user.uid){
+					responce.send({success:false, error:'Stop hacking'})
+				}
+				else {
+					let rsp = await checkNewUser(user)
+					responce.send(rsp)
+				}
+			})
+			.catch(function(error) {
+				responce.send({success:false, error:'invalid auth token'})
+				console.log(error)
+			});
+	}
+	else {
+		responce.send({error: 'invalid data'})
+	}
+})
+
+app.post('/shipping-adress-edit-api', function(request, responce){
+	if (request.body.uToken && request.body.address) {
+		admin.auth().verifyIdToken(request.body.uToken)
+			.then(async function(decodedToken) {
+				let newAddress = request.body.address
+				let uid = decodedToken.uid
+
+				let snapshot = await checkUserExists(uid)
+				if (snapshot){
+					let users = snapshot.val()
+					var keys = Object.keys(users)
+					userKey = keys[0]
+					userRef = database.ref("/users/"+userKey)
+					userRef.update({address:newAddress})
+					.then(function(){
+						responce.send({success:true, error:null})
+					})
+				}
+				else {
+					responce.send({success:false, error:'user does not exist'})
+				}
+			})
+			.catch(function(error) {
+				responce.send({success:false, error:'invalid auth token'})
+				console.log(error)
+			});
+	}
+	else {
+		responce.send({error: 'invalid data'})
+	}
+})
+
+app.post('/new-product-api', function(request, responce){
+	if (request.body.uToken && request.body.product && request.body.image) {
+		admin.auth().verifyIdToken(request.body.uToken)
+			.then(async function(decodedToken) {
+				let uid = decodedToken.uid
+				let image = request.body.image
+				let product = request.body.product
+
+				let imageName = image.name
+
+				let newProductRef = database.ref('/products')
+				let key = await newProductRef.push(product).then(key => {
+					let productKey = key.key
+					let imgPath = productKey + '/' + imageName
+					let productRef = database.ref('/products/' + productKey)
+					productRef.update({img: imgPath}).then(function(){
+						responce.send({success:true, imgRef:'/product-img/'+imgPath, error:null})
+					})
+					.catch(e=>{
+						responce.send({success:false, error:e})
+						console.log(error)
+					})
+				})
+				.catch(e=>{
+					responce.send({success:false, error:e})
+					console.log(error)
+				})
+				
+			})
+			.catch(function(error) {
+				responce.send({success:false, error:'invalid auth token'})
+				console.log(error)
+			});
+	}
+	else {
+		responce.send({error: 'invalid data'})
+	}
+})
+
+app.post('/update-product-api', function(request, responce){
+	if (request.body.uToken && request.body.product && request.body.productID) {
+		admin.auth().verifyIdToken(request.body.uToken)
+			.then(async function(decodedToken) {
+				let uid = decodedToken.uid
+				let product = request.body.product
+				let productID = request.body.productID
+
+				if (await verifyExists(productID)){
+					if (await verifyOwner(uid, productID)) {
+						let productRef = database.ref('/products/' + productID)
+						productRef.update(product).then(function(){
+							responce.send({success:true, error:null})
+						})
+						.catch(e=>{
+							responce.send({success:false, error:e})
+							console.log(error)
+						})
+					}
+					else {
+						responce.send({success:false, error:'You do not own this item'})
+					}
+				}
+				else {
+					responce.send({success:false, error:'Item does not exist'})
+				}
+			})
+			.catch(function(error) {
+				responce.send({success:false, error:'invalid auth token'})
+				console.log(error)
+			});
+	}
+	else {
+		responce.send({error: 'invalid data'})
+	}
+})
+
+
+
+
+
 
 app.post('/demo-api', function(request, responce){
 	if (request.body.item && request.body.user) {
@@ -324,11 +461,45 @@ app.post('/demo-api', function(request, responce){
 			});
 	}
 	else {
-		responce.send({error: 'invalid data'})
+		responce.send({success:false, error: 'invalid data'})
 	}
 })
 
 
+async function checkNewUser(user){
+	let snapshot = await checkUserExists(user.uid)
+	if (snapshot){
+		let users = snapshot.val()
+		var keys = Object.keys(users)
+		uData = users[keys[0]]
+		let retData = {success:true, userName:uData.fName + " " + uData.lName, address:uData.address}
+		return retData
+	}
+	else {
+		console.log("Creating new user")
+		let uData = {
+			fName:user.displayName,
+			lName:"",
+			UID:user.uid,
+			email:user.email,
+			address:""
+		}
+		return await createNewUser(uData)
+	}
+}
+
+async function checkUserExists(uid){
+	var dbRef = database.ref("/users")
+	let snapshot = await dbRef.orderByChild("UID").equalTo(uid).once('value')
+	if (snapshot.exists()){return snapshot}
+	else {return false}
+}
+
+async function createNewUser(uData){
+	let userRef = database.ref('/users')
+	let x = await userRef.push(uData)
+	return {success:true, userName:uData.fName + " " + uData.lName, address:uData.address}
+}
 
 
 async function authorisedToPurchase(uid, pid){

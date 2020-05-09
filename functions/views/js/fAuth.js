@@ -2,19 +2,27 @@ function checkAuth(){
 	firebase.auth().onAuthStateChanged(function(user){
 		if (user) {
 			document.getElementById('uname-dom').innerHTML = "Loading..."
-			let database = firebase.database()
-			var uid = user.uid
-			var dbRef = database.ref("/users")
-			dbRef.orderByChild("UID").equalTo(uid).once('value', function(snapshot){
-				vals = snapshot.val()
-				var keys = Object.keys(vals)
-				uData = vals[keys[0]]
-				document.getElementById('uname-dom').innerHTML = "Hello, " + uData.fName
 
-				if (!uData.address) {
-					document.getElementsByClassName("notifications")[0].innerHTML = "🔔 | Update shipping address"
-					document.getElementsByClassName("notifications")[0].setAttribute("style", "color: red;")
-				}
+			firebase.auth().currentUser.getIdToken().then(function(idToken) {
+				let url = 'login-user-api'
+				let data = {uToken: idToken, user: user}
+				let postData = {method: 'POST', body: JSON.stringify(data),headers: {'Content-Type': 'application/json'}}
+				fetch(url, postData)
+				.then(response => response.json())
+				.then(function(result){
+					if (result.success == true) {
+						document.getElementById('uname-dom').innerHTML = "Hello, " + result.userName
+						if (!result.address) {
+							document.getElementsByClassName("notifications")[0].innerHTML = "🔔 | Update shipping address"
+							document.getElementsByClassName("notifications")[0].setAttribute("style", "color: red;")
+						}
+					}
+					else {
+						console.log(result.error)
+						document.getElementsByClassName("notifications")[0].innerHTML = "🔔 | What the fuck just happened....."
+							document.getElementsByClassName("notifications")[0].setAttribute("style", "color: pink;")
+					}
+				})
 			})
 
 			document.getElementById('uname-field').setAttribute("style", "display: block;")
@@ -46,7 +54,6 @@ function signinwithgoogle(){
 	var googleAuthProvider = new firebase.auth.GoogleAuthProvider()
 	firebase.auth().signInWithPopup(googleAuthProvider)
 		.then(function(data){
-			checkNewUser(data)
 			console.log('User signed in...')
 		})
 		.catch(function(error){
@@ -54,41 +61,10 @@ function signinwithgoogle(){
 		})
 }
 
-function checkNewUser(credential){
-	let database = firebase.database()
-	var uid = credential.user.uid
-	var dbRef = database.ref("/users")
-	dbRef.orderByChild("UID").equalTo(uid).once('value', function(snapshot){
-		if (snapshot.exists()){
-			let uData = snapshot.val()
-			console.log(uData)
-			console.log("Logged in User: " + uData.fName + " " + uData.lName)
-		}
-		else {
-			console.log("Creating new user")
-			let uData = {
-				fName:credential.user.displayName,
-				lName:"",
-				UID:credential.user.uid,
-				email:credential.user.email,
-				address:""
-			}
-			let itemRef = database.ref('/users')
-			itemRef.push(uData)
-			.then(function(){
-				console.log("Added "+credential.displayName+" to user database")
-				window.location.replace('home')
-			})
-			.catch(function(error){console.log(error)})
-		}
-	})
-}
-
 function signinwithfb(){
 	var fbAuthProvider = new firebase.auth.FacebookAuthProvider()
 	firebase.auth().signInWithPopup(fbAuthProvider)
 		.then(function(data){
-			checkNewUser(data)
 			console.log('User signed in...')
 		})
 		.catch(function(error){
@@ -107,12 +83,9 @@ function signinwithemail(){
 	auth.signInWithEmailAndPassword(email, pass)
 		.catch(e => console.log(e.message))
 		.then(function(data){
-			checkNewUser(data)
 			txtPassword.value = ''
 			txtEmail.value = ''
 		})
-
-
 }
 
 function signout(){
@@ -125,7 +98,7 @@ function signout(){
 var pwField = document.getElementById("fpwd");
 pwField.addEventListener("keyup", function(event) {
   if (event.keyCode === 13) {
-   event.preventDefault();
-   document.getElementById("blogin").click();
+   event.preventDefault()
+   document.getElementById("blogin").click()
   }
-});
+})

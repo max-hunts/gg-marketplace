@@ -1,14 +1,12 @@
-var permissionToLeavePage1 = false
-var permissionToLeavePage2 = false
+const toBase64 = file => new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => resolve(reader.result)
+    reader.onerror = error => reject(error)
+})
 
-function leavePage(){
-	if (permissionToLeavePage1 && permissionToLeavePage2) {
-		window.location.replace('home?itemAdded=true')
-	}
-}
-
-function productSubmitEventHandler(){
-	data = {
+async function productSubmitEventHandler(){
+	let newProduct = {
 		id: 1,
 		name: "",
 		desc: "",
@@ -29,35 +27,50 @@ function productSubmitEventHandler(){
 
 	const imgBtn = document.getElementById('pImg')
 
-	var sessUid = firebase.auth().currentUser.uid
+	let sessUid = firebase.auth().currentUser.uid
 
-	data.id = 999
-	data.name = nameField.value
-	data.desc = descField.value
-	data.location = locField.value
+	newProduct.id = 999
+	newProduct.name = nameField.value
+	newProduct.desc = descField.value
+	newProduct.location = locField.value
 	if (stockField.value) {
-		data.stock = stockField.value
+		newProduct.stock = stockField.value
 	}
-	data.price = priceField.value
-	data.owner = sessUid
-	data.holder = sessUid
+	newProduct.price = priceField.value
+	newProduct.owner = sessUid
+	newProduct.holder = sessUid
 
-	var productKey = addItem(data)
-	console.log(productKey)
-
-	var image = imgBtn.files[0]
-	var imgPath = productKey + '/' + image.name
-	var storageRef = firebase.storage().ref('/product-img/' + imgPath)
+	let image = imgBtn.files[0]
+	imageName = image.name
+	// imageB64 = await toBase64(image)
+	let imagePackage = {name:imageName, b64:null}
 
 	const submitBtn = document.getElementById('pSend')
 	submitBtn.innerHTML = "Uploading..."
 	submitBtn.disabled = true
 
-	updateDBImg(productKey, imgPath)
-
-	storageRef.put(image).then(function(){
-		permissionToLeavePage2 = true
-		leavePage()
+	firebase.auth().currentUser.getIdToken().then(function(idToken){
+		let url = 'new-product-api'
+		let data = {uToken: idToken, product: newProduct, image: imagePackage}
+		let postData = {method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}}
+		fetch(url, postData)
+		.then(response => response.json())
+		.then(function(result){
+			if (result.success) {
+				let imageRef = firebase.storage().ref(result.imgRef)
+				imageRef.put(image).then(function(){
+					window.location.replace('home?itemAdded=true')
+				})
+				.catch(e=>{
+					console.log(e)
+					submitBtn.innerHTML = "Error..."
+				})
+			}
+			else {
+				submitBtn.innerHTML = "Error..."
+				console.log(result.error)
+			}
+		})
 	})
 }
 
@@ -80,43 +93,36 @@ function productUpdateEventHandler() {
 		submitBtn.innerHTML = "Updating..."
 		submitBtn.disabled = true
 
-		var database = firebase.database()
-		var productRef = database.ref("/products/"+item_id)
-		productRef.update({
+		updates = {
 			name: nameField.value,
 			desc: descField.value,
 			location: locField.value,
 			stock: stockField.value,
 			price: priceField.value
-		})
-		.then(function(){
-			submitBtn.setAttribute("style", "width: 300px; background: #00DD00;cursor: pointer;")
-			submitBtn.innerHTML = "Done!, Go Home..."
-			submitBtn.disabled = false
+		}
+
+		firebase.auth().currentUser.getIdToken().then(function(idToken){
+			let url = 'update-product-api'
+			let data = {uToken: idToken, product: updates, productID: item_id}
+			let postData = {method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}}
+			fetch(url, postData)
+			.then(response => response.json())
+			.then(function(result){
+				if (result.success) {
+					submitBtn.setAttribute("style", "width: 300px; background: #00DD00;cursor: pointer;")
+					submitBtn.innerHTML = "Done!, Go Home..."
+					submitBtn.disabled = false
+				}
+				else {
+					console.log(result.error)
+					submitBtn.innerHTML = "Error..."
+				}
+			})
 		})
 	}
 	else {
 		window.location.replace('home')
 	}
-}
-
-function addItem(item){
-	var database = firebase.database()
-	var itemRef = database.ref('/products')
-	var key = itemRef.push(item)
-	return key.key
-}
-
-function updateDBImg(key, value){
-	console.log("Updating db, key=" + key + " value="+value+" total=" + '/products/' + key)
-	var database = firebase.database()
-	var itemRef = database.ref('/products/' + key)
-	console.log("itemRef")
-	console.log(itemRef)	
-	itemRef.update({img: value}).then(function(){
-		permissionToLeavePage1 = true
-		leavePage()
-		})
 }
 
 function updateImgs() {
@@ -290,21 +296,27 @@ function showShipField(){
 }
 
 function addShippingAddress(){
-	let database = firebase.database()
-	var usersRef = database.ref("/users")
-	usersRef.orderByChild("UID").equalTo(firebase.auth().currentUser.uid).once('value', function(snapshot){
-		vals = snapshot.val()
-		var keys = Object.keys(vals)
-		userKey = keys[0]
-		userRef = database.ref("/users/"+userKey)
-		userRef.update({address:document.getElementById('shippingaddressinput').value})
-		.then(function(){
-			document.getElementById("shippingaddressinput").value = ""
-			document.getElementById("shippingaddressinput").placeholder = "Success!"
+	let newAddress = document.getElementById('shippingaddressinput').value
+	firebase.auth().currentUser.getIdToken().then(function(idToken){
+		let url = 'shipping-adress-edit-api'
+		let data = {uToken: idToken, address: newAddress}
+		let postData = {method: 'POST', body: JSON.stringify(data),headers: {'Content-Type': 'application/json'}}
+		fetch(url, postData)
+		.then(response => response.json())
+		.then(function(result){
+			if (result.success) {
+				document.getElementById("shippingaddressinput").value = ""
+				document.getElementById("shippingaddressinput").placeholder = "Success!"
+			}
+			else {
+				document.getElementById("shippingaddressinput").value = ""
+				document.getElementById("shippingaddressinput").placeholder = "FAIL, " + esult.error
+			}
 		})
-		.catch(e => {console.log(e)})
 	})
 }
+
+
 try {
 	var addressField = document.getElementById("shippingaddressinput")
 	addressField.addEventListener("keyup", function(event) {
