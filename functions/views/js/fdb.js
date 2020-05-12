@@ -142,6 +142,10 @@ updateImgs();
 function purchaseItem() {
 	const purchaseBtn = document.getElementById('remember-to-add-auth-verificartion-to-js-handler')
 	if (purchaseBtn.innerHTML == "Buy!") {
+		purchaseBtn.setAttribute("style", "background: #ff813d; width:300px;")
+		purchaseBtn.innerHTML = "Confirm?"
+	}
+	else if (purchaseBtn.innerHTML == "Confirm?") {
 		if (firebase.auth().currentUser) {
 			firebase.auth().currentUser.getIdToken().then(function(idToken) {
 				var item_id_element = document.getElementById("productID")
@@ -163,7 +167,7 @@ function purchaseItem() {
 				.then(function(result){
 					console.log(result)
 					if (result.success == true) {
-						purchaseBtn.setAttribute("style", "background: #00DD00; width:500px;")
+						purchaseBtn.setAttribute("style", "background: #00DD00; width:500px; transition: 0.7s;")
 						purchaseBtn.innerHTML = "Item Purchased, Congratulations!"
 					}
 					else {
