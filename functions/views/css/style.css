@@ -249,6 +249,17 @@ footer a {
 	margin-left: 20px;
 	font-size: 20px;
 	font-family: osl;
+	transition: 0.4s;
+}
+
+.sbar button:hover {
+	background-color: violet;
+	transition: 0.2s;
+}
+
+.sbar button:active {
+	background-color: whitesmoke;
+	transition: 0.2s;
 }
 
 .sbar a {
@@ -484,7 +495,7 @@ footer a {
 }
 .product-page-info button:hover {
 	transition: 0.3s;
-	background-color: #ff7700;
+	background-color: #ffc04b;
 }
 .product-page-info button:active {
 	transition: 0.1s;
@@ -510,7 +521,7 @@ footer a {
 }
 
 .my-products-container {
-
+	color: transparent;
 }
 
 .my-product-container {

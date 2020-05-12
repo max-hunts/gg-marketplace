@@ -54,6 +54,46 @@ function homePage(request, responce) {
 	})
 }
 
+app.get('/search', function(request, responce){
+	var dbRef = database.ref("/products")
+	if (request.query.search) {
+		let sQuery = request.query.search.toLowerCase()
+		dbRef.orderByChild("status").equalTo("on-sale").once('value', function(snapshot){
+			var data = {
+					'x': {desc: '',holder: '',id: 999,img: '',location: '',name: 'Nothing found 😢',owner: '',price: '',public: '',stock: ''},
+			}
+			if (snapshot.val()) {
+				data = snapshot.val()
+				var sResults = [{desc: '',holder: '',id: 999,img: '',location: '',name: 'Nothing found 😢',owner: '',price: '',public: '',stock: ''}]
+
+				var keys = Object.keys(data)
+
+				keys.forEach(key => {
+					if (data[key].name.toLowerCase().includes(sQuery) || data[key].desc.toLowerCase().includes(sQuery)) {
+						sResults[key] = data[key]
+						console.log(sResults)
+					}
+				})
+				if (Object.keys(sResults).length > 1) {
+					delete sResults[0]
+				}
+				console.log(sResults)
+				responce.render('search.ejs', {products: sResults})
+			}
+			else {responce.render('search.ejs', {products: data})}
+		})
+	}
+	else {
+		dbRef.orderByChild("status").equalTo("on-sale").once('value', function(snapshot){
+			var data = {
+					'x': {desc: '',holder: '',id: 999,img: '',location: '',name: 'Nothing found 😢',owner: '',price: '',public: '',stock: ''},
+			}
+			if (snapshot.val()) {data = snapshot.val()}
+			responce.render('search.ejs', {products: data})
+		})
+	}
+})
+
 app.get('/additmpage', function(request, responce){
 	responce.render('add-item.ejs')
 })

@@ -343,9 +343,19 @@ try {
 }
 catch(error) {console.log(error)}
 
+function bSearch(){
+	let searchField = document.getElementById("sfield")
+	if (searchField.value == ""){
+		searchField.blur()
+	}
+	else {
+		search(searchField.value)
+		}
+}
+
 
 try {
-	var searchField = document.getElementById("sfield")
+	let searchField = document.getElementById("sfield")
 	searchField.addEventListener("keyup", function(event) {
 	if (event.keyCode === 13) {
 		event.preventDefault()
