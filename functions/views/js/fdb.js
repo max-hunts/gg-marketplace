@@ -320,6 +320,10 @@ function addShippingAddress(){
 	})
 }
 
+function search(keywords){
+	window.location.replace('search?search='+keywords)
+}
+
 
 try {
 	var addressField = document.getElementById("shippingaddressinput")
@@ -333,6 +337,23 @@ try {
 		else {
 				addShippingAddress()
 				addressField.blur()
+			}
+		}
+	})
+}
+catch(error) {console.log(error)}
+
+
+try {
+	var searchField = document.getElementById("sfield")
+	searchField.addEventListener("keyup", function(event) {
+	if (event.keyCode === 13) {
+		event.preventDefault()
+		if (searchField.value == ""){
+			searchField.blur()
+		}
+		else {
+			search(searchField.value)
 			}
 		}
 	})
