@@ -20,7 +20,7 @@
 							<% var salebtnStyle = "visibility:hidden"%>
 							<% if (item.status != "sold") {salebtnStyle = "visibility:all;"}%>
 							<% if (item.status == "on-sale") {sellbtnText = "Take Off Sale"}%>
-							<div class="sell-btn" style="<%= salebtnStyle%>"</div>><button onclick={toggle_sale()} id="toggleSaleBtn"><%= sellbtnText%></button> </div>
+							<div class="sell-btn" style="<%= salebtnStyle%>"><button onclick={toggle_sale()} id="toggleSaleBtn"><%= sellbtnText%></button> </div>
 							<% var shipbtnStyle = ""%>
 							<% if (item.status == "sold") {shipbtnStyle = "visibility:hidden;"} else {shipbtnStyle = "visibility:all;"}%>
 							<div class="ship-btn" style=<%= shipbtnStyle%>><button onclick={mark_as_sold()} id="soldBtn">Mark Sold</button> </div>
