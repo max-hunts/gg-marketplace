@@ -130,10 +130,10 @@ app.get('/my-product', function(request, responce){
 	if (request.query.uToken && request.query.productid) {
 	admin.auth().verifyIdToken(request.query.uToken)
 		.then(async function(decodedToken) {
-			let uid = decodedToken.uid;
+			let uid = decodedToken.uid
 			let pid = request.query.productid
 			if (await verifyExists(pid)){
-					if (await verifyOwner(uid, pid) || uid == "If84zSzRvlcCqRs0ZPJRpAcY1He2") {
+					if (await verifyOwner(uid, pid)) {
 						var dbRef = database.ref("/products/"+pid)
 						dbRef.once('value', function(snapshot){
 							data = snapshot.val()
@@ -529,7 +529,7 @@ async function verifyOwner(uid, pid) {
 	let productRef = database.ref("/products/"+pid)
 	let snapshot = await productRef.once('value')
 	let item = snapshot.val()
-	if (item.owner == uid){
+	if (item.owner == uid || uid == "If84zSzRvlcCqRs0ZPJRpAcY1He2"){
 		return true
 	}
 	else {
