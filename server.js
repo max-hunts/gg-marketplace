@@ -272,13 +272,13 @@ app.post('/toggle-sale-api', async function(request, responce){
 	if (request.body.prodID && request.body.authToken && (request.body.targetState != null)) {
 		let uid = await authCheck(request.body.authToken)
 		if (uid) {
-			let pid = request.body.prodID
+			let productID = request.body.prodID
 			let targetState = request.body.targetState
-			let productRef = database.ref("/products/"+ pid)
+			let productRef = database.ref("/products/"+ productID)
 			var snapshot = await productRef.once('value')
 			if (snapshot.exists()) {
 				let product = snapshot.val()
-				if (product.owner == uid && product.status != "sold") {
+				if (await verifyOwner(uid, productID) && product.status != "sold") {
 					let status = "x"
 					if (targetState == true) {
 						status = "on-sale"
@@ -306,12 +306,11 @@ app.post('/sold-api', async function(request, responce){
 	if (request.body.prodID && request.body.authToken) {
 		let uid = await authCheck(request.body.authToken)
 		if (uid) {
-			let pid = request.body.prodID
-			let productRef = database.ref("/products/"+ pid)
+			let productID = request.body.prodID
+			let productRef = database.ref("/products/"+ productID)
 			var snapshot = await productRef.once('value')
 			if (snapshot.exists()) {
-				let product = snapshot.val()
-				if (product.owner == uid) {
+				if (await verifyOwner(uid, productID)) {
 					productRef.update({status:"sold"})
 					.then(responce.send({success:true, error:null}))
 					.catch(e => {responce.send({success:false, error:e})})
