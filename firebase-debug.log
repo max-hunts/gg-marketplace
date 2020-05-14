@@ -1,0 +1,57 @@
+[debug] [2020-05-14T19:47:30.512Z] ----------------------------------------------------------------------
+[debug] [2020-05-14T19:47:30.514Z] Command:       /usr/local/bin/node /usr/local/bin/firebase deploy
+[debug] [2020-05-14T19:47:30.514Z] CLI Version:   8.2.0
+[debug] [2020-05-14T19:47:30.514Z] Platform:      darwin
+[debug] [2020-05-14T19:47:30.514Z] Node Version:  v12.16.2
+[debug] [2020-05-14T19:47:30.515Z] Time:          Thu May 14 2020 20:47:30 GMT+0100 (British Summer Time)
+[debug] [2020-05-14T19:47:30.515Z] ----------------------------------------------------------------------
+[debug] [2020-05-14T19:47:30.515Z] 
+[debug] [2020-05-14T19:47:30.525Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2020-05-14T19:47:30.526Z] > authorizing via signed-in user
+[debug] [2020-05-14T19:47:30.526Z] [iam] checking project project-gg-3b754 for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2020-05-14T19:47:30.528Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/project-gg-3b754:testIamPermissions  
+ {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2020-05-14T19:47:31.397Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Thu, 14 May 2020 19:47:30 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=653","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-05-14T19:47:31.399Z] >>> HTTP REQUEST POST https://iam.googleapis.com/v1/projects/project-gg-3b754/serviceAccounts/project-gg-3b754@appspot.gserviceaccount.com:testIamPermissions  
+ {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2020-05-14T19:47:32.101Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Thu, 14 May 2020 19:47:31 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2020-05-14T19:47:32.102Z] >>> HTTP REQUEST GET https://firebase.googleapis.com/v1beta1/projects/project-gg-3b754  
+ 
+[debug] [2020-05-14T19:47:32.326Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Thu, 14 May 2020 19:47:31 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3-27=\":443\"; ma=2592000,h3-25=\":443\"; ma=2592000,h3-T050=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q049=\":443\"; ma=2592000,h3-Q048=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[info] 
+[info] === Deploying to 'project-gg-3b754'...
+[info] 
+[info] i  deploying functions, hosting
+[debug] [2020-05-14T19:47:33.998Z] > [functions] package.json contents: {
+  "name": "functions",
+  "description": "Cloud Functions for Firebase",
+  "scripts": {
+    "serve": "firebase emulators:start --only functions",
+    "shell": "firebase functions:shell",
+    "start": "npm run shell",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "engines": {
+    "node": "8"
+  },
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "ejs": "^3.1.2",
+    "express": "^4.17.1",
+    "firebase-admin": "^8.11.0",
+    "firebase-functions": "^3.6.1",
+    "morgan": "^1.10.0",
+    "nodemailer": "^6.4.6"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^0.2.0"
+  },
+  "private": true
+}
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled...
+[debug] [2020-05-14T19:47:34.885Z] [functions] runtime dependency check dates: warning: 2020-05-21T00:00:00.000Z error: 2020-06-23T00:00:00.000Z
+[debug] [2020-05-14T19:47:34.885Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/project-gg-3b754/services/cloudfunctions.googleapis.com  
+ 
+[debug] [2020-05-14T19:47:34.886Z] >>> HTTP REQUEST GET https://serviceusage.googleapis.com/v1/projects/project-gg-3b754/services/runtimeconfig.googleapis.com  
+ 
