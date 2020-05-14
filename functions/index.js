@@ -13,10 +13,8 @@ let firebaseadmin = admin.initializeApp({
 let database = firebaseadmin.database()
 
 let app = express()
-
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(bodyParser.json({ limit: '10mb' }));
-
 app.use(logger('dev'))
 app.use(express.static('views'))
 
@@ -30,7 +28,7 @@ let transporter = nodemailer.createTransport({
     user: 'noreply.projectgg@gmail.com',
     pass: 'REDACTED'
   }
-});
+})
 
 
 app.get("/", function(request, responce) {
@@ -113,17 +111,11 @@ app.get('/my-products', function(request, responce){
 			}
 			else {
 				dbRef.orderByChild('owner').equalTo(uid).once('value', function(snapshot){
-					var data = {
-						  'x': {desc: '', holder: '', id: 999, img: '', location: '', name: 'No products listed 😢', 
-								owner: '', price: '', public: '', stock: ''
-							  },
-					}
+					var data = {'x': {desc: '', holder: '', id: 999, img: '', location: '', name: 'No products listed 😢', owner: '', price: '', public: '', stock: ''}}
 					if (snapshot.val()) {data = snapshot.val()}
 					responce.render('my-products.ejs', {products: data})
 				})
 			}
-
-
 		})
 		.catch(function(error) {
 			console.log(error)
@@ -228,109 +220,112 @@ app.get('/product', function(request, responce){
 	}
 })
 
-app.post('/purchase-api', function(request, responce){
-	if (request.body.item && request.body.user) {
-		admin.auth().verifyIdToken(request.body.user)
-			.then(function(decodedToken) {
-				let uid = decodedToken.uid;
-				let product = request.body.item
-				var productRef = database.ref("/products/"+product)
-				productRef.once('value', function(snapshot) {
-					var exists = (snapshot.val() !== null)
-					if (exists){
-						var productRef = database.ref("/products/"+product)
-						productRef.update({owner:uid, status:"sold"})
-						.then(function(){
-							responce.send({success:true, error:null})
-						})
-						.catch(e => {console.log(e)})
+
+app.post('/request-api', async function(request, responce){
+	if (request.body.prodID && request.body.authToken && request.body.usrMsg) {
+		let bMsg = request.body.usrMsg
+		let uid = await authCheck(request.body.authToken)
+		if (uid) {
+			let pid = request.body.prodID
+			let productRef = database.ref("/products/"+ pid)
+			var snapshot = await productRef.once('value')
+			if (snapshot.exists()) {
+				let product = snapshot.val()
+				let productName = product.name
+				let productSeller  = product.owner
+				let usersRef = database.ref("/users")
+				snapshot = await usersRef.orderByChild("UID").equalTo(productSeller).once('value')
+				if (snapshot.exists()) {
+					let vals = snapshot.val()
+					let keys = Object.keys(vals)
+					let seller = vals[keys[0]]
+					let sellerName = seller.fName
+					let sellerEmail = seller.email
+					snapshot = await usersRef.orderByChild("UID").equalTo(uid).once('value')
+					if (snapshot.exists()) {
+						let vals = snapshot.val()
+						let keys = Object.keys(vals)
+						let buyer = vals[keys[0]]
+						let buyerName = buyer.fName + ' ' + buyer.lName
+						let buyerEmail = buyer.email
+						let content = contentMaker(sellerName, buyerName, buyerEmail, productName, pid, bMsg)
+						let rsp = sendEmail(sellerEmail, content)
+						console.log(rsp)
+						responce.send({success:true, error:null})
+					} else {
+						responce.send({success:false, error:'Something very bad has happened..... Item buyer apparantly doesn\'t exist in the database'})
 					}
-					else {
-						responce.send({success:false, error:'Item does not exist'})
-					}
-				})
-				.catch(e => {console.log(e)})				
-			})
-			.catch(function(err) {
-				responce.send({success:false, error:'invalid auth token'})
-			});
-	}
-	else {
+				} else {
+					responce.send({success:false, error:'Something very bad has happened..... Item owner apparantly doesn\'t exist in the database'})
+				}
+			} else {
+				responce.send({success:false, error:'Item does not exist'})
+			}
+		} else {
+			responce.send({success:false, error:'invalid auth token'})
+		}
+	} else {
 		responce.send({success:false, error:'invalid data'})
 	}
 })
 
-app.post('/place-on-sale-api', function(request, responce){
-	if (request.body.item && request.body.user) {
-		admin.auth().verifyIdToken(request.body.user)
-			.then(function(decodedToken) {
-				let uid = decodedToken.uid;
-				let productID = request.body.item
-				var productRef = database.ref("/products/"+productID)
-
-				productRef.once('value',function(snapshot){
-					let item = snapshot.val()
-					if (item){
-						let itemOwner = item.owner
-						if (uid == itemOwner){
-							productRef.update({status:"on-sale"})
-							.then(function(){
-								responce.send({success:true, error:null})
-							})
-							.catch(e => {console.log(e)})
-						}
-						else {
-							responce.send({success:false, error:'You do not own this item'})
-						}
+app.post('/toggle-sale-api', async function(request, responce){
+	if (request.body.prodID && request.body.authToken && (request.body.targetState != null)) {
+		let uid = await authCheck(request.body.authToken)
+		if (uid) {
+			let pid = request.body.prodID
+			let targetState = request.body.targetState
+			let productRef = database.ref("/products/"+ pid)
+			var snapshot = await productRef.once('value')
+			if (snapshot.exists()) {
+				let product = snapshot.val()
+				if (product.owner == uid && product.status != "sold") {
+					let status = "x"
+					if (targetState == true) {
+						status = "on-sale"
+					} else {
+						status = "off-sale"
 					}
-					else {
-						responce.send({success:false, error:'Item does not exist'})
-					}
-				})
-				.catch(e=>{
-					console.log(e)
-					responce.send({success:false, error:'other, ' + e})
-				})
-			})
-			.catch(function(error) {
-				responce.send({success:false, error:'invalid auth token'})
-			})
+					productRef.update({status:status})
+					.then(responce.send({success:true, error:null}))
+					.catch(e => {responce.send({success:false, error:e})})
+				} else {
+					responce.send({success:false, error:'Unauthorized'})
+				}
+			} else {
+				responce.send({success:false, error:'Item does not exist'})
+			}
+		} else {
+			responce.send({success:false, error:'invalid auth token'})
 		}
-	else {
+	} else {
 		responce.send({success:false, error:'invalid data'})
 	}
 })
 
-app.post('/ship-api', function(request, responce){
-	if (request.body.item && request.body.user) {
-		admin.auth().verifyIdToken(request.body.user)
-			.then(async function(decodedToken) {
-				let uid = decodedToken.uid;
-				let pid = request.body.item
-
-				if (await verifyExists(pid)){
-					if (await verifyOwner(uid, pid)) {
-						let productRef = database.ref("/products/"+pid)
-						productRef.update({status:"shipped"})
-						.then(function(){
-							processItemShipEmail(pid, uid)
-							responce.send({success:true, error:null})
-						})
-						.catch(e => {console.log(e)})
-					}
-					else {
-						responce.send({success:false, error:'You do not own this item'})
-					}
+app.post('/sold-api', async function(request, responce){
+	if (request.body.prodID && request.body.authToken) {
+		let uid = await authCheck(request.body.authToken)
+		if (uid) {
+			let pid = request.body.prodID
+			let productRef = database.ref("/products/"+ pid)
+			var snapshot = await productRef.once('value')
+			if (snapshot.exists()) {
+				let product = snapshot.val()
+				if (product.owner == uid) {
+					productRef.update({status:"sold"})
+					.then(responce.send({success:true, error:null}))
+					.catch(e => {responce.send({success:false, error:e})})
+				} else {
+					responce.send({success:false, error:'Unauthorized'})
 				}
-				else {
-					responce.send({success:false, error:'Item does not exist'})
-				}
-			})
-			.catch(function(error) {
-				responce.send({success:false, error:'invalid auth token'})
-			})
+			} else {
+				responce.send({success:false, error:'Item does not exist'})
+			}
+		} else {
+			responce.send({success:false, error:'invalid auth token'})
 		}
-	else {
+	} else {
 		responce.send({success:false, error:'invalid data'})
 	}
 })
@@ -356,7 +351,7 @@ app.post('/login-user-api', function(request, responce){
 			});
 	}
 	else {
-		responce.send({error: 'invalid data'})
+		responce.send({success:false, error: 'invalid data'})
 	}
 })
 
@@ -468,6 +463,17 @@ app.post('/update-product-api', function(request, responce){
 	}
 })
 
+function contentMaker(sName, bName, bEmail, pName, pid, bMsg){
+	let text = "Hi " + sName + "\n \n" + bName + " is interested in your product " + pName + " (ID: " + pid + ")\n\nUser email: " + bEmail +"\n\nUser message:\n" + bMsg
+	return text
+}
+
+async function authCheck(token) {
+	let uid = false
+	decodedToken = await admin.auth().verifyIdToken(token).catch(e=>{console.log(e)})
+	uid = decodedToken.uid
+	return uid
+}
 
 async function checkNewUser(user){
 	let snapshot = await checkUserExists(user.uid)
@@ -531,49 +537,27 @@ async function verifyOwner(uid, pid) {
 	}
 }
 
-function processItemShipEmail(itemID, buyerID){
-	let productRef = database.ref("/products/"+itemID)
-	productRef.once('value',function(snapshot){
-		let item = snapshot.val()
-		let itemName = item.name
-		let itemHolder = item.holder
-		let usersRef = database.ref("/users")
-		usersRef.orderByChild("UID").equalTo(itemHolder).once('value', function(snapshot){
-			vals = snapshot.val()
-			var keys = Object.keys(vals)
-			uData = vals[keys[0]]
-			let holderEmail = uData.email
-			let clientRef = database.ref("/users")
-			usersRef.orderByChild("UID").equalTo(buyerID).once('value', function(snapshot){
-				cvals = snapshot.val()
-				var ckeys = Object.keys(cvals)
-				cData = cvals[ckeys[0]]
-				let clientAddress = cData.address
-				let emailContent = "Please ship Item: " + itemName + " (ItemID: " + itemID + ")\nShipping address: " + clientAddress
-				sendEmail(holderEmail, emailContent)
-			})
-		})
-	})
-}
-
 function sendEmail(address, content){
 	var mailOptions = {
-		from: 'noreply.projectgg@gmail.com',
+		from: 'Project GG',
 		to: address,
-		subject: 'Your Item has been requested',
+		subject: 'Someone\'s interested!',
 		text: content
 	}
 	transporter.sendMail(mailOptions, function(error, info){
 		if (error) {
 			console.log(error);
-		} else {
-			console.log('Email sent: ' + info.response);
-	  }
+		}
 	})
 }
 
+
 app.get('*', function(request, responce){
-	responce.render('404.ejs')
+	responce.status(404).render('404.ejs')
+})
+
+app.post('*', function(request, responce){
+	responce.status(404).send({success:false, error:"404"})
 })
 
 exports.application = functions.https.onRequest(app)

@@ -1,63 +1,5 @@
-<!doctype html>
+<%- include("partials/header") %>
 
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-
-  <title>GG Prototype</title>
-  <meta name="description" content="GG Prototype Web">
-  <meta name="author" content="Max">
-
-  <link rel="stylesheet" href="css/style.css">
-
-  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-analytics.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-storage.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/7.14.1/firebase-database.js"></script>
-  <script src="js/fInit.js"></script>
-</head>
-
-<body>
-	<main>
-		<div class="page">
-			<div class="navbar">
-				<div class="logon-crumbs">
-					<div id="uname-field" style="display: none;">
-						<a id="uname-dom" class="user-name" onclick="my_products();">Unregistered user</a>
-						<div class="user-logout">
-							<a onclick={signout()}>Log out</a>
-						</div>
-					</div>
-						<div id="login-field" style="display: block;">
-						<input id="fuid" type="text" placeholder="Username">
-						<input id="fpwd" type="password" placeholder="Password">
-						<button id="blogin" onclick={signinwithemail()} class="btn-login">&#x27a4;</button>
-						<button id="blogin_g" onclick={signinwithgoogle()} class="btn-g-login"><img src="media/g_logon.png" class="img-g-login" alt="img"></button>
-						<button id="blogin_g" onclick={signinwithfb()} class="btn-fb-login"><img src="media/fb_logon.png" class="img-g-login" alt="img"></button>
-					</div>
-				</div>
-				<div class="user-info">
-					<div class="notifications">
-						&#x1F514; | <%= 0%>
-					</div>
-					<div class="cart">
-						&#x1F6d2; | <%= 0%>
-					</div>
-					<div class="add-item">
-						<a href="additmpage">⊕</a>
-					</div>
-				</div>
-			</div>
-
-			<div class="sbar">
-				<img src="media/gg_logo.png" onclick={window.location.replace('home')} alt="img">
-				<input id="sfield" type="text" placeholder="I Want...">
-				<button id="sbutton" onclick={bSearch()}>Go!</button>
-				<a href="#">Extras</a>
-			</div>
-
-			<div class="space"></div>
 			<div id="api-response" class="purchase-message" style="display: none;color: #DD0000"></div>
 			<div id="productID" style="display: none;" product_id="<%= key%>"></div>
 			<div class="product-page-container">
@@ -67,9 +9,10 @@
 						<h2><%= item.name %> </h2>
 						<p>Seller: <%= seller %></p>
 						<p>Location: <%= item.location %></p>
-						<p>In stock: <%= item.stock %></p>
+						<p>Quantity: <%= item.stock %></p>
 						<p>Price: £<%= item.price %></p>
-						<button onclick={purchaseItem()} id="remember-to-add-auth-verificartion-to-js-handler">Buy!</button>
+						<input id="bMsg" type="text" placeholder="Your message to the seller" value="Hi, I would like to purchse your item" style="display: none;">
+						<button onclick={requestItem()} id="req-btn">Request!</button>
 					</div>
 				</div>
 				<div class="product-page-description"><p><%= item.desc %></p></div>
@@ -80,26 +23,4 @@
 		</div>
 
 	</main>
-
-	<footer>
-		<div class="links">
-			<a href="#">Help</a>
-			<a href="#">Contact</a>
-			<a href="#">Legal</a>
-		</div>
-		<div class="legal">
-			<a>© GG Sales 2019-2020. All Rights Reserved. </a>
-			<a class="link" href="#">User Agreement</a>
-			<a> ,</a> 
-			<a class="link" href="#">Privacy</a>
-			<a> ,</a> 
-			<a class="link" href="#">Cookies</a>
-		</div>
-		<div class="location">
-			GG Sales US 🇺🇸
-		</div>
-	</footer>
-	<script src="js/fAuth.js"></script>
-	<script src="js/fdb.js"></script>
-</body>
-</html>
+<%- include("partials/footer") %>

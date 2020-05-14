@@ -88,8 +88,6 @@ function productUpdateEventHandler() {
 		const item_id_element = document.getElementById("productID")
 		const item_id = item_id_element.getAttribute("product_id")
 
-		const sessUid = firebase.auth().currentUser.uid
-
 		submitBtn.innerHTML = "Updating..."
 		submitBtn.disabled = true
 
@@ -137,63 +135,58 @@ function updateImgs() {
 	})
 }
 
-updateImgs();
+updateImgs()
 
-function purchaseItem() {
-	const purchaseBtn = document.getElementById('remember-to-add-auth-verificartion-to-js-handler')
-	if (purchaseBtn.innerHTML == "Buy!") {
-		purchaseBtn.setAttribute("style", "background: #ff813d; width:300px;")
-		purchaseBtn.innerHTML = "Confirm?"
+function requestItem(){
+	const reqBtn = document.getElementById('req-btn')
+	const bMessage = document.getElementById('bMsg')
+	if (reqBtn.innerHTML == "Request!") {
+		if (firebase.auth().currentUser) {
+			reqBtn.setAttribute("style", "background: #87e5ff; width:300px;")
+			reqBtn.innerHTML = "Send?"
+			bMessage.setAttribute('style', 'display: block;')
+		} else {
+			reqBtn.innerHTML = "Please sign in"
+			reqBtn.setAttribute("style", "background: #FFa5af; width:300px;")
+		}
 	}
-	else if (purchaseBtn.innerHTML == "Confirm?") {
+	else if (reqBtn.innerHTML == "Send?") {
 		if (firebase.auth().currentUser) {
 			firebase.auth().currentUser.getIdToken().then(function(idToken) {
-				var item_id_element = document.getElementById("productID")
-				var item_id = item_id_element.getAttribute("product_id")
-				const url = 'purchase-api'
-				// The data we are going to send in our request
-				let data = {
-					item: item_id,
-					user: idToken
-				}
-				// The parameters we are gonna pass to the fetch function
-				let postData = { 
-					method: 'POST', 
-					body: JSON.stringify(data),
-					headers: {'Content-Type': 'application/json'}
-				}
+				reqBtn.innerHTML = "Sending..."
+				reqBtn.disabled = true
+				let userMessage = bMessage.value
+				let item_id = document.getElementById("productID").getAttribute("product_id")
+				const url = 'request-api'
+				let data = {prodID: item_id, authToken: idToken, usrMsg: userMessage}
+				let postData = {method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}}
 				fetch(url, postData)
 				.then(response => response.json())
 				.then(function(result){
 					console.log(result)
 					if (result.success == true) {
-						purchaseBtn.setAttribute("style", "background: #00DD00; width:500px; transition: 0.7s;")
-						purchaseBtn.innerHTML = "Item Purchased, Congratulations!"
+						reqBtn.setAttribute("style", "background: #00DD00; width:500px; transition: 0.7s;")
+						reqBtn.innerHTML = "Done! Go Home"
+						reqBtn.disabled = false
 					}
 					else {
-						purchaseBtn.setAttribute("style", "background: red;")
-						purchaseBtn.disabled = true
-						purchaseBtn.innerHTML = "ERROR"
+						reqBtn.setAttribute("style", "background: red;")
+						reqBtn.disabled = true
+						reqBtn.innerHTML = "ERROR"
 						document.getElementById("api-response").innerHTML = "Error: " + result.error
 						document.getElementById("api-response").setAttribute("style", "display: block")
 					}
 				})
 			})
+		} else {
+			reqBtn.innerHTML = "Please sign in"
 		}
-		else {
-			purchaseBtn.innerHTML = "Please log in to continue"
-			purchaseBtn.setAttribute("style", "width: 500px;");
-		}
-		
-	}
-	else if (purchaseBtn.innerHTML == "Item Purchased, Congratulations!") {
-		window.location.replace("home")
 	}
 	else {
-		purchaseBtn.disabled = true
+		window.location.replace('home')
 	}
-	
 }
+
 
 function edit_item() {
 	firebase.auth().currentUser.getIdToken().then(function(idToken) {
@@ -204,39 +197,78 @@ function edit_item() {
 	.catch(e => {console.log(e)})
 }
 
-function place_item_on_sale() {
+function toggle_sale() {
 	firebase.auth().currentUser.getIdToken().then(function(idToken) {
-		var item_id_element = document.getElementById("productID")
-		var item_id = item_id_element.getAttribute("product_id")
-		var place_on_sale_button = document.getElementById("sellBtn")
-		const url = 'place-on-sale-api'
-		let data = {
-					item: item_id,
-					user: idToken
-				}
-		let postData = { 
-					method: 'POST', 
-					body: JSON.stringify(data),
-					headers: {'Content-Type': 'application/json'}
-				}
+		let item_id = document.getElementById("productID").getAttribute("product_id")
+		let item_status = document.getElementById("productID").getAttribute("product_status")
+		let toggle_sale_btn = document.getElementById("toggleSaleBtn")
+		toggle_sale_btn.disabled = true
+		var toggle_status = true
+		if (item_status == 'on-sale') {toggle_status = false}
+		const url = 'toggle-sale-api'
+		let data = {prodID: item_id, authToken: idToken, targetState: toggle_status}
+		let postData = { method: 'POST', body: JSON.stringify(data),headers: {'Content-Type': 'application/json'}}
 		fetch(url, postData)
 		.then(response => response.json())
 		.then(function(result){
 			console.log(result)
 			if (result.success == true) {
-				place_on_sale_button.setAttribute("style", "background: #00DD00; width:200px;")
-				place_on_sale_button.innerHTML = "Item on sale!"
-				place_on_sale_button.disabled = true
-			}
-			else {
-				place_on_sale_button.setAttribute("style", "background: red;")
-				place_on_sale_button.disabled = true
-				place_on_sale_button.innerHTML = "ERROR"
-				console.log(result.error)
+				toggle_sale_btn.setAttribute("style", "background: #00DD00; transition: 0.5s;")
+				toggle_sale_btn.innerHTML = "Done!"
+				let sold_btn = document.getElementById("soldBtn")
+				let edit_button = document.getElementById("editBtn")
+				sold_btn.disabled = true
+				edit_button.disabled = true
+			} else {
+				toggle_sale_btn.setAttribute("style", "background: red;")
+				toggle_sale_btn.innerHTML = "ERROR"
+				document.getElementById("api-response").innerHTML = "Error: " + result.error
+				document.getElementById("api-response").setAttribute("style", "display: block")
+
 			}
 		})
+		.catch (e=>{
+			toggle_sale_btn.setAttribute("style", "background: red;")
+			toggle_sale_btn.innerHTML = "ERROR"
+			document.getElementById("api-response").innerHTML = "Error: " + e
+			document.getElementById("api-response").setAttribute("style", "display: block")
+		})
 	})
-	.catch(e => {console.log(e)})
+}
+
+function mark_as_sold(){
+	firebase.auth().currentUser.getIdToken().then(function(idToken) {
+		let item_id = document.getElementById("productID").getAttribute("product_id")
+		let sold_btn = document.getElementById("soldBtn")
+		const url = 'sold-api'
+		let data = {prodID: item_id, authToken: idToken}
+		let postData = { method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}}
+		fetch(url, postData)
+		.then(response => response.json())
+		.then(function(result){
+			if (result.success == true) {
+				sold_btn.setAttribute("style", "background: #00DD00; width:200px;")
+				sold_btn.innerHTML = "Sold!"
+				sold_btn.disabled = true
+				let sale_button = document.getElementById("toggleSaleBtn")
+				let edit_button = document.getElementById("editBtn")
+				sale_button.disabled = true
+				edit_button.disabled = true
+			}
+			else {
+				sold_btn.setAttribute("style", "background: red;")
+				sold_btn.innerHTML = "ERROR"
+				document.getElementById("api-response").innerHTML = "Error: " + e
+				document.getElementById("api-response").setAttribute("style", "display: block")
+			}
+		})
+		.catch (e=>{
+			sold_btn.setAttribute("style", "background: red;")
+			sold_btn.innerHTML = "ERROR"
+			document.getElementById("api-response").innerHTML = "Error: " + e
+			document.getElementById("api-response").setAttribute("style", "display: block")
+		})
+	})
 }
 
 function ship_item() {

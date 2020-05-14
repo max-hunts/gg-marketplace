@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>GG Prototype</title>
+  <meta name="description" content="GG Prototype Web">
+  <meta name="author" content="Max">
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-storage.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-database.js"></script>
+  <script src="js/fInit.js"></script>
+</head>
+
+<body>
+	<main>
+		<div class="page">
+			<div class="navbar">
+				<div class="logon-crumbs">
+					<div id="uname-field" style="display: none;">
+						<a id="uname-dom" class="user-name" href="javascript:;" onclick="my_products();">Unregistered user</a>
+						<div class="user-logout">
+							<a onclick={signout()}>Log out</a>
+						</div>
+					</div>
+						<div id="login-field" style="display: block;">
+						<input id="fuid" type="text" placeholder="Username">
+						<input id="fpwd" type="password" placeholder="Password">
+						<button id="blogin" onclick={signinwithemail()} class="btn-login">&#x27a4;</button>
+						<button id="blogin_g" onclick={signinwithgoogle()} class="btn-g-login"><img src="media/g_logon.png" class="img-g-login" alt="img"></button>
+						<button id="blogin_g" onclick={signinwithfb()} class="btn-fb-login"><img src="media/fb_logon.png" class="img-g-login" alt="img"></button>
+					</div>
+				</div>
+				<div class="user-info">
+					<div class="notifications">
+						&#x1F514; | <%= 0%>
+					</div>
+					<div class="cart">
+						&#x1F6d2; | <%= 0%>
+					</div>
+					<div class="add-item">
+						<a href="additmpage">⊕</a>
+					</div>
+				</div>
+			</div>
+
+			<div class="sbar">
+				<img src="media/gg_logo.png" onclick={window.location.replace('home')} alt="img">
+				<input id="sfield" type="text" placeholder="I Want...">
+				<button id="sbutton" onclick={bSearch()}>Go!</button>
+				<a href="#">Extras</a>
+			</div>
+
+			<div class="space"></div>

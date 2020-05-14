@@ -511,6 +511,19 @@ footer a {
 	font-size: 20px;
 	padding-top: 38px;
 }
+
+.product-page-info input {
+	margin-top: 20px;
+	height: 40px;
+	width: 500px;
+	font-size: 15px;
+	padding-left: 10px;
+	margin-bottom: -10px;
+	font-family: osl;
+	border-radius: 0;
+	border: 0.5px solid grey;
+}
+
 .product-page-description {
 	margin-top: 10px;
 }
@@ -563,11 +576,19 @@ footer a {
 }
 
 .purchase-message {
-	 color: #00df90;
-	 text-align: center;
-	 font-size: 25px;
-	 font-family: osl;
-	 padding-bottom: 10px;
+	color: #00df90;
+	text-align: center;
+	font-size: 25px;
+	font-family: osl;
+	padding-bottom: 10px;
+}
+
+.error-message {
+	color: #df0000;
+	text-align: center;
+	font-size: 25px;
+	font-family: osl;
+	padding-bottom: 10px;
 }
 
 .product-mgmt-buttons {
@@ -576,7 +597,7 @@ footer a {
 .product-mgmt-buttons button {
 	margin-top: 38px;
 	height: 40px;
-	width: 100px;
+	width: 150px;
 	display: block;
 	font-size: 19px;
 	font-family: osl;
