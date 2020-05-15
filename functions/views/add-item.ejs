@@ -52,7 +52,7 @@
 
 			<div class="user-auth-message" id="uAuthMsg" style="display: block;"><p>Please log in to continue</p></div>
 
-			<div class="new-product-field" id="npf" style="display: none;">
+			<div class="new-product-field" id="authField" style="display: none;">
 				<p>Add product</p>
 				<div class="npf-short">
 					<input required autofocus type="text" id="pName" placeholder="Product Name">
@@ -80,26 +80,4 @@
 		</div>
 
 	</main>
-
-	<footer>
-		<div class="links">
-			<a href="#">Help</a>
-			<a href="#">Contact</a>
-			<a href="#">Legal</a>
-		</div>
-		<div class="legal">
-			<a>© GG Sales 2019-2020. All Rights Reserved. </a>
-			<a class="link" href="#">User Agreement</a>
-			<a> ,</a> 
-			<a class="link" href="#">Privacy</a>
-			<a> ,</a> 
-			<a class="link" href="#">Cookies</a>
-		</div>
-		<div class="location">
-			GG Sales US 🇺🇸
-		</div>
-	</footer>
-	<script src="js/fAuth.js"></script>
-	<script src="js/fdb.js"></script>
-</body>
-</html>
+<%- include("partials/footer") %>

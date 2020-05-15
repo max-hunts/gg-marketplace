@@ -1,7 +1,9 @@
 function checkAuth(){
 	firebase.auth().onAuthStateChanged(function(user){
 		if (user) {
-			document.getElementById('uname-dom').innerHTML = "Loading..."
+
+			try {document.getElementById('uname-dom').innerHTML = "Loading..."}
+			catch(error){}
 
 			firebase.auth().currentUser.getIdToken().then(function(idToken) {
 				let url = 'login-user-api'
@@ -11,38 +13,49 @@ function checkAuth(){
 				.then(response => response.json())
 				.then(function(result){
 					if (result.success == true) {
-						document.getElementById('uname-dom').innerHTML = "Hello, " + result.userName
-						if (!result.address) {
-							document.getElementsByClassName("notifications")[0].innerHTML = "🔔 | Update shipping address"
-							document.getElementsByClassName("notifications")[0].setAttribute("style", "color: red;")
+						if (result.registered) {
+							document.getElementById('uname-dom').innerHTML = "Hello, " + result.name
+						} else {
+							try {
+								document.getElementById('uname-dom').innerHTML = "Unregistered!"
+								document.getElementById("notifications").innerHTML = "🔔 | Register your account"
+								document.getElementById("notifications").setAttribute("href", "registration")
+								document.getElementById("notifications").setAttribute("style", "color: red;")
+							}
+							catch(error){}
+							if (window.location.href.split('/').pop() != 'registration') {
+								window.location.replace('registration')
+							}
 						}
 					}
 					else {
 						console.log(result.error)
-						document.getElementsByClassName("notifications")[0].innerHTML = "🔔 | What the fuck just happened....."
-							document.getElementsByClassName("notifications")[0].setAttribute("style", "color: pink;")
+						document.getElementById("notifications").innerHTML = "🔔 | What the fuck just happened....."
+						document.getElementById("notifications").setAttribute("style", "color: pink;")
 					}
 				})
 			})
-
-			document.getElementById('uname-field').setAttribute("style", "display: block;")
-			document.getElementById('login-field').setAttribute("style", "display: none;")
-			
-			document.getElementById('uname-field').setAttribute("style", "display: block;")
-			document.getElementById('login-field').setAttribute("style", "display: none;")
+			try {
+				document.getElementById('uname-field').setAttribute("style", "display: block;")
+				document.getElementById('login-field').setAttribute("style", "display: none;")
+				
+				document.getElementById('uname-field').setAttribute("style", "display: block;")
+				document.getElementById('login-field').setAttribute("style", "display: none;")
+			}
+			catch(error) {}
 			try {document.getElementById('uAuthMsg').setAttribute("style", "display: none;")}
-			catch(error) {console.log(error)}
-			try{document.getElementById('npf').setAttribute("style", "display: block;")}
-			catch(error) {console.log(error)}
+			catch(error) {}
+			try{document.getElementById('authField').setAttribute("style", "display: block;")}
+			catch(error) {}
 		}
 		else {
 			document.getElementById('uname-field').setAttribute("style", "display: none;")
 			document.getElementById('login-field').setAttribute("style", "display: block;")
 			document.getElementById('uname-dom').innerHTML = "Unregistered"
 			try{document.getElementById('uAuthMsg').setAttribute("style", "display: block;")}
-			catch(error) {console.log(error)}
-			try{document.getElementById('npf').setAttribute("style", "display: none;")}
-			catch(error) {console.log(error)}
+			catch(error) {}
+			try{document.getElementById('authField').setAttribute("style", "display: none;")}
+			catch(error) {}
 		}
 	})
 }
@@ -94,11 +107,13 @@ function signout(){
 	// window.location.replace(window.location.href.split("?")[0])
 }
 
-
-var pwField = document.getElementById("fpwd");
-pwField.addEventListener("keyup", function(event) {
-  if (event.keyCode === 13) {
-   event.preventDefault()
-   document.getElementById("blogin").click()
-  }
-})
+try {
+	var pwField = document.getElementById("fpwd");
+	pwField.addEventListener("keyup", function(event) {
+	if (event.keyCode === 13) {
+		event.preventDefault()
+		document.getElementById("blogin").click()
+		}
+	})
+}
+catch(error) {}

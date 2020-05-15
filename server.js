@@ -219,6 +219,53 @@ app.get('/product', function(request, responce){
 	}
 })
 
+app.get('/registration', function(request, responce){
+	responce.render('user-registration.ejs')
+})
+
+
+app.post('/register-new-user-api', async function(request, responce){
+	let rBody = request.body
+	if (rBody.authToken && rBody.data.fName && rBody.data.lName && rBody.data.address && rBody.data.pPic) {
+		let uid = false
+		decodedToken = await admin.auth().verifyIdToken(rBody.authToken).catch(e=>{console.log(e)})
+		uid = decodedToken.uid
+		email = decodedToken.email
+		if (uid) {
+			if (await checkUserExists(uid) == false) {
+				let fName = rBody.data.fName
+				let lName = rBody.data.lName
+				let address = rBody.data.address
+				let pPic = rBody.data.pPic
+				let uData = {
+					fName:fName,
+					lName:lName,
+					UID:uid,
+					email:email,
+					address:address,
+					pPic:"x"
+				}
+				let usersRef = database.ref('/users')
+				let result = await usersRef.push(uData)
+				let key = result.key
+				let imgPath = key + '/' + pPic
+				let imgRootPath = "/user-img/" + imgPath
+				let userRef = database.ref('/users/' + key)
+				userRef.update({pPic:imgPath})
+				.then(responce.send({success:true, error:null, imgRef:imgRootPath}))
+				.catch(e=>{
+					responce.send({success:false, error:e})
+				})
+			} else {
+				responce.send({success:false, error:'user exists'})
+			}
+		} else {
+			responce.send({success:false, error:'invalid auth token'})
+		}
+	} else {
+		responce.send({success:false, error:'invalid data'})
+	}
+})
 
 app.post('/request-api', async function(request, responce){
 	if (request.body.prodID && request.body.authToken && request.body.usrMsg) {
@@ -396,7 +443,7 @@ app.post('/new-product-api', function(request, responce){
 				let imageName = image.name
 
 				let newProductRef = database.ref('/products')
-				let key = await newProductRef.push(product).then(key => {
+				newProductRef.push(product).then(key => {
 					let productKey = key.key
 					let imgPath = productKey + '/' + imageName
 					let productRef = database.ref('/products/' + productKey)
@@ -477,21 +524,15 @@ async function checkNewUser(user){
 	let snapshot = await checkUserExists(user.uid)
 	if (snapshot){
 		let users = snapshot.val()
-		var keys = Object.keys(users)
-		uData = users[keys[0]]
-		let retData = {success:true, userName:uData.fName + " " + uData.lName, address:uData.address}
+		let keys = Object.keys(users)
+		let uData = users[keys[0]]
+		let uName = uData.fName
+		let retData = {success:true, registered:true, name:uName}
 		return retData
 	}
 	else {
-		console.log("Creating new user")
-		let uData = {
-			fName:user.displayName,
-			lName:"",
-			UID:user.uid,
-			email:user.email,
-			address:""
-		}
-		return await createNewUser(uData)
+		let retData = {success:true, registered:false}
+		return retData
 	}
 }
 
@@ -500,17 +541,6 @@ async function checkUserExists(uid){
 	let snapshot = await dbRef.orderByChild("UID").equalTo(uid).once('value')
 	if (snapshot.exists()){return snapshot}
 	else {return false}
-}
-
-async function createNewUser(uData){
-	let userRef = database.ref('/users')
-	let x = await userRef.push(uData)
-	return {success:true, userName:uData.fName + " " + uData.lName, address:uData.address}
-}
-
-
-async function authorisedToPurchase(uid, pid){
-	return true
 }
 
 async function verifyExists(pid) {

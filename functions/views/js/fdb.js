@@ -1,23 +1,5 @@
-const toBase64 = file => new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = () => resolve(reader.result)
-    reader.onerror = error => reject(error)
-})
-
 async function productSubmitEventHandler(){
-	let newProduct = {
-		id: 1,
-		name: "",
-		desc: "",
-		img: "default.png",
-		location: "",
-		stock: 1,
-		status: "on-sale",
-		price: 0,
-		owner: "",
-		holder: ""
-	}
+	let newProduct = {id: 1,name: "",desc: "",img: "default.png",location: "",stock: 1,status: "on-sale",price: 0,owner: "",holder: ""}
 
 	const nameField = document.getElementById('pName')
 	const descField = document.getElementById('pDesc')
@@ -42,7 +24,6 @@ async function productSubmitEventHandler(){
 
 	let image = imgBtn.files[0]
 	imageName = image.name
-	// imageB64 = await toBase64(image)
 	let imagePackage = {name:imageName, b64:null}
 
 	const submitBtn = document.getElementById('pSend')
@@ -83,21 +64,13 @@ function productUpdateEventHandler() {
 		const stockField = document.getElementById('pStock')
 		const priceField = document.getElementById('pPrice')
 
-		// const imgBtn = document.getElementById('pImg')
-
 		const item_id_element = document.getElementById("productID")
 		const item_id = item_id_element.getAttribute("product_id")
 
 		submitBtn.innerHTML = "Updating..."
 		submitBtn.disabled = true
 
-		updates = {
-			name: nameField.value,
-			desc: descField.value,
-			location: locField.value,
-			stock: stockField.value,
-			price: priceField.value
-		}
+		updates = {name: nameField.value, desc: descField.value, location: locField.value, stock: stockField.value, price: priceField.value}
 
 		firebase.auth().currentUser.getIdToken().then(function(idToken){
 			let url = 'update-product-api'
@@ -125,16 +98,21 @@ function productUpdateEventHandler() {
 
 function updateImgs() {
 	const storage = firebase.storage()
-	const rootReference = storage.ref('/product-img')
+	const productImgRef = storage.ref('/product-img')
+	const profileImgRef = storage.ref('/user-img')
 
 	var images = document.getElementsByClassName('dyn-img')
+	var pImages = document.getElementsByClassName('profile-img')
 	// console.log(images)
 	Array.from(images).forEach((image) => {
-		var pathReference = rootReference.child(image.title)
+		var pathReference = productImgRef.child(image.title)
+		pathReference.getDownloadURL().then(function(url) {image.src = url}).catch(e => {console.log(e.message)})
+	})
+	Array.from(pImages).forEach((image) => {
+		var pathReference = profileImgRef.child(image.title)
 		pathReference.getDownloadURL().then(function(url) {image.src = url}).catch(e => {console.log(e.message)})
 	})
 }
-
 updateImgs()
 
 function requestItem(){
@@ -187,7 +165,6 @@ function requestItem(){
 	}
 }
 
-
 function edit_item() {
 	firebase.auth().currentUser.getIdToken().then(function(idToken) {
 		var item_id_element = document.getElementById("productID")
@@ -224,7 +201,6 @@ function toggle_sale() {
 				toggle_sale_btn.innerHTML = "ERROR"
 				document.getElementById("api-response").innerHTML = "Error: " + result.error
 				document.getElementById("api-response").setAttribute("style", "display: block")
-
 			}
 		})
 		.catch (e=>{
@@ -271,47 +247,6 @@ function mark_as_sold(){
 	})
 }
 
-function ship_item() {
-	firebase.auth().currentUser.getIdToken().then(function(idToken) {
-		var item_id_element = document.getElementById("productID")
-		var item_id = item_id_element.getAttribute("product_id")
-		var ship_button = document.getElementById("shipBtn")
-		const url = 'ship-api'
-		let data = {
-					item: item_id,
-					user: idToken
-				}
-		let postData = { 
-					method: 'POST', 
-					body: JSON.stringify(data),
-					headers: {'Content-Type': 'application/json'}
-				}
-		fetch(url, postData)
-		.then(response => response.json())
-		.then(function(result){
-			console.log(result)
-			if (result.success == true) {
-				ship_button.setAttribute("style", "background: #00DD00; width:200px;")
-				ship_button.innerHTML = "Item shipped!"
-				ship_button.disabled = true
-
-				var sell_button = document.getElementById("sellBtn")
-				var edit_button = document.getElementById("editBtn")
-				sell_button.disabled = true
-				edit_button.disabled = true
-
-			}
-			else {
-				ship_button.setAttribute("style", "background: red;")
-				ship_button.disabled = true
-				ship_button.innerHTML = "ERROR"
-				console.log(result.error)
-			}
-		})
-	})
-	.catch(e => {console.log(e)})
-}
-
 function my_product(productID) {
 	firebase.auth().currentUser.getIdToken().then(function(idToken) {
 		window.location.replace("my-product?uToken=" + idToken + '&productid=' + productID)
@@ -356,6 +291,58 @@ function search(keywords){
 	window.location.replace('search?search='+keywords)
 }
 
+function u_r_submit(){
+	let submitBtn = document.getElementById('u-r-btn')
+	if (submitBtn.innerHTML == "Submit!") {
+		submitBtn.disabled = true
+		if (firebase.auth().currentUser) {
+			firebase.auth().currentUser.getIdToken().then(function(idToken){
+				let firstNameField = document.getElementById('f-name')
+				let lastNameField = document.getElementById('l-name')
+				let addressField = document.getElementById('u-address')
+				let fName = firstNameField.value
+				let lName = lastNameField.value
+				let address = addressField.value
+				let picName = "todo.png"
+				let userData = {fName:fName, lName:lName, address:address, pPic:picName}
+				let url = 'register-new-user-api'
+				let data = {authToken: idToken, data: userData}
+				let postData = {method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}}
+				fetch(url, postData)
+				.then(response => response.json())
+				.then(function(result){
+					if (result.success) {
+						submitBtn.setAttribute("style", "background: #00FF00; width: 100%; transition: 0.5s;")
+						submitBtn.innerHTML = "Success! Go Home..."
+						submitBtn.disabled = false
+					}
+					else {
+						submitBtn.setAttribute("style", "background: red;")
+						submitBtn.innerHTML = "ERROR"
+						submitBtn.disabled = false
+						document.getElementById("api-response").innerHTML = "Error: " + result.error
+						document.getElementById("api-response").setAttribute("style", "display: block")
+					}
+				})
+			})
+			.catch(e=>{
+				submitBtn.setAttribute("style", "background: red;")
+				submitBtn.innerHTML = "AUTH!!!"
+				document.getElementById("api-response").innerHTML = "Error: " + e
+				document.getElementById("api-response").setAttribute("style", "display: block")
+			})
+		} else {
+			submitBtn.setAttribute("style", "background: red;")
+			submitBtn.disabled = false
+			submitBtn.innerHTML = "ERROR!"
+			document.getElementById("api-response").innerHTML = "Error: Please log in"
+			document.getElementById("api-response").setAttribute("style", "display: block")
+		}
+	} else {
+		window.location.replace('home')
+	}
+}
+
 
 try {
 	var addressField = document.getElementById("shippingaddressinput")
@@ -397,6 +384,17 @@ try {
 		else {
 			search(searchField.value)
 			}
+		}
+	})
+}
+catch(error) {console.log(error)}
+
+try {
+	let searchField = document.getElementById("u-address")
+	searchField.addEventListener("keyup", function(event) {
+	if (event.keyCode === 13) {
+		event.preventDefault()
+		document.getElementById("u-r-btn").click()
 		}
 	})
 }

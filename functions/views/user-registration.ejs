@@ -1,0 +1,74 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>GG Prototype</title>
+  <meta name="description" content="GG Prototype Web">
+  <meta name="author" content="Max">
+
+  <link rel="stylesheet" href="css/style.css">
+
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/7.14.1/firebase-storage.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/7.14.1/firebase-database.js"></script>
+  <script src="js/fInit.js"></script>
+
+</head>
+
+<body>
+	<main>
+		<div class="page">
+            <div class="navbar">
+				<div class="logon-crumbs">
+					<div id="uname-field" style="display: none;">
+						<a id="uname-dom" class="user-name" href="javascript:;" onclick="my_products();">Unregistered user</a>
+						<div class="user-logout">
+							<a onclick={signout()}>Log out</a>
+						</div>
+					</div>
+						<div id="login-field" style="display: block;">
+						<input id="fuid" type="text" placeholder="Username">
+						<input id="fpwd" type="password" placeholder="Password">
+						<button id="blogin" onclick={signinwithemail()} class="btn-login">&#x27a4;</button>
+						<button id="blogin_g" onclick={signinwithgoogle()} class="btn-g-login"><img src="media/g_logon.png" class="img-g-login" alt="img"></button>
+						<button id="blogin_g" onclick={signinwithfb()} class="btn-fb-login"><img src="media/fb_logon.png" class="img-g-login" alt="img"></button>
+					</div>
+				</div>
+				<div class="user-info">
+					<div class="notifications">
+						&#x1F514; | <%= 0%>
+					</div>
+					<div class="cart">
+						&#x1F6d2; | <%= 0%>
+					</div>
+				</div>
+			</div>
+            
+            <div class="user-auth-message" id="uAuthMsg" style="display: block;"><p>Please log in to continue</p></div>
+            <div class="sub-page" id="authField" style="display: none;">
+                <div class="small-box"></div>
+                <div id="api-response" class="error-message" style="display: none;"></div>
+                <div class="u-r-title">User Registration</div>
+                <div class="u-r-cols">
+                    <div class="u-r-left">
+                        <div class="u-r-subtitle">About</div>
+                        <input id="f-name" type="text" class="u-r-i-default" placeholder="First Name">
+                        <input id="l-name" type="text" class="u-r-i-default" placeholder="Last Name">
+                        <div class="u-r-subtitle">Location</div>
+                        <div class="u-r-i-location"><input id="u-address" type="text" class="u-r-i-location" placeholder="Address"></div>
+                    </div>
+                    <div class="u-r-right">
+                        <div class="u-r-subtitle">Add a Profile Photo</div>
+                        <img src="media/profile.png" alt="profile Pic">
+                    </div>
+                </div>
+                <div class="u-r-btn"><button id="u-r-btn" onclick={u_r_submit()}>Submit!</button></div>
+            </div>
+
+		</div>
+    </main>
+<%- include("partials/footer") %>
