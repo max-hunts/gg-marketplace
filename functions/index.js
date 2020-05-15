@@ -250,7 +250,7 @@ app.post('/register-new-user-api', async function(request, responce){
 				let usersRef = database.ref('/users')
 				let result = await usersRef.push(uData)
 				let key = result.key
-				let imgPath = key + '/' + pPic
+				let imgPath = key + '/' + pPic ///this is problematic
 				let imgRootPath = "/user-img/" + imgPath
 				let userRef = database.ref('/users/' + key)
 				userRef.update({pPic:imgPath})
@@ -301,7 +301,7 @@ app.post('/request-api', async function(request, responce){
 						console.log(rsp)
 						responce.send({success:true, error:null})
 					} else {
-						responce.send({success:false, error:'Something very bad has happened..... Item buyer apparantly doesn\'t exist in the database'})
+						responce.send({success:false, error:'Unregistered user!'})
 					}
 				} else {
 					responce.send({success:false, error:'Something very bad has happened..... Item owner apparantly doesn\'t exist in the database'})
@@ -378,24 +378,16 @@ app.post('/sold-api', async function(request, responce){
 })
 
 app.post('/login-user-api', function(request, responce){
-	if (request.body.uToken && request.body.user) {
+	if (request.body.uToken) {
 		admin.auth().verifyIdToken(request.body.uToken)
 			.then(async function(decodedToken) {
-				let user = request.body.user
 				let uid = decodedToken.uid
-
-				if (uid != user.uid){
-					responce.send({success:false, error:'Stop hacking'})
-				}
-				else {
-					let rsp = await checkNewUser(user)
-					responce.send(rsp)
-				}
+				let rsp = await processUserStatus(uid)
+				responce.send(rsp)
 			})
-			.catch(function(error) {
-				responce.send({success:false, error:'invalid auth token'})
-				console.log(error)
-			});
+			.catch(e=>{
+				responce.send({success:false, error:'invalid auth token, ' + e})
+			})
 	}
 	else {
 		responce.send({success:false, error: 'invalid data'})
@@ -436,18 +428,16 @@ app.post('/shipping-adress-edit-api', function(request, responce){
 
 app.post('/new-product-api', function(request, responce){
 	if (request.body.uToken && request.body.product && request.body.image) {
-		admin.auth().verifyIdToken(request.body.uToken)
-			.then(async function(decodedToken) {
-				let uid = decodedToken.uid
+		let uid = await authCheck(request.body.authToken)
+		if (uid) {
+			if (await checkUserExists(uid)) {
 				let image = request.body.image
 				let product = request.body.product
-
 				let imageName = image.name
-
 				let newProductRef = database.ref('/products')
 				newProductRef.push(product).then(key => {
 					let productKey = key.key
-					let imgPath = productKey + '/' + imageName
+					let imgPath = productKey + '/' + imageName ///this is problematic
 					let productRef = database.ref('/products/' + productKey)
 					productRef.update({img: imgPath}).then(function(){
 						responce.send({success:true, imgRef:'/product-img/'+imgPath, error:null})
@@ -461,12 +451,12 @@ app.post('/new-product-api', function(request, responce){
 					responce.send({success:false, error:e})
 					console.log(error)
 				})
-				
-			})
-			.catch(function(error) {
-				responce.send({success:false, error:'invalid auth token'})
-				console.log(error)
-			});
+			} else {
+				responce.send({success:false, error:'Unregistered!'})
+			}
+		} else {
+			responce.send({success:false, error:'invalid auth token'})
+		}
 	}
 	else {
 		responce.send({error: 'invalid data'})
@@ -522,8 +512,8 @@ async function authCheck(token) {
 	return uid
 }
 
-async function checkNewUser(user){
-	let snapshot = await checkUserExists(user.uid)
+async function processUserStatus(uid){
+	let snapshot = await checkUserExists(uid)
 	if (snapshot){
 		let users = snapshot.val()
 		let keys = Object.keys(users)
