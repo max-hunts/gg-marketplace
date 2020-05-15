@@ -43,13 +43,17 @@ async function productSubmitEventHandler(){
 					window.location.replace('home?itemAdded=true')
 				})
 				.catch(e=>{
-					console.log(e)
 					submitBtn.innerHTML = "Error..."
+					submitBtn.setAttribute('style', 'color:red;')
+					document.getElementById("api-response").innerHTML = "Error: " + e
+					document.getElementById("api-response").setAttribute("style", "display: block")
 				})
 			}
 			else {
 				submitBtn.innerHTML = "Error..."
-				console.log(result.error)
+				submitBtn.setAttribute('style', 'color:red;')
+				document.getElementById("api-response").innerHTML = "Error: " + result.error
+				document.getElementById("api-response").setAttribute("style", "display: block")
 			}
 		})
 	})
@@ -85,8 +89,10 @@ function productUpdateEventHandler() {
 					submitBtn.disabled = false
 				}
 				else {
-					console.log(result.error)
 					submitBtn.innerHTML = "Error..."
+					submitBtn.setAttribute('style', 'color:red;')
+					document.getElementById("api-response").innerHTML = "Error: " + result.error
+					document.getElementById("api-response").setAttribute("style", "display: block")
 				}
 			})
 		})
@@ -280,8 +286,10 @@ function addShippingAddress(){
 				document.getElementById("shippingaddressinput").placeholder = "Success!"
 			}
 			else {
+				document.getElementById("api-response").innerHTML = "Error: " + result.error
+				document.getElementById("api-response").setAttribute("style", "display: block")
 				document.getElementById("shippingaddressinput").value = ""
-				document.getElementById("shippingaddressinput").placeholder = "FAIL, " + esult.error
+				document.getElementById("shippingaddressinput").placeholder = "ERROR!"
 			}
 		})
 	})
@@ -387,15 +395,15 @@ try {
 		}
 	})
 }
-catch(error) {console.log(error)}
+catch(error) {}
 
 try {
-	let searchField = document.getElementById("u-address")
-	searchField.addEventListener("keyup", function(event) {
+	let regAddressField = document.getElementById("u-address")
+	regAddressField.addEventListener("keyup", function(event) {
 	if (event.keyCode === 13) {
 		event.preventDefault()
 		document.getElementById("u-r-btn").click()
 		}
 	})
 }
-catch(error) {console.log(error)}
+catch(error) {}
