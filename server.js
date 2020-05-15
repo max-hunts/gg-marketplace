@@ -424,7 +424,7 @@ app.post('/shipping-adress-edit-api', function(request, responce){
 	}
 })
 
-app.post('/new-product-api', function(request, responce){
+app.post('/new-product-api', async function(request, responce){
 	if (request.body.uToken && request.body.product && request.body.image) {
 		let uid = await authCheck(request.body.authToken)
 		if (uid) {
