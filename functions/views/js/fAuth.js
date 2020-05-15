@@ -7,7 +7,7 @@ function checkAuth(){
 
 			firebase.auth().currentUser.getIdToken().then(function(idToken) {
 				let url = 'login-user-api'
-				let data = {uToken: idToken, user: user}
+				let data = {uToken: idToken}
 				let postData = {method: 'POST', body: JSON.stringify(data),headers: {'Content-Type': 'application/json'}}
 				fetch(url, postData)
 				.then(response => response.json())

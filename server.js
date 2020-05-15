@@ -376,24 +376,16 @@ app.post('/sold-api', async function(request, responce){
 })
 
 app.post('/login-user-api', function(request, responce){
-	if (request.body.uToken && request.body.user) {
+	if (request.body.uToken) {
 		admin.auth().verifyIdToken(request.body.uToken)
 			.then(async function(decodedToken) {
-				let user = request.body.user
 				let uid = decodedToken.uid
-
-				if (uid != user.uid){
-					responce.send({success:false, error:'Stop hacking'})
-				}
-				else {
-					let rsp = await checkNewUser(user)
-					responce.send(rsp)
-				}
+				let rsp = await checkNewUser(uid)
+				responce.send(rsp)
 			})
-			.catch(function(error) {
-				responce.send({success:false, error:'invalid auth token'})
-				console.log(error)
-			});
+			.catch(e=>{
+				responce.send({success:false, error:'invalid auth token, ' + e})
+			})
 	}
 	else {
 		responce.send({success:false, error: 'invalid data'})
@@ -520,8 +512,8 @@ async function authCheck(token) {
 	return uid
 }
 
-async function checkNewUser(user){
-	let snapshot = await checkUserExists(user.uid)
+async function checkNewUser(uid){
+	let snapshot = await checkUserExists(uid)
 	if (snapshot){
 		let users = snapshot.val()
 		let keys = Object.keys(users)
