@@ -1,62 +1,79 @@
-async function productSubmitEventHandler(){
-	let newProduct = {id: 1,name: "",desc: "",img: "default.png",location: "",stock: 1,status: "on-sale",price: 0,owner: "",holder: ""}
-
-	const nameField = document.getElementById('pName')
-	const descField = document.getElementById('pDesc')
-	const locField = document.getElementById('pLoc')
-	const stockField = document.getElementById('pStock')
-	const priceField = document.getElementById('pPrice')
-
-	const imgBtn = document.getElementById('pImg')
-
-	let sessUid = firebase.auth().currentUser.uid
-
-	newProduct.id = 999
-	newProduct.name = nameField.value
-	newProduct.desc = descField.value
-	newProduct.location = locField.value
-	if (stockField.value) {
-		newProduct.stock = stockField.value
+function checkFields() {
+	if (document.getElementById('pName').value && document.getElementById('pDesc').value 
+	&& document.getElementById('pLoc').value && document.getElementById('pPrice').value 
+	&& document.getElementById('pImg').files[0].name) {
+		return true
 	}
-	newProduct.price = priceField.value
-	newProduct.owner = sessUid
-	newProduct.holder = sessUid
+	return false
+}
 
-	let image = imgBtn.files[0]
-	imageName = image.name
-	let imagePackage = {name:imageName, b64:null}
-
+async function productSubmitEventHandler(){
 	const submitBtn = document.getElementById('pSend')
-	submitBtn.innerHTML = "Uploading..."
-	submitBtn.disabled = true
+	if (submitBtn.innerHTML == "Submit!") {
+		if (checkFields()) {
+			submitBtn.innerHTML = "Uploading..."
+			submitBtn.disabled = true
 
-	firebase.auth().currentUser.getIdToken().then(function(idToken){
-		let url = 'new-product-api'
-		let data = {uToken: idToken, product: newProduct, image: imagePackage}
-		let postData = {method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}}
-		fetch(url, postData)
-		.then(response => response.json())
-		.then(function(result){
-			if (result.success) {
-				let imageRef = firebase.storage().ref(result.imgRef)
-				imageRef.put(image).then(function(){
-					window.location.replace('home?itemAdded=true')
+			let newProduct = {id: 1,name: "",desc: "",img: "default.png",location: "",stock: 1,status: "on-sale",price: 0,owner: "",holder: ""}
+
+			const nameField = document.getElementById('pName')
+			const descField = document.getElementById('pDesc')
+			const locField = document.getElementById('pLoc')
+			const stockField = document.getElementById('pStock')
+			const priceField = document.getElementById('pPrice')
+			const imgBtn = document.getElementById('pImg')
+
+			let uid = firebase.auth().currentUser.uid
+
+			newProduct.id = 999
+			newProduct.name = nameField.value
+			newProduct.desc = descField.value
+			newProduct.location = locField.value
+			if (stockField.value) {newProduct.stock = stockField.value}
+			newProduct.price = priceField.value
+			newProduct.owner = uid
+			newProduct.holder = uid
+
+			let image = imgBtn.files[0]
+			imageName = image.name
+			let imagePackage = {name:imageName, b64:null}
+
+			firebase.auth().currentUser.getIdToken().then(function(idToken){
+				let url = 'new-product-api'
+				let data = {authToken: idToken, product: newProduct, image: imagePackage}
+				let postData = {method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}}
+				fetch(url, postData)
+				.then(response => response.json())
+				.then(function(result){
+					if (result.success) {
+						let imageRef = firebase.storage().ref(result.imgRef)
+						imageRef.put(image).then(function(){
+							submitBtn.innerHTML = "Done! Go Home..."
+							submitBtn.disabled = false
+							submitBtn.setAttribute('style', 'background:#00FF55; transition:0.5s; width:500px;')
+						})
+						.catch(e=>{
+							submitBtn.innerHTML = "Error..."
+							submitBtn.setAttribute('style', 'color:red;')
+							document.getElementById("api-response").innerHTML = "Error: " + e
+							document.getElementById("api-response").setAttribute("style", "display: block")
+						})
+					}
+					else {
+						submitBtn.innerHTML = "Error..."
+						submitBtn.setAttribute('style', 'color:red;')
+						document.getElementById("api-response").innerHTML = "Error: " + result.error
+						document.getElementById("api-response").setAttribute("style", "display: block")
+					}
 				})
-				.catch(e=>{
-					submitBtn.innerHTML = "Error..."
-					submitBtn.setAttribute('style', 'color:red;')
-					document.getElementById("api-response").innerHTML = "Error: " + e
-					document.getElementById("api-response").setAttribute("style", "display: block")
-				})
-			}
-			else {
-				submitBtn.innerHTML = "Error..."
-				submitBtn.setAttribute('style', 'color:red;')
-				document.getElementById("api-response").innerHTML = "Error: " + result.error
-				document.getElementById("api-response").setAttribute("style", "display: block")
-			}
-		})
-	})
+			})
+		} else {
+			document.getElementById("api-response").innerHTML = "Fill in all required fields!"
+			document.getElementById("api-response").setAttribute("style", "display: block")
+		}
+	} else {
+		window.location.replace('home')
+	}
 }
 
 function productUpdateEventHandler() {
@@ -78,7 +95,7 @@ function productUpdateEventHandler() {
 
 		firebase.auth().currentUser.getIdToken().then(function(idToken){
 			let url = 'update-product-api'
-			let data = {uToken: idToken, product: updates, productID: item_id}
+			let data = {authToken: idToken, product: updates, productID: item_id}
 			let postData = {method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}}
 			fetch(url, postData)
 			.then(response => response.json())
@@ -104,18 +121,12 @@ function productUpdateEventHandler() {
 
 function updateImgs() {
 	const storage = firebase.storage()
-	const productImgRef = storage.ref('/product-img')
-	const profileImgRef = storage.ref('/user-img')
+	const imgRef = storage.ref()
 
 	var images = document.getElementsByClassName('dyn-img')
-	var pImages = document.getElementsByClassName('profile-img')
 	// console.log(images)
 	Array.from(images).forEach((image) => {
-		var pathReference = productImgRef.child(image.title)
-		pathReference.getDownloadURL().then(function(url) {image.src = url}).catch(e => {console.log(e.message)})
-	})
-	Array.from(pImages).forEach((image) => {
-		var pathReference = profileImgRef.child(image.title)
+		var pathReference = imgRef.child(image.title)
 		pathReference.getDownloadURL().then(function(url) {image.src = url}).catch(e => {console.log(e.message)})
 	})
 }
@@ -149,7 +160,7 @@ function requestItem(){
 				.then(function(result){
 					console.log(result)
 					if (result.success == true) {
-						reqBtn.setAttribute("style", "background: #00DD00; width:500px; transition: 0.7s;")
+						reqBtn.setAttribute("style", "background: #00DD00; width:520px; transition: 0.7s;")
 						reqBtn.innerHTML = "Done! Go Home"
 						reqBtn.disabled = false
 					}
@@ -270,13 +281,35 @@ function my_products() {
 function showShipField(){
 	document.getElementById('shippingaddressbutton').setAttribute("style", "display:none;")
 	document.getElementById('shippingaddressinput').setAttribute("style", "display:block;")
+	showUserShippingAddress()
+}
+
+function showUserShippingAddress(){
+	firebase.auth().currentUser.getIdToken().then(function(idToken){
+		let url = 'shipping-adress-get-api'
+		let data = {authToken: idToken}
+		let postData = {method: 'POST', body: JSON.stringify(data),headers: {'Content-Type': 'application/json'}}
+		fetch(url, postData)
+		.then(response => response.json())
+		.then(function(result){
+			if (result.success) {
+				document.getElementById("shippingaddressinput").value = result.address
+			}
+			else {
+				document.getElementById("api-response").innerHTML = "Error: " + result.error
+				document.getElementById("api-response").setAttribute("style", "display: block")
+				document.getElementById("shippingaddressinput").value = ""
+				document.getElementById("shippingaddressinput").placeholder = "Can't retrieve current shipping address"
+			}
+		})
+	})
 }
 
 function addShippingAddress(){
 	let newAddress = document.getElementById('shippingaddressinput').value
 	firebase.auth().currentUser.getIdToken().then(function(idToken){
 		let url = 'shipping-adress-edit-api'
-		let data = {uToken: idToken, address: newAddress}
+		let data = {authToken: idToken, address: newAddress}
 		let postData = {method: 'POST', body: JSON.stringify(data),headers: {'Content-Type': 'application/json'}}
 		fetch(url, postData)
 		.then(response => response.json())

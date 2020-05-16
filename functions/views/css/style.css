@@ -53,6 +53,10 @@ footer a {
 	font-family: osl;
 }
 
+input:focus, textarea:focus, select:focus{
+	outline: none;
+}
+
 .page {
 	background-color: white;
 }
@@ -199,10 +203,24 @@ footer a {
 	color: #898989;
 	transition: 0.3s;
 }
+.notifications:hover {
+	color: tomato;
+}
+.notifications:active {
+	transition: 0.1s;
+	color: cyan;
+}
 
 .cart {
 	color: #898989;
 	transition: 0.3s;
+}
+.cart:hover {
+	color: tomato;
+}
+.cart:active {
+	transition: 0.1s;
+	color: cyan;
 }
 
 .sbar {
@@ -222,7 +240,7 @@ footer a {
 }
 
 .sbar input {
-	border: 0.5px solid black;
+	border: 0.5px solid gray;
 	display: inline-flex;
 	position: relative;
 	float: left;
@@ -672,9 +690,9 @@ footer a {
 .ship-adress button:hover {
 	background-color: pink;
 	color: black;
-	transition: 0.1s;
 }
 .ship-adress button:active {
+	transition: 0.1s;
 	background-color: white;
 }
 .ship-adress input {

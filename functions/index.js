@@ -1,10 +1,10 @@
-const functions = require('firebase-functions');
+const functions = require('firebase-functions')
 
 let express = require('express')
 let logger = require('morgan')
 let bodyParser = require('body-parser')
-let admin = require("firebase-admin");
-let serviceAccount = require("./project-gg-3b754-firebase-adminsdk-4848h-5a5778b77b.json");
+let admin = require("firebase-admin")
+let serviceAccount = require("./project-gg-3b754-firebase-adminsdk-4848h-5a5778b77b.json")
 
 let firebaseadmin = admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
@@ -14,7 +14,7 @@ let database = firebaseadmin.database()
 
 let app = express()
 app.use(bodyParser.urlencoded({extended: true}))
-app.use(bodyParser.json({ limit: '10mb' }));
+app.use(bodyParser.json())
 app.use(logger('dev'))
 app.use(express.static('views'))
 
@@ -44,12 +44,7 @@ function homePage(request, responce) {
 	dbRef.orderByChild("status").equalTo("on-sale").limitToLast(5).once('value', function(snapshot){
 		var data = {}
 		if (snapshot.val()) {data = snapshot.val()}
-		var x = "none"
-		if (request.query.itemAdded == "true") {
-			x = 'block'
-		}
-		console.log(data)
-		responce.render('home.ejs', {products: data, message: x})
+		responce.render('home.ejs', {products: data})
 	})
 }
 
@@ -101,7 +96,7 @@ app.get('/my-products', function(request, responce){
 	if (request.query.uToken) {
 	admin.auth().verifyIdToken(request.query.uToken)
 		.then(function(decodedToken) {
-			let uid = decodedToken.uid;
+			let uid = decodedToken.uid
 			var dbRef = database.ref("/products")
 
 			if (uid == "If84zSzRvlcCqRs0ZPJRpAcY1He2") {
@@ -153,7 +148,7 @@ app.get('/my-product', function(request, responce){
 		.catch(function(error) {
 			console.log(error)
 			responce.send("<h1>Bad Auth Token</h1><a href='home'>Home</a>")
-		});
+		})
 	}
 	else {
 		responce.send("<h1>No Auth Token Provided</h1><a href='home'>Home</a>")
@@ -186,7 +181,7 @@ app.get('/edit-item', function(request, responce){
 		.catch(function(error) {
 			console.log(error)
 			responce.send("<h1>Bad Auth Token</h1><a href='home'>Home</a>")
-		});
+		})
 	}
 	else {
 		responce.send("<h1>No Auth Token Provided</h1><a href='home'>Home</a>")
@@ -250,11 +245,10 @@ app.post('/register-new-user-api', async function(request, responce){
 				let usersRef = database.ref('/users')
 				let result = await usersRef.push(uData)
 				let key = result.key
-				let imgPath = key + '/' + pPic ///this is problematic
-				let imgRootPath = "/user-img/" + imgPath
+				let imgPath = "/user-img/" + key + '/' + pPic ///this is problematic
 				let userRef = database.ref('/users/' + key)
 				userRef.update({pPic:imgPath})
-				.then(responce.send({success:true, error:null, imgRef:imgRootPath}))
+				.then(responce.send({success:true, error:null, imgRef:imgPath}))
 				.catch(e=>{
 					responce.send({success:false, error:e})
 				})
@@ -395,8 +389,8 @@ app.post('/login-user-api', function(request, responce){
 })
 
 app.post('/shipping-adress-edit-api', function(request, responce){
-	if (request.body.uToken && request.body.address) {
-		admin.auth().verifyIdToken(request.body.uToken)
+	if (request.body.authToken && request.body.address) {
+		admin.auth().verifyIdToken(request.body.authToken)
 			.then(async function(decodedToken) {
 				let newAddress = request.body.address
 				let uid = decodedToken.uid
@@ -419,7 +413,35 @@ app.post('/shipping-adress-edit-api', function(request, responce){
 			.catch(function(error) {
 				responce.send({success:false, error:'invalid auth token'})
 				console.log(error)
-			});
+			})
+	}
+	else {
+		responce.send({error: 'invalid data'})
+	}
+})
+
+app.post('/shipping-adress-get-api', function(request, responce){
+	if (request.body.authToken) {
+		admin.auth().verifyIdToken(request.body.authToken)
+			.then(async function(decodedToken) {
+				let uid = decodedToken.uid
+
+				let snapshot = await checkUserExists(uid)
+				if (snapshot){
+					let users = snapshot.val()
+					var keys = Object.keys(users)
+					let user = users[keys[0]]
+					let userAddress = user.address
+					responce.send({success:true, error:null, address:userAddress})
+				}
+				else {
+					responce.send({success:false, error:'user does not exist'})
+				}
+			})
+			.catch(function(error) {
+				responce.send({success:false, error:'invalid auth token'})
+				console.log(error)
+			})
 	}
 	else {
 		responce.send({error: 'invalid data'})
@@ -427,7 +449,7 @@ app.post('/shipping-adress-edit-api', function(request, responce){
 })
 
 app.post('/new-product-api', async function(request, responce){
-	if (request.body.uToken && request.body.product && request.body.image) {
+	if (request.body.authToken && request.body.product && request.body.image) {
 		let uid = await authCheck(request.body.authToken)
 		if (uid) {
 			if (await checkUserExists(uid)) {
@@ -437,10 +459,10 @@ app.post('/new-product-api', async function(request, responce){
 				let newProductRef = database.ref('/products')
 				newProductRef.push(product).then(key => {
 					let productKey = key.key
-					let imgPath = productKey + '/' + imageName ///this is problematic
+					let imgPath = '/product-img/' + productKey + '/' + imageName ///this is problematic
 					let productRef = database.ref('/products/' + productKey)
 					productRef.update({img: imgPath}).then(function(){
-						responce.send({success:true, imgRef:'/product-img/'+imgPath, error:null})
+						responce.send({success:true, imgRef:imgPath, error:null})
 					})
 					.catch(e=>{
 						responce.send({success:false, error:e})
@@ -464,8 +486,8 @@ app.post('/new-product-api', async function(request, responce){
 })
 
 app.post('/update-product-api', function(request, responce){
-	if (request.body.uToken && request.body.product && request.body.productID) {
-		admin.auth().verifyIdToken(request.body.uToken)
+	if (request.body.authToken && request.body.product && request.body.productID) {
+		admin.auth().verifyIdToken(request.body.authToken)
 			.then(async function(decodedToken) {
 				let uid = decodedToken.uid
 				let product = request.body.product
@@ -493,7 +515,7 @@ app.post('/update-product-api', function(request, responce){
 			.catch(function(error) {
 				responce.send({success:false, error:'invalid auth token'})
 				console.log(error)
-			});
+			})
 	}
 	else {
 		responce.send({error: 'invalid data'})
@@ -567,7 +589,7 @@ function sendEmail(address, content){
 	}
 	transporter.sendMail(mailOptions, function(error, info){
 		if (error) {
-			console.log(error);
+			console.log(error)
 		}
 	})
 }
