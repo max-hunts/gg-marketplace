@@ -445,6 +445,13 @@ function fileAddSequence(file){
 	}
 }
 
+function contactSeller() {
+	const cBtn = document.getElementById('contact-btn')
+	cBtn.innerHTML = "Unsupported, contact through product listing"
+	cBtn.setAttribute('style', "width:410px; transition: 0.7s; background:#FFAAAA; color:gray;")
+	cBtn.disabled = true
+}
+
 try {
 	var addressField = document.getElementById("shippingaddressinput")
 	addressField.addEventListener("keyup", function(event) {

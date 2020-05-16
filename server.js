@@ -51,25 +51,16 @@ app.get('/search', function(request, responce){
 	if (request.query.search) {
 		let sQuery = request.query.search.toLowerCase()
 		dbRef.orderByChild("status").equalTo("on-sale").once('value', function(snapshot){
-			var data = {
-					'x': {desc: '',holder: '',id: 999,img: '',location: '',name: 'Nothing found 😢',owner: '',price: '',public: '',stock: ''},
-			}
+			var data = {'x': {name: 'Nothing found 😢',price: ''}}
 			if (snapshot.val()) {
 				data = snapshot.val()
-				var sResults = [{desc: '',holder: '',id: 999,img: '',location: '',name: 'Nothing found 😢',owner: '',price: '',public: '',stock: ''}]
+				var sResults = [{name: 'Nothing found 😢',price: ''}]
 
 				var keys = Object.keys(data)
-
 				keys.forEach(key => {
-					if (data[key].name.toLowerCase().includes(sQuery) || data[key].desc.toLowerCase().includes(sQuery)) {
-						sResults[key] = data[key]
-						console.log(sResults)
-					}
+					if (data[key].name.toLowerCase().includes(sQuery) || data[key].desc.toLowerCase().includes(sQuery)) {sResults[key] = data[key]}
 				})
-				if (Object.keys(sResults).length > 1) {
-					delete sResults[0]
-				}
-				console.log(sResults)
+				if (Object.keys(sResults).length > 1) {delete sResults[0]}
 				responce.render('search.ejs', {products: sResults})
 			}
 			else {responce.render('search.ejs', {products: data})}
@@ -77,9 +68,7 @@ app.get('/search', function(request, responce){
 	}
 	else {
 		dbRef.orderByChild("status").equalTo("on-sale").once('value', function(snapshot){
-			var data = {
-					'x': {desc: '',holder: '',id: 999,img: '',location: '',name: 'Nothing found 😢',owner: '',price: '',public: '',stock: ''},
-			}
+			var data = {'x': {name: 'Nothing found 😢',price: ''}}
 			if (snapshot.val()) {data = snapshot.val()}
 			responce.render('search.ejs', {products: data})
 		})
@@ -200,13 +189,66 @@ app.get('/product', function(request, responce){
 					var keys = Object.keys(vals)
 					uData = vals[keys[0]]
 					sellerName = uData.fName + " " + uData.lName
-					responce.render('product.ejs', {item:data, key:request.query.productid, seller:sellerName})
+					sellerDBID = keys[0]
+					responce.render('product.ejs', {item:data, key:request.query.productid, seller:{name:sellerName, dbid:sellerDBID}})
 				})
 				.catch(e => {console.log(e)})
 			}
 			else {
 				responce.render('404.ejs')
 			}
+		})
+	}
+	else {
+		responce.render('404.ejs')
+	}
+})
+
+app.get('/user-profile', function(request, responce){
+	if (request.query.dbid) {
+		var dbRef = database.ref("/users/" + request.query.dbid)
+		dbRef.once('value', function(snapshot){
+			user = snapshot.val()
+			if (user){
+				let productsRef = database.ref("/products")
+				let userProfile = {
+					name: user.fName + " " + user.lName,
+					location: user.address,
+					rating: "WIP",
+					startDate: "WIP",
+					pPic: user.pPic
+				}
+				productsRef.orderByChild("owner").equalTo(user.UID).once('value', function(snapshot){
+					if (snapshot.exists()) {
+						let allProductsDict = snapshot.val()
+						let allProductsKeys = Object.keys(allProductsDict)
+
+						let filteredKeys = allProductsKeys.filter(function( obj ) {
+							return allProductsDict[obj].status == 'on-sale';
+						})
+						let filteredProducts = {"0":{img: '',name: 'Nothing listed 😢',price: ''}}
+						
+						filteredKeys.forEach(function(key){filteredProducts[key] = allProductsDict[key]})
+
+						if (Object.keys(filteredProducts).length > 1) {delete filteredProducts["0"]}
+
+						responce.render('user-profile.ejs', {userProducts:filteredProducts, user:userProfile})
+					} else {
+						responce.render('user-profile.ejs', {userProducts:[], user:userProfile})
+					}
+				})
+				.catch(e => {
+					console.log(e)
+					responce.render('404.ejs')
+				})
+			}
+			else {
+				responce.render('404.ejs')
+			}
+		})
+		.catch(e => {
+			console.log(e)
+			responce.render('404.ejs')
 		})
 	}
 	else {
@@ -289,8 +331,7 @@ app.post('/request-api', async function(request, responce){
 						let buyerName = buyer.fName + ' ' + buyer.lName
 						let buyerEmail = buyer.email
 						let content = contentMaker(sellerName, buyerName, buyerEmail, productName, pid, bMsg)
-						let rsp = sendEmail(sellerEmail, content)
-						console.log(rsp)
+						sendEmail(sellerEmail, content)
 						responce.send({success:true, error:null})
 					} else {
 						responce.send({success:false, error:'Unregistered user!'})

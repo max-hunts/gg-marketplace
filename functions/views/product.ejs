@@ -7,7 +7,7 @@
 					<div class="product-page-img"><img class="dyn-img" src="media/noimage.png" title="<%= item.img %>"></div>
 					<div class="product-page-info">			
 						<h2><%= item.name %> </h2>
-						<p>Seller: <%= seller %></p>
+						<p>Seller: <a href="user-profile?dbid=<%= seller.dbid %>"><%= seller.name %></a></p>
 						<p>Location: <%= item.location %></p>
 						<p>Quantity: <%= item.stock %></p>
 						<p>Price: £<%= item.price %></p>
