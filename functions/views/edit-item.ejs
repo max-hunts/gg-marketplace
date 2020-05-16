@@ -50,30 +50,19 @@
 
 			<div class="space"></div>
 			<div id="productID" style="display: none;" product_id="<%= key%>"></div>
+
 			<div id="api-response" class="error-message" style="display: none;"></div>
-			<div class="new-product-field">
+			<div class="new-product-field" id="authField" style="display: block;">
 				<p>Edit product</p>
-				<div class="npf-short">
-					<input required type="text" id="pName" placeholder="Name" value="<%= item.name%>">
+				<div class="n-p-left">
+					<input type="text" id="pName" placeholder="Name" value="<%= item.name%>">
+					<textarea id="pDesc" placeholder="Description" style="resize: none;"><%= item.desc%></textarea>
+					<input type="text" id="pLoc" placeholder="Location" value="<%= item.location%>">
+					<input type="text" id="pStock" placeholder="Quantity in stock (default: 1)" value="<%= item.stock%>">
+					<input type="text" id="pPrice" placeholder="Price £" value="<%= item.price%>">
+					<button id="pSend" onclick={productUpdateEventHandler()}>Update</button>
 				</div>
-				<div class="npf-long">
-					<input required type="text" id="pDesc" placeholder="Description" value="<%= item.desc%>">
-				</div>
-				<input required type="text" id="pLoc" placeholder="Location" value="<%= item.location%>">
-				<input required type="text" id="pStock" placeholder="Quantity in stock (default: 1)" value="<%= item.stock%>">
-				<div class="npf-short">
-					<input required type="text" id="pPrice" placeholder="Price £" value="<%= item.price%>">
-				</div>
-				<button id="pSend" onclick={productUpdateEventHandler()}>Update</button>
 			</div>
-
-			
-			
-
-
-
-
-
 			<div class="space"></div>
 		</div>
 
