@@ -1,7 +1,7 @@
 function checkFields() {
 	if (document.getElementById('pName').value && document.getElementById('pDesc').value 
 	&& document.getElementById('pLoc').value && document.getElementById('pPrice').value 
-	&& document.getElementById('pImg').files[0].name) {
+	&& document.getElementById('imgInput').files[0]) {
 		return true
 	}
 	return false
@@ -21,7 +21,7 @@ async function productSubmitEventHandler(){
 			const locField = document.getElementById('pLoc')
 			const stockField = document.getElementById('pStock')
 			const priceField = document.getElementById('pPrice')
-			const imgBtn = document.getElementById('pImg')
+			let fInput = document.getElementById('imgInput')
 
 			let uid = firebase.auth().currentUser.uid
 
@@ -34,8 +34,9 @@ async function productSubmitEventHandler(){
 			newProduct.owner = uid
 			newProduct.holder = uid
 
-			let image = imgBtn.files[0]
-			imageName = image.name
+			let image = fInput.files[0]
+
+			let imageName = fInput.files[0].name
 			let imagePackage = {name:imageName, b64:null}
 
 			firebase.auth().currentUser.getIdToken().then(function(idToken){
@@ -50,7 +51,7 @@ async function productSubmitEventHandler(){
 						imageRef.put(image).then(function(){
 							submitBtn.innerHTML = "Done! Go Home..."
 							submitBtn.disabled = false
-							submitBtn.setAttribute('style', 'background:#00FF55; transition:0.5s; width:500px;')
+							submitBtn.setAttribute('style', 'background:#00FF55; transition:0.5s; width:162%;')
 						})
 						.catch(e=>{
 							submitBtn.innerHTML = "Error..."
@@ -344,7 +345,9 @@ function u_r_submit(){
 				let fName = firstNameField.value
 				let lName = lastNameField.value
 				let address = addressField.value
-				let picName = "todo.png"
+				let fInput = document.getElementById('imgInput')
+				let picName = fInput.files[0].name
+				let image = fInput.files[0]
 				let userData = {fName:fName, lName:lName, address:address, pPic:picName}
 				let url = 'register-new-user-api'
 				let data = {authToken: idToken, data: userData}
@@ -353,9 +356,21 @@ function u_r_submit(){
 				.then(response => response.json())
 				.then(function(result){
 					if (result.success) {
-						submitBtn.setAttribute("style", "background: #00FF00; width: 100%; transition: 0.5s;")
-						submitBtn.innerHTML = "Success! Go Home..."
-						submitBtn.disabled = false
+						let imageRef = firebase.storage().ref(result.imgRef)
+						submitBtn.innerHTML = "Uploading..."
+						submitBtn.disabled = true
+						imageRef.put(image).then(function(){
+							submitBtn.setAttribute("style", "background: #00FF00; width: 100%; transition: 0.5s;")
+							submitBtn.innerHTML = "Success! Go Home..."
+							submitBtn.disabled = false
+						})
+						.catch(e=>{
+							submitBtn.setAttribute("style", "background: red;")
+							submitBtn.innerHTML = "ERROR"
+							submitBtn.disabled = false
+							document.getElementById("api-response").innerHTML = "Error: " + e
+							document.getElementById("api-response").setAttribute("style", "display: block")
+						})
 					}
 					else {
 						submitBtn.setAttribute("style", "background: red;")
@@ -384,6 +399,50 @@ function u_r_submit(){
 	}
 }
 
+function initFileDropListner() {
+	let dropZone = document.getElementById("dropzone")
+	if (dropZone) {
+		let fInput = document.getElementById('imgInput')
+		dropZone.ondragover = function(){this.className = "dropzone dragover";return false}
+		dropZone.ondragleave = function(){this.className = "dropzone";return false}
+		dropZone.onclick = function(){
+			fInput.click()
+		}
+		fInput.onchange = function(event) {
+			let addedFile = event.target.files[0]
+			fileAddSequence(addedFile)
+		}
+		dropZone.ondrop = function(event) {
+			event.preventDefault()
+			this.className = "dropzone"
+			let droppedFile = event.dataTransfer.files[0]
+			fileAddSequence(droppedFile)
+		}
+	}
+}
+
+initFileDropListner()
+
+function fileAddSequence(file){
+	let fInput = document.getElementById('imgInput')
+	if (["image/jpeg", "image/png", "image/gif"].includes(file.type)) {
+		let fileSize = file.size / 1024 / 1024
+		if (fileSize < 10){
+			fInput.files[0] = file
+			let imgPreview = document.getElementById('imgPreview')
+			let svgElement = document.getElementById('svgElement')
+			imgPreview.src = URL.createObjectURL(file)
+			imgPreview.setAttribute('style', 'display: block;')
+			svgElement.setAttribute('style', 'display: none;')
+		} else {
+			document.getElementById("api-response").innerHTML = "Files under 10MB please..."
+			document.getElementById("api-response").setAttribute("style", "display: block")
+		}
+	} else {
+		document.getElementById("api-response").innerHTML = "Accepted formats: jpeg/jpg, png, gif"
+		document.getElementById("api-response").setAttribute("style", "display: block")
+	}
+}
 
 try {
 	var addressField = document.getElementById("shippingaddressinput")
@@ -401,7 +460,7 @@ try {
 		}
 	})
 }
-catch(error) {console.log(error)}
+catch(error) {}
 
 function bSearch(){
 	let searchField = document.getElementById("sfield")
@@ -440,3 +499,19 @@ try {
 	})
 }
 catch(error) {}
+
+window.addEventListener("dragover", function(e) {
+	if (e.target.id != "dropzone") {
+		e.preventDefault()
+		e.dataTransfer.effectAllowed = "none"
+		e.dataTransfer.dropEffect = "none"
+	}
+})
+  
+window.addEventListener("drop", function(e) {
+	if (e.target.id != "dropzone") {
+		e.preventDefault()
+		e.dataTransfer.effectAllowed = "none"
+		e.dataTransfer.dropEffect = "none"
+	}
+})
