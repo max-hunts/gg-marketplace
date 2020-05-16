@@ -139,7 +139,7 @@ function requestItem(){
 	const bMessage = document.getElementById('bMsg')
 	if (reqBtn.innerHTML == "Request!") {
 		if (firebase.auth().currentUser) {
-			reqBtn.setAttribute("style", "background: #87e5ff; width:300px;")
+			reqBtn.setAttribute("style", "background: #87e5ff; width:410px;")
 			reqBtn.innerHTML = "Send?"
 			bMessage.setAttribute('style', 'display: block;')
 		} else {
@@ -162,7 +162,7 @@ function requestItem(){
 				.then(function(result){
 					console.log(result)
 					if (result.success == true) {
-						reqBtn.setAttribute("style", "background: #00DD00; width:520px; transition: 0.7s;")
+						reqBtn.setAttribute("style", "background: #00DD00; width:410px; transition: 0.7s;")
 						reqBtn.innerHTML = "Done! Go Home"
 						reqBtn.disabled = false
 					}
