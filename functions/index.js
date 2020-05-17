@@ -77,6 +77,28 @@ app.get('/search', function(request, responce){
 	}
 })
 
+app.get('/admin-review', async function(request, responce){
+	var dbRef = database.ref("/products")
+	if (request.query.authToken) {
+		let uid = await authCheck(request.query.authToken)
+		if (uid == "If84zSzRvlcCqRs0ZPJRpAcY1He2") {
+			dbRef.orderByChild("status").equalTo("pending").once('value', function(snapshot){
+				if (snapshot.exists()) {
+					let products = snapshot.val()
+					responce.render('admin-review.ejs', {products: products})
+				} else {
+					var products = {'x': {name: 'Nothing to review...',price: ''}}
+					responce.render('admin-review.ejs', {products: products})
+				}
+			})
+		} else {
+			responce.render('404.ejs')
+		}
+	} else {
+		responce.render('404.ejs')
+	}
+})
+
 app.get('/additmpage', function(request, responce){
 	responce.render('add-item.ejs')
 })
@@ -217,7 +239,7 @@ app.get('/user-profile', function(request, responce){
 					name: user.fName + " " + user.lName,
 					location: user.address,
 					rating: "WIP",
-					startDate: "WIP",
+					memberSince: user.memberSince,
 					pPic: user.pPic
 				}
 				productsRef.orderByChild("owner").equalTo(user.UID).once('value', function(snapshot){
@@ -234,9 +256,9 @@ app.get('/user-profile', function(request, responce){
 
 						if (Object.keys(filteredProducts).length > 1) {delete filteredProducts["0"]}
 
-						responce.render('user-profile.ejs', {userProducts:filteredProducts, user:userProfile})
+						responce.render('user-profile.ejs', {userProducts:filteredProducts, user:userProfile, userDBID:request.query.dbid})
 					} else {
-						responce.render('user-profile.ejs', {userProducts:[], user:userProfile})
+						responce.render('user-profile.ejs', {userProducts:[], user:userProfile, userDBID:request.query.dbid})
 					}
 				})
 				.catch(e => {
@@ -276,13 +298,17 @@ app.post('/register-new-user-api', async function(request, responce){
 				let lName = rBody.data.lName
 				let address = rBody.data.address
 				let pPic = rBody.data.pPic
+				let today = new Date()
+				let month = today.toLocaleString('default', { month: 'long' })
+				let year = today.getFullYear()
 				let uData = {
 					fName:fName,
 					lName:lName,
 					UID:uid,
 					email:email,
 					address:address,
-					pPic:"x"
+					pPic:"x",
+					memberSince: month + " " + year
 				}
 				let usersRef = database.ref('/users')
 				let result = await usersRef.push(uData)
@@ -296,6 +322,44 @@ app.post('/register-new-user-api', async function(request, responce){
 				})
 			} else {
 				responce.send({success:false, error:'user exists'})
+			}
+		} else {
+			responce.send({success:false, error:'invalid auth token'})
+		}
+	} else {
+		responce.send({success:false, error:'invalid data'})
+	}
+})
+
+app.post('/contact-api', async function(request, responce){
+	if (request.body.userDBID && request.body.authToken && request.body.usrMsg) {
+		let bMsg = request.body.usrMsg
+		let sellerDBID = request.body.userDBID
+		let uid = await authCheck(request.body.authToken)
+		if (uid) {
+			let usersRef = database.ref("/users")
+			snapshot = await usersRef.orderByChild("UID").equalTo(uid).once('value')
+			if (snapshot.exists()) {
+				let vals = snapshot.val()
+				let keys = Object.keys(vals)
+				let user = vals[keys[0]]
+				let userEmail = user.email
+				let userName = user.fName + ' ' + user.lName
+				let sellerRef = database.ref("/users/" + sellerDBID)
+				snapshot = await sellerRef.once('value')
+				if (snapshot.exists()) {
+					let seller = snapshot.val()
+					let sellerName = seller.fName
+					let sellerEmail = seller.email
+					let content = sellerMessageContentMaker(sellerName, userName, userEmail, bMsg)
+					let subject = 'New message!'
+					sendEmail(sellerEmail, subject, content)
+					responce.send({success:true, error:null})
+				} else {
+					responce.send({success:false, error:'User does not exist!'})
+				}
+			} else {
+				responce.send({success:false, error:'Unregistered user!'})
 			}
 		} else {
 			responce.send({success:false, error:'invalid auth token'})
@@ -333,7 +397,8 @@ app.post('/request-api', async function(request, responce){
 						let buyerName = buyer.fName + ' ' + buyer.lName
 						let buyerEmail = buyer.email
 						let content = contentMaker(sellerName, buyerName, buyerEmail, productName, pid, bMsg)
-						sendEmail(sellerEmail, content)
+						let subject = 'Someone\'s interested!'
+						sendEmail(sellerEmail, subject, content)
 						responce.send({success:true, error:null})
 					} else {
 						responce.send({success:false, error:'Unregistered user!'})
@@ -362,7 +427,7 @@ app.post('/toggle-sale-api', async function(request, responce){
 			var snapshot = await productRef.once('value')
 			if (snapshot.exists()) {
 				let product = snapshot.val()
-				if (await verifyOwner(uid, productID) && product.status != "sold") {
+				if (await verifyOwner(uid, productID) && (product.status == "on-sale" || product.status == "off-sale")) {
 					let status = "x"
 					if (targetState == true) {
 						status = "on-sale"
@@ -457,7 +522,30 @@ app.post('/shipping-adress-edit-api', function(request, responce){
 			})
 	}
 	else {
-		responce.send({error: 'invalid data'})
+		responce.send({success:false, error: 'invalid data'})
+	}
+})
+
+app.post('/product-ar-api', async function(request, responce){
+	if (request.body.authToken && request.body.prodID && (request.body.approved != null)) {
+		let uid = await authCheck(request.body.authToken)
+		if (uid == "If84zSzRvlcCqRs0ZPJRpAcY1He2") {
+			var productStatus = "rejected"
+			if (request.body.approved == true) {productStatus = "on-sale"}
+			productRef = database.ref("/products/" + request.body.prodID)
+			let snapshot = await productRef.once('value')
+			if (snapshot.exists()) {
+				productRef.update({status:productStatus})
+				.then(responce.send({success:true, error: null}))
+				.catch(e=>{responce.send({success:false, error: e})})
+			} else {
+				responce.send({success:false, error: 'Item does not exist'})
+			}
+		} else {
+			responce.send({success:false, error: 'Unauthorized'})
+		}
+	} else {
+		responce.send({success:false, error: 'invalid data'})
 	}
 })
 
@@ -497,6 +585,7 @@ app.post('/new-product-api', async function(request, responce){
 				let image = request.body.image
 				let product = request.body.product
 				let imageName = image.name
+				product.status = "pending"
 				let newProductRef = database.ref('/products')
 				newProductRef.push(product).then(key => {
 					let productKey = key.key
@@ -568,6 +657,11 @@ function contentMaker(sName, bName, bEmail, pName, pid, bMsg){
 	return text
 }
 
+function sellerMessageContentMaker(sName, bName, bEmail, bMsg){
+	let text = "Hi " + sName + "\n \n" + bName + " would like to send you a message.\n\nUser email: " + bEmail +"\n\nMessage:\n" + bMsg
+	return text
+}
+
 async function authCheck(token) {
 	let uid = false
 	decodedToken = await admin.auth().verifyIdToken(token).catch(e=>{console.log(e)})
@@ -621,11 +715,11 @@ async function verifyOwner(uid, pid) {
 	}
 }
 
-function sendEmail(address, content){
+function sendEmail(address, subject, content){
 	var mailOptions = {
 		from: 'Project GG',
 		to: address,
-		subject: 'Someone\'s interested!',
+		subject: subject,
 		text: content
 	}
 	transporter.sendMail(mailOptions, function(error, info){

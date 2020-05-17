@@ -1,0 +1,23 @@
+<%- include("partials/header") %>
+
+			<div class="products">
+				<p>Search results:</p>
+				<div class="my-products-container">
+					<% var keys = Object.keys(products) %>
+					<% keys.forEach(function(key){ %>
+					<div class="my-product-container" id="<%= key%>">
+						<img class="dyn-img" onclick={window.location.replace('product?productid=<%=key%>')} title="<%= products[key].img %>" alt="img" src="media/var.png">
+						<div class="my-product-details-container">
+							<p class="top-a"><%= products[key].name%></p>
+							<p class="middle-top-a">£ <%= products[key].price%></p>
+							<p class="middle-bottom-a"><button onclick={sendApprove('<%= key%>')} class="admin-approve" id="admin-approve-btn">Approve</button></p>
+							<p class="bottom-a"><button onclick={sendReject('<%= key%>')} class="admin-reject" id="admin-reject-btn">Reject</button></p>
+						</div>
+					</div>
+                    <% }) %>
+				</div>
+			</div>
+			<div class="space"></div>
+		</div>
+	</main>
+<%- include("partials/footer") %>

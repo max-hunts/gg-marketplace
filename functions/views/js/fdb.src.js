@@ -15,7 +15,7 @@ async function productSubmitEventHandler(){
 			submitBtn.innerHTML = "Uploading..."
 			submitBtn.disabled = true
 
-			let newProduct = {id: 1,name: "",desc: "",img: "default.png",location: "",stock: 1,status: "on-sale",price: 0,owner: "",holder: ""}
+			let newProduct = {id: 1,name: "",desc: "",img: "default.png",location: "",stock: 1,status: "pending",price: 0,owner: "",holder: ""}
 
 			const nameField = document.getElementById('pName')
 			const descField = document.getElementById('pDesc')
@@ -70,7 +70,7 @@ async function productSubmitEventHandler(){
 				})
 			})
 		} else {
-			document.getElementById("api-response").innerHTML = "Fill in all required fields!"
+			document.getElementById("api-response").innerHTML = "Fill in all required fields! (try readding the image)"
 			document.getElementById("api-response").setAttribute("style", "display: block")
 		}
 	} else {
@@ -232,38 +232,46 @@ function toggle_sale() {
 }
 
 function mark_as_sold(){
-	firebase.auth().currentUser.getIdToken().then(function(idToken) {
-		let item_id = document.getElementById("productID").getAttribute("product_id")
-		let sold_btn = document.getElementById("soldBtn")
-		const url = 'sold-api'
-		let data = {prodID: item_id, authToken: idToken}
-		let postData = { method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}}
-		fetch(url, postData)
-		.then(response => response.json())
-		.then(function(result){
-			if (result.success == true) {
-				sold_btn.setAttribute("style", "background: #00DD00; width:200px;")
-				sold_btn.innerHTML = "Sold!"
-				sold_btn.disabled = true
-				let sale_button = document.getElementById("toggleSaleBtn")
-				let edit_button = document.getElementById("editBtn")
-				sale_button.disabled = true
-				edit_button.disabled = true
-			}
-			else {
+	let sold_btn = document.getElementById("soldBtn")
+	if (sold_btn.innerHTML == "Mark Sold") {
+		sold_btn.innerHTML = "Confirm?"
+		sold_btn.setAttribute('style', 'background:white;')
+	} else if (sold_btn.innerHTML == "Confirm?") {
+		firebase.auth().currentUser.getIdToken().then(function(idToken) {
+			let item_id = document.getElementById("productID").getAttribute("product_id")
+			const url = 'sold-api'
+			let data = {prodID: item_id, authToken: idToken}
+			let postData = { method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}}
+			fetch(url, postData)
+			.then(response => response.json())
+			.then(function(result){
+				if (result.success == true) {
+					sold_btn.setAttribute("style", "background: #00DD00; width:200px;")
+					sold_btn.innerHTML = "Sold!"
+					sold_btn.disabled = false
+					let sale_button = document.getElementById("toggleSaleBtn")
+					let edit_button = document.getElementById("editBtn")
+					sale_button.disabled = true
+					edit_button.disabled = true
+				}
+				else {
+					sold_btn.setAttribute("style", "background: red;")
+					sold_btn.innerHTML = "ERROR"
+					document.getElementById("api-response").innerHTML = "Error: " + e
+					document.getElementById("api-response").setAttribute("style", "display: block")
+				}
+			})
+			.catch (e=>{
 				sold_btn.setAttribute("style", "background: red;")
 				sold_btn.innerHTML = "ERROR"
 				document.getElementById("api-response").innerHTML = "Error: " + e
 				document.getElementById("api-response").setAttribute("style", "display: block")
-			}
+			})
 		})
-		.catch (e=>{
-			sold_btn.setAttribute("style", "background: red;")
-			sold_btn.innerHTML = "ERROR"
-			document.getElementById("api-response").innerHTML = "Error: " + e
-			document.getElementById("api-response").setAttribute("style", "display: block")
-		})
-	})
+	} else {
+		window.location.replace('home')
+	}
+	
 }
 
 function my_product(productID) {
@@ -400,6 +408,33 @@ function u_r_submit(){
 	}
 }
 
+function sendApprove(key) {
+	sendAR(true, key)
+}
+
+function sendReject(key) {
+	sendAR(false, key)
+}
+
+function sendAR(approved, prodID) { 
+	let prodElement = document.getElementById(prodID)
+	firebase.auth().currentUser.getIdToken().then(function(idToken){
+		let url = 'product-ar-api'
+		let data = {authToken: idToken, prodID: prodID, approved:approved}
+		let postData = {method: 'POST', body: JSON.stringify(data),headers: {'Content-Type': 'application/json'}}
+		fetch(url, postData)
+		.then(response => response.json())
+		.then(function(result){
+			if (result.success) {
+				prodElement.setAttribute('style', 'display:none;')
+			} else {
+				prodElement.setAttribute('style', 'background:red; transition:0.3s;')
+				console.log(result.error)
+			}
+		})
+	})
+}
+
 function initFileDropListner() {
 	let dropZone = document.getElementById("dropzone")
 	if (dropZone) {
@@ -447,9 +482,52 @@ function fileAddSequence(file){
 
 function contactSeller() {
 	const cBtn = document.getElementById('contact-btn')
-	cBtn.innerHTML = "Unsupported, contact through product listing"
-	cBtn.setAttribute('style', "width:410px; transition: 0.7s; background:#FFAAAA; color:gray;")
-	cBtn.disabled = true
+	const bMessage = document.getElementById('sMsg')
+	if (cBtn.innerHTML == "Contact") {
+		if (firebase.auth().currentUser) {
+			cBtn.setAttribute("style", "background: #87e5ff; width:410px;")
+			cBtn.innerHTML = "Send?"
+			bMessage.setAttribute('style', 'display: block;')
+		} else {
+			cBtn.innerHTML = "Please sign in"
+			cBtn.setAttribute("style", "background: #FFa5af; width:300px;")
+		}
+	}
+	else if (cBtn.innerHTML == "Send?") {
+		if (firebase.auth().currentUser) {
+			firebase.auth().currentUser.getIdToken().then(function(idToken) {
+				cBtn.innerHTML = "Sending..."
+				cBtn.disabled = true
+				let userMessage = bMessage.value
+				let user_dbid = document.getElementById("userDBID").getAttribute("user_dbid")
+				const url = 'contact-api'
+				let data = {userDBID: user_dbid, authToken: idToken, usrMsg: userMessage}
+				let postData = {method: 'POST', body: JSON.stringify(data), headers: {'Content-Type': 'application/json'}}
+				fetch(url, postData)
+				.then(response => response.json())
+				.then(function(result){
+					console.log(result)
+					if (result.success == true) {
+						cBtn.setAttribute("style", "background: #00DD00; width:410px; transition: 0.7s;")
+						cBtn.innerHTML = "Done! Go Home"
+						cBtn.disabled = false
+					}
+					else {
+						cBtn.setAttribute("style", "background: red;")
+						cBtn.disabled = true
+						cBtn.innerHTML = "ERROR"
+						document.getElementById("api-response").innerHTML = "Error: " + result.error
+						document.getElementById("api-response").setAttribute("style", "display: block")
+					}
+				})
+			})
+		} else {
+			reqBtn.innerHTML = "Please sign in"
+		}
+	}
+	else {
+		window.location.replace('home')
+	}
 }
 
 try {

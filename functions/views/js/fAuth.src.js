@@ -1,6 +1,12 @@
 function checkAuth(){
 	firebase.auth().onAuthStateChanged(function(user){
 		if (user) {
+			if (user.email == "dev@dev.dev") {
+				try {
+					document.getElementById('admin').setAttribute('style', 'display: block;')
+				}
+				catch(error){}
+			}
 
 			try {document.getElementById('uname-dom').innerHTML = "Loading..."}
 			catch(error){}
@@ -61,6 +67,12 @@ function checkAuth(){
 }
 
 checkAuth()
+
+function admin_review() {
+	firebase.auth().currentUser.getIdToken().then(function(idToken) {
+		window.location.replace("admin-review?authToken="+idToken)
+	})
+}
 
 
 function signinwithgoogle(){
