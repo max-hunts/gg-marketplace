@@ -465,7 +465,7 @@ input:focus, textarea:focus, select:focus{
 
 .n-p-left {
 	position: relative;
-	width: 50%;
+	width: 40%;
 	z-index: 2;
 }
 .n-p-right {

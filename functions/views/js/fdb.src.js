@@ -52,7 +52,7 @@ async function productSubmitEventHandler(){
 						imageRef.put(image).then(function(){
 							submitBtn.innerHTML = "Done! Go Home..."
 							submitBtn.disabled = false
-							submitBtn.setAttribute('style', 'background:#00FF55; transition:0.5s; width:162%;')
+							submitBtn.setAttribute('style', 'background:#00FF55; transition:0.5s; width:203%;')
 						})
 						.catch(e=>{
 							submitBtn.innerHTML = "Error..."
@@ -436,25 +436,45 @@ function sendAR(approved, prodID) {
 }
 
 function initFileDropListner() {
-	let dropZone = document.getElementById("dropzone")
-	if (dropZone) {
-		let fInput = document.getElementById('imgInput')
-		dropZone.ondragover = function(){this.className = "dropzone dragover";return false}
-		dropZone.ondragleave = function(){this.className = "dropzone";return false}
-		dropZone.onclick = function(){
-			fInput.click()
-		}
-		fInput.onchange = function(event) {
-			let addedFile = event.target.files[0]
-			fileAddSequence(addedFile)
-		}
-		dropZone.ondrop = function(event) {
-			event.preventDefault()
-			this.className = "dropzone"
-			let droppedFile = event.dataTransfer.files[0]
-			fileAddSequence(droppedFile)
+	try{
+		let dropZone = document.getElementById("dropzone")
+		let imgPreview = document.getElementById("imgPreview")
+		let svgElement = document.getElementById('svgElement')
+		if (dropZone) {
+			let fInput = document.getElementById('imgInput')
+			dropZone.ondragover = function(){
+				this.className = "dropzone dragover"
+				imgPreview.setAttribute('style', 'display: none;')
+				svgElement.setAttribute('style', 'display: block;')
+				return false
+			}
+
+			dropZone.ondragleave = function(){
+				this.className = "dropzone"
+				// imgPreview.setAttribute('style', 'display:block')
+				return false
+			
+			}
+			dropZone.onclick = function(){
+				fInput.click()
+			}
+
+			fInput.onchange = function(event) {
+				let addedFile = event.target.files[0]
+				fileAddSequence(addedFile)
+			}
+
+			dropZone.ondrop = function(event) {
+				event.preventDefault()
+				this.className = "dropzone"
+				let droppedFile = event.dataTransfer.files[0]
+				console.log(droppedFile)
+				fileAddSequence(droppedFile)
+				return false
+			}
 		}
 	}
+	catch(error){}
 }
 
 initFileDropListner()
