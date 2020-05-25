@@ -1,8 +1,15 @@
 FROM node:latest
-WORKDIR /usr/src/app
+
+WORKDIR /app
+
 COPY . .
-RUN npm install
-EXPOSE 5000
+
 RUN apt update
 RUN apt install htop
-CMD [ "node", "server.js" ]
+
+RUN npm install
+RUN npm install pm2 -g
+
+EXPOSE 5000
+
+CMD ["pm2-runtime", "app.js"]
