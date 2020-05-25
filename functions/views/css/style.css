@@ -19,8 +19,80 @@
 	src: url(../fonts/Nunito-Bold.ttf);
 }
 
+:root {
+	--white: #FFFFFF;
+	--light-gray: #F0F0F0;
+	--whitesmoke: whitesmoke;
+	--gray: gray;
+	--black: black;
+	--violet: violet;
+	--green: green;
+	--footer-background: #D8D8D8;
+	--footer-shadow-background: #8A8A8A;
+	--footer-a: #737373;
+	--placeholder: #aaaaaa;
+	--input-border: #979797;
+	--input-shadow: #A5A5A5;
+	--uname: #898989;
+	--red: red;
+	--login-btn: #3D10FF;
+	--google-login-btn: #cacaca;
+	--google-login-btn-hover: #A5A5A5;
+	--add-item-btn: #ff6619;
+	--add-item-btn-hover: #c41000;
+	--add-item-btn-active: #BBBBBB;
+	--notifications: #898989;
+	--notifications-hover: tomato;
+	--notifications-active: cyan;
+	--search-btn-background: #5359FF;
+	--search-btn: #C4C4C4;
+	--search-extra: #7F7F7F;
+	--product-container-p: #CA5555;
+	--user-logout: #393939;
+	--new-product-field-p: #898989;
+	--new-product-field-btn: #30a8ff;
+	--new-product-field-btn-hover: #ff7700;
+	--new-product-field-btn-active: #ffaf69;
+	--new-product-field-btn-disabled: #b9b9b9;
+	--product-page-info-container: #5E5E5E;
+	--product-page-info-btn: #30a8ff;
+	--product-page-info-hover: #ffc04b;
+	--product-page-info-active: #ffaf69;
+	--product-page-info-disabled: #b9b9b9;
+	--my-product-details-container: #CA5555;
+	--purchase-msg: #00df90;
+	--error-msg: #df0000;
+	--edit-btn: #A562FF;
+	--edit-btn-hover: #ea62ff;
+	--edit-btn-active: pink;
+	--sell-btn: #0FDD00;
+	--sell-btn-hover: #AAFF00;
+	--sell-btn-active: #00FF00;
+	--ship-btn: #CB0070;
+	--ship-btn-hover: cyan;
+	--ship-btn-active: #00CCEE;
+	--change-address-btn: salmon;
+	--change-address-btn-hover: pink;
+	--change-address-btn-active: white;
+	--shipping-address-input: #EEEEEE;
+	--user-registration-box: #d8d8d8;
+	--user-registration-btn: #A2FF9B;
+	--user-registration-btn-hover: #rgb(0, 255, 221);
+	--user-registration-btn-active: #11FF00;
+	--dropzone-border: #CCCCCC;
+	--dropzone-background: #F5F5F5;
+	--dropzone-svg: #AAAAAA;
+	--dropzone-dragover-border: #737373;
+	--admin-approve-btn: #52FF5B;
+	--admin-approve-btn-hover: aqua;
+	--admin-approve-btn-active: whitesmoke;
+	--admin-reject-btn: #F43030;
+	--admin-reject-btn-hover: violet;
+	--admin-reject-btn-active: black;
+}
+
 body {
-	background: #FFFFFF;
+	background: var(--white);
 	margin-left: auto;
 	margin-right: auto;
 	font-family: os;
@@ -38,20 +110,20 @@ footer {
 	position: absolute;
 	left: 0;
 	right: 0;
-	background-color: #D8D8D8;
+	background-color: var(--footer-background);
 	text-align: center;
 	height: 200px;
 	font-family: osl;
 	font-size: 25px;
-	box-shadow: inset 0px 3px 10px #8A8A8A;
+	box-shadow: inset 0px 3px 10px var(--footer-shadow-background);
 }
 
 footer a {
-	color: #737373;
+	color: var(--footer-a);
 }
 
 ::placeholder {
-	color: #aaaaaa;
+	color: var(--placeholder);
 	font-family: osl;
 }
 
@@ -60,11 +132,11 @@ input:focus, textarea:focus, select:focus{
 }
 
 .page {
-	background-color: white;
+	background-color: var(--white);
 }
 
 .navbar {
-	background-color: white;
+	background-color: var(--white);
 	height: 55px;
 }
 
@@ -75,7 +147,7 @@ input:focus, textarea:focus, select:focus{
 
 .logon-crumbs input {
 	/*display: inline-flex;*/
-	border: 0.5px solid #979797;
+	border: 0.5px solid var(--input-border);
 	float: left;
 	position: relative;
 	height: 34px;
@@ -85,7 +157,7 @@ input:focus, textarea:focus, select:focus{
 	/*border: none;*/
 	font-family: osl;
 	font-size: 17px;
-	box-shadow: 0px 2px 3px #A5A5A5;
+	box-shadow: 0px 2px 3px var(--input-shadow);
 }
 
 .user-name {
@@ -93,17 +165,17 @@ input:focus, textarea:focus, select:focus{
 	position: relative;
 	font-family: osl;
 	font-size: 23px;
-	color: #898989;
+	color: var(--uname);
 	cursor: pointer;
 	transition: 0.3s;
 }
 
 .user-name:hover {
-	color: red;
+	color: var(--red);
 }
 .user-name:active {
 	transition: 0.1s;
-	color: #F0F0F0;
+	color: var(--light-gray);
 }
 
 
@@ -117,14 +189,14 @@ input:focus, textarea:focus, select:focus{
 }
 
 .btn-login {
-	background-color: #3D10FF;
+	background-color: var(--login-btn);
 	font-size: 30px;
-	color: white;
-	box-shadow: 0px 2px 3px #A5A5A5;
+	color: var(--white);
+	box-shadow: 0px 2px 3px var(--input-shadow);
 }
 
 .btn-g-login {
-	background-color: #cacaca;
+	background-color: var(--google-login-btn);
 	border-radius: 5px;
 }
 
@@ -134,13 +206,13 @@ input:focus, textarea:focus, select:focus{
 }
 
 .btn-login:hover {
-	color: red;
+	color: var(--red);
 	transition: 0.3s;
 	cursor: pointer;
 }
 
 .btn-g-login:hover {
-	box-shadow: 0px 2px 3px #A5A5A5;
+	box-shadow: 0px 2px 3px var(--google-login-btn-hover);
 	transition: 0.3s;
 	cursor: pointer;
 }
@@ -148,28 +220,28 @@ input:focus, textarea:focus, select:focus{
 .btn-fb-login {
 	transition: 0.3s;
 	cursor: pointer;
-	background-color: white;
+	background-color: var(--white);
 	border-radius: 20px;
 }
 
 .btn-fb-login:hover {
-	box-shadow: 0px 2px 3px #A5A5A5;
+	box-shadow: 0px 2px 3px var(--google-login-btn-hover);
 	transition: 0.3s;
 	cursor: pointer;
 }
 
 .btn-fb-login:active {
-	box-shadow: 0px 2px 3px red;
+	box-shadow: 0px 2px 3px var(--red);
 	transition: 0.1s;
 }
 
 .btn-login:active {
-	color: white;
+	color: var(--white);
 	transition: 0.1s;
 }
 
 .btn-g-login:active {
-	box-shadow: 0px 2px 3px red;
+	box-shadow: 0px 2px 3px var(--red);
 	transition: 0.1s;
 }
 
@@ -182,7 +254,7 @@ input:focus, textarea:focus, select:focus{
 }
 
 .add-item a {
-	color: #ff6619;
+	color: var(--add-item-btn);
 	font-family: osl;
 	font-size: 30px;
 	padding-left: 10px;
@@ -191,38 +263,38 @@ input:focus, textarea:focus, select:focus{
 }
 
 .add-item a:hover {
-	color: #c41000;
+	color: var(--add-item-btn-hover);
 	transition: 0.3s;
 }
 
 .add-item a:active {
-	color: #BBBBBB;
+	color: var(--add-item-btn-active);
 	transition: 0.1s;
 }
 
 .notifications {
 	padding-right: 15px;
-	color: #898989;
+	color: var(--notifications);
 	transition: 0.3s;
 }
 .notifications:hover {
-	color: tomato;
+	color: var(--notifications-hover);
 }
 .notifications:active {
 	transition: 0.1s;
-	color: cyan;
+	color: var(--notifications-active);
 }
 
 .cart {
-	color: #898989;
+	color: var(--notifications);
 	transition: 0.3s;
 }
 .cart:hover {
-	color: tomato;
+	color: var(--notifications-hover);
 }
 .cart:active {
 	transition: 0.1s;
-	color: cyan;
+	color: var(--notifications-active);
 }
 
 .sbar {
@@ -242,8 +314,7 @@ input:focus, textarea:focus, select:focus{
 }
 
 .sbar input {
-	border: 0.5px solid gray;
-	display: inline-flex;
+	border: 0.5px solid var(--input-border);
 	position: relative;
 	float: left;
 	height: 34px;
@@ -251,7 +322,7 @@ input:focus, textarea:focus, select:focus{
 	padding-left: 10px;
 	font-family: osl;
 	font-size: 17px;
-	box-shadow: 0px 3px 4px #A5A5A5;
+	box-shadow: 0px 3px 4px var(--input-shadow);
 
 	/*position: absolute;
 	left: 50%;
@@ -261,10 +332,10 @@ input:focus, textarea:focus, select:focus{
 .sbar button {
 	position: relative;
 	float: left;
-	background-color: #5359FF;
+	background-color: var(--search-btn-background);
 	border: none;
-	box-shadow: 0px 2px 3px #A5A5A5;
-	color: #C4C4C4;
+	box-shadow: 0px 2px 3px var(--input-shadow);
+	color: var(--search-btn);
 	height: 35px;
 	width: 100px;
 	margin-left: 20px;
@@ -274,19 +345,19 @@ input:focus, textarea:focus, select:focus{
 }
 
 .sbar button:hover {
-	background-color: violet;
+	background-color: var(--violet);
 	transition: 0.2s;
 }
 
 .sbar button:active {
-	background-color: whitesmoke;
+	background-color: var(--whitesmoke);
 	transition: 0.2s;
 }
 
 .sbar a {
 	position: relative;
 	float: left;
-	color: #7F7F7F;
+	color: var(--search-extra);
 	font-family: osl;
 	font-size: 14px;
 	margin-left: 15px;
@@ -328,7 +399,7 @@ input:focus, textarea:focus, select:focus{
 
 .product-container p {
 	font-family: nunito;
-	color: #CA5555;
+	color: var(--product-container-p);
 	font-size: 17px;
 }
 
@@ -360,7 +431,7 @@ input:focus, textarea:focus, select:focus{
 	margin-right: 10%;
 	margin-top: 5px;
 	font-size: 19px;
-	color: #737373;
+	color: var(--footer-a);
 }
 
 .user-logout {
@@ -370,12 +441,12 @@ input:focus, textarea:focus, select:focus{
 	position: relative;
 	font-family: osl;
 	font-size: 13px;
-	color: #393939;
+	color: var(--user-logout);
 	cursor: pointer;
 }
 
 .user-logout:hover {
-	color: red;
+	color: var(--red);
 	transition: 0.3s;
 }
 
@@ -386,7 +457,7 @@ input:focus, textarea:focus, select:focus{
 }
 
 .user-auth-message p {
-	color: red;
+	color: var(--red);
 	font-size: 30px;
 
 }
@@ -400,13 +471,13 @@ input:focus, textarea:focus, select:focus{
 
 .new-product-field p {
 	font-size: 25px;
-	color: #898989;
+	color: var(--new-product-field-p);
 	padding-bottom: 20px;
 }
 
 .new-product-field label {
 	font-size: 20px;
-	color: #898989;
+	color: var(--new-product-field-p);
 	display: inline-block;
 }
 
@@ -418,7 +489,7 @@ input:focus, textarea:focus, select:focus{
 	padding-left: 10px;
 	margin-bottom: 15px;
 	border-radius: 0;
-	border: 0.5px solid grey;
+	border: 0.5px solid var(--gray);
 	cursor: text;
 }
 
@@ -431,7 +502,7 @@ input:focus, textarea:focus, select:focus{
 	padding-top: 10px;
 	margin-bottom: 15px;
 	border-radius: 0;
-	border: 0.5px solid grey;
+	border: 0.5px solid var(--gray);
 	cursor: text;
 }
 
@@ -441,26 +512,26 @@ input:focus, textarea:focus, select:focus{
 	display: block;
 	font-size: 19px;
 	font-family: osl;
-	box-shadow: 0px 2px 3px #A5A5A5;
+	box-shadow: 0px 2px 3px var(--input-shadow);
 	margin-bottom: 15px;
 	border-radius: 0;
 	border: none;
-	background-color: #30a8ff;
+	background-color: var(--new-product-field-btn);
 	transition: 0.3s;
 }
 
 .new-product-field button:hover {
 	transition: 0.3s;
-	background-color: #ff7700;
+	background-color: var(--new-product-field-btn-hover);
 }
 
 .new-product-field button:active {
 	transition: 0.1s;
-	background-color: #ffaf69;
+	background-color: var(--new-product-field-btn-active);
 }
 
 .new-product-field button:disabled {
-	background-color: #b9b9b9;
+	background-color: var(--new-product-field-btn-disabled);
 }
 
 .n-p-left {
@@ -485,7 +556,7 @@ input:focus, textarea:focus, select:focus{
 	position: relative;
 	font-family: osl;
 	font-size: 20px;
-	color: green;
+	color: var(--green);
 	left: 50%;
 	transform: translate(-10%, 0);
 }
@@ -498,7 +569,7 @@ input:focus, textarea:focus, select:focus{
 	position: relative;
 	width: 100%;
 	font-family: osl;
-	color: #5E5E5E;
+	color: var(--product-page-info-container);
 	display: inline-flex;
 }
 .product-page-img {
@@ -522,22 +593,22 @@ input:focus, textarea:focus, select:focus{
 	display: block;
 	font-size: 19px;
 	font-family: osl;
-	box-shadow: 0px 2px 3px #A5A5A5;
+	box-shadow: 0px 2px 3px var(--input-shadow);
 	border-radius: 0;
 	border: none;
-	background-color: #30a8ff;
+	background-color: var(--product-page-info-btn);
 	transition: 0.3s;
 }
 .product-page-info button:hover {
 	transition: 0.3s;
-	background-color: #ffc04b;
+	background-color: var(--product-page-info-hover);
 }
 .product-page-info button:active {
 	transition: 0.1s;
-	background-color: #ffaf69;
+	background-color: var(--product-page-info-active);
 }
 .product-page-info button:disabled {
-	background-color: #b9b9b9;
+	background-color: var(--product-page-info-disabled);
 }
 .product-page-info h2 {
 	font-size: 30px;
@@ -556,7 +627,7 @@ input:focus, textarea:focus, select:focus{
 	margin-bottom: -10px;
 	font-family: osl;
 	border-radius: 0;
-	border: 0.5px solid grey;
+	border: 0.5px solid var(--gray);
 }
 
 .product-page-description {
@@ -565,7 +636,7 @@ input:focus, textarea:focus, select:focus{
 .product-page-description p {
 	font-family: osl;
 	font-size: 20px;
-	color: #5E5E5E;
+	color: var(--product-page-info-container);
 }
 
 .my-products-container {
@@ -593,7 +664,7 @@ input:focus, textarea:focus, select:focus{
 }
 .my-product-details-container p {
 	font-family: nunito;
-	color: #CA5555;
+	color: var(--my-product-details-container);
 	font-size: 25px;
 	width: 100%;
 }
@@ -611,7 +682,7 @@ input:focus, textarea:focus, select:focus{
 }
 
 .purchase-message {
-	color: #00df90;
+	color: var(--purchase-msg);
 	text-align: center;
 	font-size: 25px;
 	font-family: osl;
@@ -619,7 +690,7 @@ input:focus, textarea:focus, select:focus{
 }
 
 .error-message {
-	color: #df0000;
+	color: var(--error-msg);
 	text-align: center;
 	font-size: 25px;
 	font-family: osl;
@@ -636,7 +707,7 @@ input:focus, textarea:focus, select:focus{
 	display: block;
 	font-size: 19px;
 	font-family: osl;
-	box-shadow: 0px 2px 3px #A5A5A5;
+	box-shadow: 0px 2px 3px var(--input-shadow);
 	border-radius: 0;
 	border: none;
 	transition: 0.3s;
@@ -694,41 +765,41 @@ input:focus, textarea:focus, select:focus{
 	border: 0;
 	height: 40px;
 	width: 350px;
-	background-color: salmon;
+	background-color: var(--change-address-btn);
 	font-family: osl;
 	font-size: 20px;
 	left: 50%;
 	transform: translate(-50%, 0);
 	transition: 0.3s;
 	color: white;
-	box-shadow: 0px 2px 3px #A5A5A5;
+	box-shadow: 0px 2px 3px var(--input-shadow);
 }
 .ship-adress button:hover {
-	background-color: pink;
+	background-color: var(--change-address-btn-hover);
 	color: black;
 }
 .ship-adress button:active {
 	transition: 0.1s;
-	background-color: white;
+	background-color: var(--change-address-btn-active);
 }
 .ship-adress input {
 	position: relative;
 	border: 0;
 	height: 40px;
 	width: 600px;
-	background-color: #EEEEEE;
+	background-color: var(--shipping-address-input);
 	font-family: osl;
 	font-size: 20px;
 	left: 50%;
 	transform: translate(-50%, 0);
-	color: black;
-	box-shadow: 0px 2px 3px #A5A5A5;
+	color: var(--black);
+	box-shadow: 0px 2px 3px var(--input-border);
 	padding-left: 10px;
 }
 
 .big-box {
 	height: 35px;
-	background-color: #d8d8d8d8;
+	background-color: var(--user-registration-box);
 	margin-top: 10px;
 	width: 100%;
 }
@@ -740,7 +811,7 @@ input:focus, textarea:focus, select:focus{
 
 .small-box {
 	height: 35px;
-	background-color: #d8d8d8d8;
+	background-color: var(--user-registration-box);
 }
 
 .u-r-title {
@@ -772,7 +843,7 @@ input:focus, textarea:focus, select:focus{
 	padding-left: 10px;
 	margin: 15px 0;
 	border-radius: 0;
-	border: 0.5px solid grey;
+	border: 0.5px solid var(--input-border);
 }
 .u-r-i-location input {
 	width: 90%;
@@ -800,21 +871,21 @@ input:focus, textarea:focus, select:focus{
 	display: block;
 	font-size: 19px;
 	font-family: osl;
-	box-shadow: 0px 2px 3px #A5A5A5;
+	box-shadow: 0px 2px 3px var(--input-shadow);
 	border-radius: 0;
 	transition: 0.3s;
 	margin: 10px auto;
-	background-color: #A2FF9B;
-	color: #727272;
+	background-color: var(--user-registration-btn-background);
+	color: var(--input);
 }
 
 .u-r-btn button:hover {
-	background-color: rgb(0, 255, 221);
+	background-color: var(--user-registration-btn-hover);
 }
 
 .u-r-btn button:active {
-	background-color: #11FF00;
-	color: white;
+	background-color: var(--user-registration-btn-active);
+	color: var(--input);
 	transition: 0.1s;
 }
 
@@ -823,8 +894,8 @@ input:focus, textarea:focus, select:focus{
 	height: 70%;
 	margin-left: auto;
 	margin-right: 0;
-	border: 2px dashed #CCCCCC;
-	background: #F5F5F5;
+	border: 2px dashed var(--dropzone-border);
+	background: var(--dropzone-background);
 	transition: 0.2s;
 }
 .dropzone svg{
@@ -832,14 +903,14 @@ input:focus, textarea:focus, select:focus{
 	left: 50%;
 	top: 40%;
 	transform: translate(-50%);
-	fill: #AAAAAA;
+	fill: var(--dropzone-svg);
 }
 .dropzone.dragover {
-	border: 2px dashed #737373;
-	background-color: #AAAAAA;
+	border: 2px dashed var(--dropzone-dragover-border);
+	background-color: var(--dropzone-svg);
 }
 .dropzone.dragover svg{
-	fill: whitesmoke;
+	fill: var(--whitesmoke);
 }
 .dropzone img {
 	position: relative;
@@ -853,19 +924,19 @@ input:focus, textarea:focus, select:focus{
 	display: block;
 	font-size: 19px;
 	font-family: osl;
-	box-shadow: 0px 2px 3px #A5A5A5;
+	box-shadow: 0px 2px 3px var(--input-shadow);
 	margin-bottom: 0;
 	margin-top: -13px;
 	border-radius: 0;
 	border: none;
-	background-color: #52FF5B;
+	background-color: var(--admin-approve-btn);
 	transition: 0.3s;
 }
 .admin-approve:hover {
-	background-color: aqua;
+	background-color: var(--admin-approve-btn-hover);
 }
 .admin-approve:active {
-	background-color: whitesmoke;
+	background-color: var(--admin-approve-btn-active);
 	transition: 0.1s;
 }
 
@@ -875,20 +946,20 @@ input:focus, textarea:focus, select:focus{
 	display: block;
 	font-size: 19px;
 	font-family: osl;
-	box-shadow: 0px 2px 3px #A5A5A5;
+	box-shadow: 0px 2px 3px var(--input-shadow);
 	margin-bottom: 0;
 	margin-top: -13px;
 	border-radius: 0;
 	border: none;
-	background-color: #F43030;
+	background-color: var(--admin-reject-btn);
 	transition: 0.3s;
 }
 .admin-reject:hover {
-	background-color: violet;
+	background-color: var(--admin-reject-btn-hover);
 }
 .admin-reject:active {
-	background-color: black;
-	color: white;
+	background-color: var(--admin-reject-btn-active);
+	color: var(--white);
 	transition: 0.1s;
 }
 
