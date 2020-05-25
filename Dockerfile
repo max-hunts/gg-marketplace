@@ -12,4 +12,4 @@ RUN npm install pm2 -g
 
 EXPOSE 5000
 
-CMD ["pm2-runtime", "app.js"]
+CMD ["pm2-runtime", "server.js"]
