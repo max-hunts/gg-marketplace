@@ -2,14 +2,13 @@ function checkAuth(){
 	firebase.auth().onAuthStateChanged(function(user){
 		if (user) {
 			if (user.email == "dev@dev.dev") {
-				try {
-					document.getElementById('admin').setAttribute('style', 'display: block;')
-				}
+				try {document.getElementById('admin').setAttribute('style', 'display: block;')}
 				catch(error){}
 			}
-
-			try {document.getElementById('uname-dom').innerHTML = "Loading..."}
-			catch(error){}
+			try {
+				document.getElementById('uname-dom').innerHTML = "Loading..."
+				document.getElementById('login-form').setAttribute("style", "display: none;")
+			}catch(error){}
 
 			firebase.auth().currentUser.getIdToken().then(function(idToken) {
 				let url = 'login-user-api'
@@ -44,9 +43,6 @@ function checkAuth(){
 			try {
 				document.getElementById('uname-field').setAttribute("style", "display: block;")
 				document.getElementById('login-field').setAttribute("style", "display: none;")
-				
-				document.getElementById('uname-field').setAttribute("style", "display: block;")
-				document.getElementById('login-field').setAttribute("style", "display: none;")
 			}
 			catch(error) {}
 			try {document.getElementById('uAuthMsg').setAttribute("style", "display: none;")}
@@ -65,8 +61,25 @@ function checkAuth(){
 		}
 	})
 }
-
 checkAuth()
+
+function loginFormListener() {
+	let loginForm = document.getElementById('login-form');
+	document.addEventListener('click', function (event) {
+		try{
+			var isClickInside = loginForm.contains(event.target);
+			if (event.target.id != "login-form-btn" && !isClickInside) {
+				document.getElementById('login-form').setAttribute("style", "display: none;")	
+			}
+		}catch(err){}
+	}, false)
+}
+loginFormListener()
+
+function login_form() {
+	document.getElementById('login-form').setAttribute("style", "display: block;")
+	document.getElementById("fuid").focus()
+}
 
 function admin_review() {
 	firebase.auth().currentUser.getIdToken().then(function(idToken) {
@@ -84,6 +97,10 @@ function signinwithgoogle(){
 		.catch(function(error){
 			console.log(error)
 		})
+}
+
+function signinwithapple(){
+	console.log("Coming later!")
 }
 
 function signinwithfb(){

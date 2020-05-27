@@ -22,19 +22,29 @@
 	<main>
 		<div class="page">
 			<div class="navbar">
+				<div class="login-form" id="login-form" style="display:none;">
+					<p>Login:</p>
+					<button id="blogin_a" onclick={signinwithapple()} class="a-login-btn login-row"></button>
+					<button id="blogin_g" onclick={signinwithgoogle()} class="g-login-btn login-row"></button>
+					<button id="blogin_f" onclick={signinwithfb()} class="fb-login-btn login-row"></button>
+					<div class="login-row">
+						<input id="fuid" type="text" placeholder="Username">
+					</div>
+					<div class="login-row">
+						<input id="fpwd" type="password" placeholder="Password">
+						<button id="blogin" onclick={signinwithemail()} class="login-btn">&#x27a4;</button>
+					</div>
+				</div>
+			
 				<div class="logon-crumbs">
-					<div id="uname-field" style="display: none;">
+					<div id="uname-field" style="display: block;">
 						<a id="uname-dom" class="user-name" href="javascript:;" onclick="my_products();">Unregistered user</a>
 						<div class="user-logout">
 							<a onclick={signout()}>Log out</a>
 						</div>
 					</div>
-						<div id="login-field" style="display: block;">
-						<input id="fuid" type="text" placeholder="Username">
-						<input id="fpwd" type="password" placeholder="Password">
-						<button id="blogin" onclick={signinwithemail()} class="btn-login">&#x27a4;</button>
-						<button id="blogin_g" onclick={signinwithgoogle()} class="btn-g-login"><img src="media/g_logon.png" class="img-g-login" alt="img"></button>
-						<button id="blogin_g" onclick={signinwithfb()} class="btn-fb-login"><img src="media/fb_logon.png" class="img-g-login" alt="img"></button>
+					<div id="login-field" class="login-prompt" style="display: none;">
+						<a href="javascript:;" id="login-form-btn" onclick="login_form();">Hi There, Login?</a>
 					</div>
 				</div>
 				<div class="user-info">
@@ -61,7 +71,7 @@
 
 			<div class="sbar">
 				<img src="media/gg_logo.png" onclick={window.location.replace('home')} alt="img">
-				<input id="sfield" type="text" placeholder="I Want...">
+				<input id="sfield" type="text" name="search" placeholder="I Want...">
 				<button id="sbutton" onclick={bSearch()}>Go!</button>
 				<a href="#">Extras</a>
 			</div>
