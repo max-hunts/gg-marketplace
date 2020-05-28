@@ -39,7 +39,7 @@ app.get("/home", function(request, responce) {
 
 function homePage(request, responce) {
 	var dbRef = database.ref("/products")
-	dbRef.orderByChild("status").equalTo("on-sale").limitToLast(5).once('value', function(snapshot){
+	dbRef.orderByChild("status").equalTo("on-sale").limitToLast(25).once('value', function(snapshot){
 		var data = {}
 		if (snapshot.val()) {data = snapshot.val()}
 		responce.render('home.ejs', {products: data})

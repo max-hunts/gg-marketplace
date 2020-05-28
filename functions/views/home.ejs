@@ -6,84 +6,35 @@
 			<div class="space"></div>
 
 			<div class="products">
-				<p>Recent:</p>
-				<div class="product-list-container">
-				<% var keys = Object.keys(products) %>
-				<% keys.forEach(function(key){ %>
-					<div class="product-container">
-						<a href="product?productid=<%=key%>">
-							<img class="dyn-img" title="<%= products[key].img %>" alt="img" src="media/var.png">
-						</a>
-						<p class="l"><%= products[key].name%></p>
-						<p class="r">£ <%= products[key].price%></p>
+				<p>Recently Added:</p>
+				<!-- GET LIST OF LISTS -->
+				<% 
+				let productKeys = Object.keys(products)
+				let p1 = productKeys.slice(0,5)
+				let p2 = productKeys.slice(5,10)
+				let p3 = productKeys.slice(10,15)
+				let p4 = productKeys.slice(15,20)
+				let p5 = productKeys.slice(20,25) 
+				let productListArray = [p1, p2, p3, p4, p5]
+				%> 
+
+				<% productListArray.forEach(rowKeys=>{%> 
+					<div class="product-list-container">
+					<% rowKeys.forEach(function(key){ %>
+						<div class="product-container">
+							<a href="product?productid=<%=key%>">
+								<img class="dyn-img" title="<%= products[key].img %>" alt="img" src="media/var.png">
+							</a>
+							<p class="l"><%= products[key].name%></p>
+							<p class="r">£ <%= products[key].price%></p>
+						</div>
+					<% }) %>
 					</div>
+					<div class="space"></div>
 				<% }) %>
-				</div>
-			</div>
 
 
-			<div class="products">
-				<p>Personalised 1:</p>
-				<div class="product-list-container">
-					<div class="product-container">
-						<a href="#"><img src="media/var.png" alt="img"></a>
-						<p class="l"><%= "Item name"%></p>
-						<p class="r">£ <%= "20.99"%></p>
-					</div>
-					<div class="product-container">
-						<a href="#"><img src="media/var.png" alt="img"></a>
-						<p class="l"><%= "Item name"%></p>
-						<p class="r">£ <%= "20.99"%></p>
-					</div>
-					<div class="product-container">
-						<a href="#"><img src="media/var.png" alt="img"></a>
-						<p class="l"><%= "Item name"%></p>
-						<p class="r">£ <%= "20.99"%></p>
-					</div>
-					<div class="product-container">
-						<a href="#"><img src="media/var.png" alt="img"></a>
-						<p class="l"><%= "Item name"%></p>
-						<p class="r">£ <%= "20.99"%></p>
-					</div>
-					<div class="product-container">
-						<a href="#"><img src="media/var.png" alt="img"></a>
-						<p class="l"><%= "Item name"%></p>
-						<p class="r">£ <%= "20.99"%></p>
-					</div>
-				</div>
 			</div>
-
-			<div class="products">
-				<p>Personalised 2:</p>
-				<div class="product-list-container">
-					<div class="product-container">
-						<a href="#"><img src="media/var.png" alt="img"></a>
-						<p class="l"><%= "Item name"%></p>
-						<p class="r">£ <%= "20.99"%></p>
-					</div>
-				</div>
-			</div>
-			<div class="products">
-				<p>Personalised 3:</p>
-				<div class="product-list-container">
-					<div class="product-container">
-						<a href="#"><img src="media/var.png" alt="img"></a>
-						<p class="l"><%= "Item name"%></p>
-						<p class="r">£ <%= "20.99"%></p>
-					</div>
-				</div>
-			</div>
-			<div class="products">
-				<p>Recent:</p>
-				<div class="product-list-container">
-					<div class="product-container">
-						<a href="#"><img src="media/var.png" alt="img"></a>
-						<p class="l"><%= "Item name"%></p>
-						<p class="r">£ <%= "20.99"%></p>
-					</div>
-				</div>
-			</div>
-
 
 			<div class="space"></div>
 		</div>
