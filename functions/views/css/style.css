@@ -106,7 +106,7 @@ body {
 
 
 main {
-	min-height: 79.7vh;
+	min-height: calc(100vh - 200px);
 	/*padding-bottom: 200px;*/
 }
 
