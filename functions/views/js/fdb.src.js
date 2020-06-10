@@ -1,4 +1,5 @@
 // https://javascript-minifier.com
+// @ts-nocheck
 function checkFields() {
 	if (document.getElementById('pName').value && document.getElementById('pDesc').value 
 	&& document.getElementById('pLoc').value && document.getElementById('pPrice').value 

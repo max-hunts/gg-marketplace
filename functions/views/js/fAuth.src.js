@@ -1,3 +1,4 @@
+// @ts-nocheck
 function checkAuth(){
 	firebase.auth().onAuthStateChanged(function(user){
 		if (user) {

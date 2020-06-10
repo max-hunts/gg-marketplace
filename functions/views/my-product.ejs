@@ -14,15 +14,15 @@
 						<p>Price: £<%= item.price %></p>
 						<div class="product-mgmt-buttons">
 							<% var editbtnStyle = ""%>
-							<% if (item.status == "sold") {editbtnStyle = "visibility:hidden;"} else {editbtnStyle = "visibility:all;"}%>
+							<% if (item.status == "on-sale" || item.status == "off-sale") {editbtnStyle = "visibility:all;"} else {editbtnStyle = "visibility:hidden;"}%>
 							<div class="edit-btn" style=<%= editbtnStyle%>><button onclick={edit_item()} id="editBtn">Edit</button> </div>
 							<% var sellbtnText = "Place On Sale"%>
 							<% var salebtnStyle = "visibility:hidden"%>
-							<% if (item.status != "sold") {salebtnStyle = "visibility:all;"}%>
+							<% if (item.status == "on-sale" || item.status == "off-sale") {salebtnStyle = "visibility:all;"}%>
 							<% if (item.status == "on-sale") {sellbtnText = "Take Off Sale"}%>
 							<div class="sell-btn" style="<%= salebtnStyle%>"><button onclick={toggle_sale()} id="toggleSaleBtn"><%= sellbtnText%></button> </div>
 							<% var shipbtnStyle = ""%>
-							<% if (item.status == "sold") {shipbtnStyle = "visibility:hidden;"} else {shipbtnStyle = "visibility:all;"}%>
+							<% if (item.status != "on-sale") {shipbtnStyle = "visibility:hidden;"} else {shipbtnStyle = "visibility:all;"}%>
 							<div class="ship-btn" style=<%= shipbtnStyle%>><button onclick={mark_as_sold()} id="soldBtn">Mark Sold</button> </div>
 						</div>
 					</div>

@@ -93,6 +93,7 @@
 	--admin-reject-btn: #F43030;
 	--admin-reject-btn-hover: violet;
 	--admin-reject-btn-active: black;
+	--heading: #7C7C7C;
 }
 
 body {
@@ -492,9 +493,28 @@ input:focus, textarea:focus, select:focus{
 .products p {
 	font-family: osl;
 	font-size: 25px;
-	color: #7C7C7C;
+	color: var(--heading);
 	margin-bottom: 10px;
 	margin-top: 10px;
+}
+
+.profile a {
+	font-family: osl;
+	font-size: 25px;
+	color: var(--product-page-info-btn);
+	margin-bottom: 20px;
+	margin-top: 20px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.profile a:hover {
+	color: var(--violet);
+}
+
+.profile a:active {
+	color: var(--white);
+	transition: 0.1s;
 }
 
 .product-list-container {

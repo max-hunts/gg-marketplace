@@ -16,6 +16,10 @@ app.use(bodyParser.json())
 app.use(logger('dev'))
 app.use(express.static('views'))
 
+const cookieParser = require('cookie-parser')();
+app.use(cookieParser);
+
+
 app.set('view engine', 'ejs')
 app.set('views', __dirname + '/views')
 
@@ -28,6 +32,15 @@ let transporter = nodemailer.createTransport({
   }
 })
 
+
+const validateFirebaseIdToken = (req, res, next) => {
+	console.log("Running pre-function")
+	console.log(req.cookies); //// <----- issue this is empty {} why?? 
+	console.log("Finished pre function")
+	next();
+};
+
+app.use(validateFirebaseIdToken)
 
 app.get("/", function(request, responce) {
 	homePage(request, responce)
@@ -115,10 +128,16 @@ app.get('/my-products', function(request, responce){
 				})
 			}
 			else {
-				dbRef.orderByChild('owner').equalTo(uid).once('value', function(snapshot){
-					var data = {'x': {holder: '',id: 999,img: '',location: '',name: 'No products listed 😢',owner: '',price: '',stock: ''}}
-					if (snapshot.val()) {data = snapshot.val()}
-					responce.render('my-products.ejs', {products: data})
+				let usersRef = database.ref("/users")
+				usersRef.orderByChild("UID").equalTo(uid).once('value', function(snapshot){
+					vals = snapshot.val()
+					var keys = Object.keys(vals)
+					sellerDBID = keys[0]
+					dbRef.orderByChild('owner').equalTo(uid).once('value', function(snapshot){
+						var data = {'x': {holder: '',id: 999,img: '',location: '',name: 'No products listed 😢',owner: '',price: '',stock: ''}}
+						if (snapshot.val()) {data = snapshot.val()}
+						responce.render('my-products.ejs', {products: data, dbid:sellerDBID})
+					})
 				})
 			}
 		})
