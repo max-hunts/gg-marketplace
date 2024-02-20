@@ -35,7 +35,7 @@ let transporter = nodemailer.createTransport({
 
 const validateFirebaseIdToken = (req, res, next) => {
 	console.log("Running pre-function")
-	console.log(req.cookies); //// <----- issue this is empty {} why?? 
+	console.log(req.cookies); //// <----- issue this is empty {} why??
 	console.log("Finished pre function")
 	next();
 };
@@ -268,7 +268,7 @@ app.get('/user-profile', function(request, responce){
 							return allProductsDict[obj].status == 'on-sale';
 						})
 						let filteredProducts = {"0":{img: '',name: 'Nothing listed 😢',price: ''}}
-						
+
 						filteredKeys.forEach(function(key){filteredProducts[key] = allProductsDict[key]})
 
 						if (Object.keys(filteredProducts).length > 1) {delete filteredProducts["0"]}
@@ -755,7 +755,7 @@ app.post('*', function(request, responce){
 	responce.status(404).send({success:false, error:"404"})
 })
 
-var port = 5000
+var port = 5001
 
 app.listen(port, function() {
 	console.log('Server running on port ' + port)
