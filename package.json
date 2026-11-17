@@ -1,14 +1,14 @@
 {
   "name": "project_gg",
   "version": "1.0.0",
-  "description": "GG bs project",
-  "main": "index.js",
+  "description": "GG marketplace prototype (Express + Firebase)",
+  "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node server.js"
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@git.maxhunt.design:9999/MAX/GG.git"
+    "url": "https://github.com/max-hunts/gg-marketplace.git"
   },
   "author": "",
   "license": "ISC",
